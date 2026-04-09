@@ -1,6 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { NextRequest, NextResponse } from 'next/server'
-import { isAuthenticatedFromRequest } from '@/lib/auth'
+import { NextRequest } from 'next/server'
 import { DEMO_DATA, BENCHMARKS } from '@/lib/data'
 
 function buildSystemPrompt() {
@@ -29,10 +28,6 @@ RULES:
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthenticatedFromRequest(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { messages } = await req.json()
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
