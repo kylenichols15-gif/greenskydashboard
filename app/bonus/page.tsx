@@ -110,7 +110,7 @@ export default async function BonusPage() {
           </div>
           <div>
             <div className="text-[#64748B] text-xs">Goal (T2 Bonus)</div>
-            <div className="text-[#F1F5F9] font-bold">{formatCurrency(orgGoal)}</div>
+            <div className="text-[#F1F5F9] font-bold">100%</div>
             <div className="text-[#64748B] text-xs">100% = bonus for all</div>
           </div>
           <div>
@@ -173,7 +173,7 @@ export default async function BonusPage() {
                 </div>
                 {tier ? (
                   <span className={`px-3 py-1 rounded-lg border text-sm font-bold ${tier.color} ${tier.bg}`}>
-                    {tier.tag} — {tier.label} · ${tier.amount.toLocaleString()}
+                    {tier.tag} — {tier.label}
                   </span>
                 ) : (
                   <span className="px-3 py-1 rounded-lg border text-sm font-medium text-red-400 bg-red-500/10 border-red-500/20">
@@ -186,7 +186,7 @@ export default async function BonusPage() {
               <div className="mb-1">
                 <div className="flex justify-between text-xs text-[#64748B] mb-1.5">
                   <span>{formatCurrency(loc.collections)} collected</span>
-                  <span className="font-semibold" style={{ color: barColor }}>{formatPct(pct, 1)} of {formatCurrency(goal, true)} goal</span>
+                  <span className="font-semibold" style={{ color: barColor }}>{formatPct(pct, 1)} of goal</span>
                 </div>
                 <div className="relative h-4 bg-[#1E2A3A] rounded-full overflow-hidden">
                   <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: barColor }} />
