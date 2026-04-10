@@ -1,62 +1,79 @@
-import { DEMO_DATA, BENCHMARKS, LOCATIONS } from '@/lib/data'
-import { formatCurrency, formatPct, getStatusHigh, locationStatus, pctToGoal } from '@/lib/utils'
+import { DEMO_DATA, BENCHMARKS, LOCATIONS, MONTHLY_GOALS } from '@/lib/data'
+import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus, pctToGoal } from '@/lib/utils'
 import KPICard from '@/components/KPICard'
-import StatusBadge from '@/components/StatusBadge'
 import OSBBadge from '@/components/OSBBadge'
-
-const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 120000, LT: 100000, HNR: 70000, HNS: 65000, PB: 80000, PR: 55000, OSB: 30000,
-}
+import DaysLeft from '@/components/DaysLeft'
 
 function buildFlags() {
   const flags: { level: 'red' | 'amber'; msg: string }[] = []
   const { org, locations, phones } = DEMO_DATA
 
-  if (org.phoneAnswerRate < BENCHMARKS.phone_answer_rate.flagBelow) {
-    const missedRev = phones.reduce((s, p) => s + p.estMissedRevenue, 0)
-    flags.push({ level: 'red', msg: `Org phone answer rate ${org.phoneAnswerRate}% — below ${BENCHMARKS.phone_answer_rate.flagBelow}% threshold. Est. ${formatCurrency(missedRev, true)} monthly revenue at risk.` })
-  }
-  if (org.hygieneRecare < BENCHMARKS.hygiene_recare.flagBelow) {
-    flags.push({ level: 'red', msg: `Org hygiene recare ${org.hygieneRecare}% — below ${BENCHMARKS.hygiene_recare.flagBelow}% threshold. Target is ${BENCHMARKS.hygiene_recare.target}%.` })
-  }
+  if (org.phoneAnswerRate < BENCHMARKS.phone_answer_rate.flagBelow)
+    flags.push({ level: 'red', msg: `Org phones ${org.phoneAnswerRate}% — below ${BENCHMARKS.phone_answer_rate.flagBelow}% threshold` })
+  if (org.hygieneRecare < BENCHMARKS.hygiene_recare.flagBelow)
+    flags.push({ level: 'red', msg: `Org recare ${org.hygieneRecare}% — below ${BENCHMARKS.hygiene_recare.flagBelow}% threshold` })
 
   for (const loc of locations) {
-    if (loc.phoneAnswerRate < BENCHMARKS.phone_answer_rate.flagBelow) {
-      const ph = phones.find(p => p.code === loc.code)
-      flags.push({ level: 'red', msg: `${loc.code} phone answer rate ${loc.phoneAnswerRate}% — below ${BENCHMARKS.phone_answer_rate.flagBelow}% threshold. Est. ${formatCurrency(ph?.estMissedRevenue ?? 0, true)}/mo revenue at risk.` })
-    } else if (loc.phoneAnswerRate < BENCHMARKS.phone_answer_rate.target) {
-      flags.push({ level: 'amber', msg: `${loc.code} phone answer rate ${loc.phoneAnswerRate}% — below ${BENCHMARKS.phone_answer_rate.target}% target.` })
-    }
-    if (loc.recareRate < BENCHMARKS.hygiene_recare.flagBelow) {
-      flags.push({ level: 'red', msg: `${loc.code} hygiene recare ${loc.recareRate}% — below ${BENCHMARKS.hygiene_recare.flagBelow}% threshold.` })
-    }
-    if (loc.suppliesPct > BENCHMARKS.supplies_pct.flagAbove) {
-      flags.push({ level: 'red', msg: `${loc.code} supplies at ${loc.suppliesPct}% — above ${BENCHMARKS.supplies_pct.flagAbove}% flag threshold.` })
-    }
+    if (loc.phoneAnswerRate < BENCHMARKS.phone_answer_rate.flagBelow)
+      flags.push({ level: 'red', msg: `${loc.code} — Phone ${formatPct(loc.phoneAnswerRate)}` })
+    else if (loc.phoneAnswerRate < BENCHMARKS.phone_answer_rate.target)
+      flags.push({ level: 'amber', msg: `${loc.code} — Phone ${formatPct(loc.phoneAnswerRate)}` })
+
+    if (loc.recareRate < BENCHMARKS.hygiene_recare.flagBelow)
+      flags.push({ level: 'red', msg: `${loc.code} — Recare ${formatPct(loc.recareRate)}` })
+
+    if (loc.suppliesPct > BENCHMARKS.supplies_pct.flagAbove)
+      flags.push({ level: 'red', msg: `${loc.code} — Supplies ${loc.suppliesPct}%` })
+
+    if (loc.collectionRate < BENCHMARKS.collections_rate.flagBelow)
+      flags.push({ level: 'amber', msg: `${loc.code} — Coll. pace ${formatPct(loc.collectionRate)}` })
   }
 
-  // de-dupe
   return flags.filter((f, i, arr) => arr.findIndex(x => x.msg === f.msg) === i)
 }
 
 export default function OverviewPage() {
   const { org, locations } = DEMO_DATA
-  const prodPct    = pctToGoal(org.production, org.productionGoal)
-  const collPct    = pctToGoal(org.collections, org.collectionsGoal)
+  const prodPct     = pctToGoal(org.production, org.productionGoal)
+  const collPct     = pctToGoal(org.collections, org.collectionsGoal)
   const phoneStatus = getStatusHigh(org.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
+  const recareStatus = getStatusHigh(org.hygieneRecare, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
   const flags       = buildFlags()
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-[#F1F5F9] text-2xl font-bold">Overview</h1>
-        <p className="text-[#64748B] text-sm mt-1">April 2026 · All 7 locations · Demo Data</p>
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-[#F1F5F9] text-2xl font-bold">GreenSky Overview</h1>
+          <p className="text-[#64748B] text-sm mt-1">April 2026 · All 7 locations · Demo Data</p>
+        </div>
+        <DaysLeft />
       </div>
+
+      {/* Inline Flags */}
+      {flags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          <span className="text-[#64748B] text-xs font-semibold uppercase tracking-wider self-center">Flags</span>
+          {flags.map((flag, i) => (
+            <span
+              key={i}
+              className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium ${
+                flag.level === 'red'
+                  ? 'bg-red-500/10 border-red-500/25 text-red-300'
+                  : 'bg-amber-500/10 border-amber-500/25 text-amber-300'
+              }`}
+            >
+              {flag.level === 'red' ? '🔴' : '🟡'} {flag.msg}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         <KPICard
-          label="MTD Production"
+          label="MTD Gross Production"
           value={formatCurrency(org.production)}
           subValue={`Goal: ${formatCurrency(org.productionGoal)}`}
           progress={prodPct}
@@ -70,33 +87,57 @@ export default function OverviewPage() {
         <KPICard
           label="New Patients"
           value={org.newPatients.toString()}
-          subValue={`${org.activePatients.toLocaleString()} active patients`}
+          subValue={`${org.activePatients.toLocaleString()} active`}
         />
         <KPICard
-          label="Phone Answer Rate"
+          label="Avg Supplies %"
+          value={`${(DEMO_DATA.locations.reduce((s,l) => s + l.suppliesPct, 0) / DEMO_DATA.locations.length).toFixed(1)}%`}
+          subValue="Target ≤5%"
+          status={getStatusLow(
+            DEMO_DATA.locations.reduce((s,l) => s + l.suppliesPct, 0) / DEMO_DATA.locations.length,
+            BENCHMARKS.supplies_pct.target,
+            BENCHMARKS.supplies_pct.flagAbove
+          )}
+          detail="Above target"
+        />
+      </div>
+
+      {/* Secondary KPIs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <KPICard
+          label="Avg Phone Answer Rate"
           value={formatPct(org.phoneAnswerRate)}
           subValue={`Target: ${BENCHMARKS.phone_answer_rate.target}%`}
           status={phoneStatus}
           detail={phoneStatus === 'red' ? 'Below threshold' : phoneStatus === 'amber' ? 'Below target' : 'On target'}
         />
+        <KPICard
+          label="Hygiene Recare"
+          value={formatPct(org.hygieneRecare)}
+          subValue={`Target: ${BENCHMARKS.hygiene_recare.target}%`}
+          status={recareStatus}
+          detail={recareStatus === 'red' ? 'Below threshold' : recareStatus === 'amber' ? 'Below target' : 'On target'}
+        />
       </div>
 
       {/* Location Gauge Grid */}
-      <div className="mb-8">
-        <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-4">Location Performance</h2>
+      <div>
+        <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-4">Location Scorecard</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {locations.map(loc => {
+          {locations.map((loc, i) => {
             const goal   = MONTHLY_GOALS[loc.code] ?? 100000
             const pct    = pctToGoal(loc.production, goal)
             const status = locationStatus(loc.status)
             const dotBg  = { green: 'bg-green-400', amber: 'bg-amber-400', red: 'bg-red-400' }[status]
             const barColor = pct >= 100 ? '#10B981' : pct >= 80 ? '#0A9E8A' : pct >= 60 ? '#F59E0B' : '#EF4444'
             const pctColor = { green: 'text-green-400', amber: 'text-amber-400', red: 'text-red-400' }[status]
+            const rank = i + 1
 
             return (
               <div key={loc.code} className="bg-[#0D1629] border border-[#1E2A3A] rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
+                    <span className="text-[#64748B] text-xs font-bold">#{rank}</span>
                     <span className="text-[#0A9E8A] font-bold text-sm">{loc.code}</span>
                     {loc.isOSB && <OSBBadge />}
                   </div>
@@ -124,28 +165,6 @@ export default function OverviewPage() {
           </div>
         </div>
       </div>
-
-      {/* Flag Bar */}
-      {flags.length > 0 && (
-        <div className="bg-[#0D1629] border border-[#1E2A3A] rounded-lg p-5">
-          <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-3">Active Flags</h2>
-          <div className="flex flex-col gap-2">
-            {flags.map((flag, i) => (
-              <div
-                key={i}
-                className={`flex items-start gap-2 text-sm px-3 py-2 rounded-lg border ${
-                  flag.level === 'red'
-                    ? 'bg-red-500/8 border-red-500/20 text-red-300'
-                    : 'bg-amber-500/8 border-amber-500/20 text-amber-300'
-                }`}
-              >
-                <span className="shrink-0 mt-0.5">{flag.level === 'red' ? '🔴' : '🟡'}</span>
-                <span>{flag.msg}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
