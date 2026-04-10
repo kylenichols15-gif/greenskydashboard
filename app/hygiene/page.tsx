@@ -1,10 +1,12 @@
-import { DEMO_DATA, LOCATIONS, BENCHMARKS } from '@/lib/data'
+import { LOCATIONS, BENCHMARKS } from '@/lib/data'
+import { getData } from '@/lib/getData'
 import { formatCurrency, formatPct, getStatusHigh } from '@/lib/utils'
 import Podium from '@/components/Podium'
 import DaysLeft from '@/components/DaysLeft'
 
-export default function HygienePage() {
-  const { hygienists } = DEMO_DATA
+export default async function HygienePage() {
+  const data = await getData()
+  const { hygienists } = data
   const sorted = [...hygienists].sort((a, b) => b.prodPerHr - a.prodPerHr)
   const avgProdHr = sorted.reduce((s, h) => s + h.prodPerHr, 0) / (sorted.length || 1)
 

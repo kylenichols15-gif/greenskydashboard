@@ -1,4 +1,5 @@
-import { DEMO_DATA, BENCHMARKS, LOCATIONS } from '@/lib/data'
+import { BENCHMARKS, LOCATIONS } from '@/lib/data'
+import { getData } from '@/lib/getData'
 import { formatCurrency, formatPct, getStatusHigh } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
@@ -32,8 +33,9 @@ function CircleGauge({ rate }: { rate: number }) {
   )
 }
 
-export default function PhonesPage() {
-  const { org, phones } = DEMO_DATA
+export default async function PhonesPage() {
+  const data = await getData()
+  const { org, phones } = data
   const totalMissed = phones.reduce((s, p) => s + p.estMissedRevenue, 0)
   const sorted = [...phones].sort((a, b) => b.answerRate - a.answerRate)
 

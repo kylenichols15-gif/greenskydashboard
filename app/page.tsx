@@ -1,12 +1,15 @@
-import { DEMO_DATA, BENCHMARKS, LOCATIONS, MONTHLY_GOALS } from '@/lib/data'
+import { BENCHMARKS, LOCATIONS, MONTHLY_GOALS } from '@/lib/data'
+import { getData, getPeriodInfo } from '@/lib/getData'
 import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus, pctToGoal } from '@/lib/utils'
 import KPICard from '@/components/KPICard'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
 
-function buildFlags() {
+type DashData = Awaited<ReturnType<typeof getData>>
+
+function buildFlags(data: DashData) {
   const flags: { level: 'red' | 'amber'; msg: string }[] = []
-  const { org, locations, phones } = DEMO_DATA
+  const { org, locations } = data
 
   if (org.phoneAnswerRate < BENCHMARKS.phone_answer_rate.flagBelow)
     flags.push({ level: 'red', msg: `Org phones ${org.phoneAnswerRate}% — below ${BENCHMARKS.phone_answer_rate.flagBelow}% threshold` })
@@ -32,13 +35,14 @@ function buildFlags() {
   return flags.filter((f, i, arr) => arr.findIndex(x => x.msg === f.msg) === i)
 }
 
-export default function OverviewPage() {
-  const { org, locations } = DEMO_DATA
+export default async function OverviewPage() {
+  const data        = await getData()
+  const { org, locations } = data
   const prodPct     = pctToGoal(org.production, org.productionGoal)
   const collPct     = pctToGoal(org.collections, org.collectionsGoal)
   const phoneStatus = getStatusHigh(org.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
   const recareStatus = getStatusHigh(org.hygieneRecare, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
-  const flags       = buildFlags()
+  const flags       = buildFlags(data)
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -46,7 +50,7 @@ export default function OverviewPage() {
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-[#F1F5F9] text-2xl font-bold">GreenSky Overview</h1>
-          <p className="text-[#64748B] text-sm mt-1">April 2026 · All 7 locations · Demo Data</p>
+          <p className="text-[#64748B] text-sm mt-1">{data.period} · All 7 locations</p>
         </div>
         <DaysLeft />
       </div>
@@ -91,10 +95,10 @@ export default function OverviewPage() {
         />
         <KPICard
           label="Avg Supplies %"
-          value={`${(DEMO_DATA.locations.reduce((s,l) => s + l.suppliesPct, 0) / DEMO_DATA.locations.length).toFixed(1)}%`}
+          value={`${(locations.reduce((s,l) => s + l.suppliesPct, 0) / locations.length).toFixed(1)}%`}
           subValue="Target ≤5%"
           status={getStatusLow(
-            DEMO_DATA.locations.reduce((s,l) => s + l.suppliesPct, 0) / DEMO_DATA.locations.length,
+            locations.reduce((s,l) => s + l.suppliesPct, 0) / locations.length,
             BENCHMARKS.supplies_pct.target,
             BENCHMARKS.supplies_pct.flagAbove
           )}

@@ -1,11 +1,13 @@
-import { DEMO_DATA, LOCATIONS } from '@/lib/data'
+import { LOCATIONS } from '@/lib/data'
+import { getData } from '@/lib/getData'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import Podium from '@/components/Podium'
 import DaysLeft from '@/components/DaysLeft'
 import OSBBadge from '@/components/OSBBadge'
 
-export default function DoctorsPage() {
-  const { doctors } = DEMO_DATA
+export default async function DoctorsPage() {
+  const data = await getData()
+  const { doctors } = data
   const sorted = [...doctors].sort((a, b) => b.grossProd - a.grossProd)
   const avgProd = sorted.reduce((s, d) => s + d.grossProd, 0) / (sorted.length || 1)
 

@@ -8,6 +8,7 @@ export const LOCATIONS = [
   { code: 'OSB', name: 'Osbourne Family',     brand: 'Osbourne',         isOSB: true  },
 ]
 
+// Bonus race collection goals (100% = $1,000 bonus tier)
 export const MONTHLY_GOALS: Record<string, number> = {
   LKW: 120000, LT: 100000, HNR: 70000, HNS: 65000, PB: 80000, PR: 55000, OSB: 30000,
 }
@@ -23,7 +24,7 @@ export const BENCHMARKS = {
   chair_utilization: { target: 85,   flagBelow: 75 },
 }
 
-// Business days for April 2026
+// April 2026 — as of April 9, 2026 (7 business days complete)
 export const PERIOD_INFO = {
   label:          'April 2026',
   totalBizDays:   22,
@@ -31,43 +32,67 @@ export const PERIOD_INFO = {
   daysRemaining:  15,
 }
 
+// ─── Live Data (Sources: Dentrix Ascend ProviderTotals + AgedReceivables + Dental Intel OSB) ───
+// Updated: 04/09/2026 | Period: 04/01–04/09/2026 (7 biz days)
+// NOTE: Collection rates early-month include payments applied to prior-period AR — normalize over the month
 export const DEMO_DATA = {
   period: 'April 2026',
   org: {
-    production:        423800,
-    productionGoal:    500000,
-    collections:       371200,
-    collectionsGoal:   440000,
-    newPatients:       127,
+    production:       709976,   // Gross production, all 7 locations — Dentrix Procedure Charges
+    productionGoal:  2400000,   // Full-month gross production target (March record: $2.26M)
+    collections:      394906,   // Payments applied 04/01–04/09 — includes prior-period AR catch-up
+    collectionsGoal: 1300000,   // Monthly collections target (March projected: $1.25M)
+    newPatients:        191,    // LKW:40 LT:23 HNR:24 HNS:21 PB:32 PR:32 OSB:19
     activePatients:    2531,
-    phoneAnswerRate:   71.4,
-    hygieneRecare:     78.2,
+    phoneAnswerRate:   71.4,    // Placeholder — update from Mango Voice
+    hygieneRecare:     78.2,    // Placeholder — update from Dentrix hygiene report
   },
+
+  // NOTE: collectionRate = MTD applied payments / MTD gross production.
+  // HNR >100% and PR <20% are expected early-month due to AR timing — not errors.
   locations: [
-    { code:'LKW', production:98400,  collections:82100,  collectionRate:83.4, newPatients:31, recareRate:79.1, phoneAnswerRate:46.2, activePatients:534, suppliesPct:6.8, status:'behind'   },
-    { code:'LT',  production:87200,  collections:74900,  collectionRate:85.9, newPatients:24, recareRate:82.4, phoneAnswerRate:74.1, activePatients:421, suppliesPct:5.9, status:'on_pace'  },
-    { code:'HNR', production:54100,  collections:43200,  collectionRate:79.8, newPatients:18, recareRate:71.2, phoneAnswerRate:68.3, activePatients:298, suppliesPct:7.1, status:'critical' },
-    { code:'HNS', production:48300,  collections:38100,  collectionRate:78.9, newPatients:14, recareRate:66.4, phoneAnswerRate:72.1, activePatients:276, suppliesPct:7.4, status:'critical' },
-    { code:'PB',  production:71200,  collections:62400,  collectionRate:87.6, newPatients:22, recareRate:88.1, phoneAnswerRate:83.4, activePatients:389, suppliesPct:5.4, status:'on_pace'  },
-    { code:'PR',  production:42800,  collections:38900,  collectionRate:90.9, newPatients:11, recareRate:91.2, phoneAnswerRate:97.1, activePatients:321, suppliesPct:5.1, status:'on_pace'  },
-    { code:'OSB', production:21800,  collections:18200,  collectionRate:83.5, newPatients:7,  recareRate:84.2, phoneAnswerRate:76.8, activePatients:292, suppliesPct:6.2, status:'behind',  isOSB:true },
+    { code:'LKW', production:176742, collections:87178,  collectionRate:49.3, newPatients:40, recareRate:79.1, phoneAnswerRate:46.2, activePatients:534, suppliesPct:6.8, status:'behind'   },
+    { code:'LT',  production:97440,  collections:64632,  collectionRate:66.3, newPatients:23, recareRate:82.4, phoneAnswerRate:74.1, activePatients:421, suppliesPct:5.9, status:'on_pace'  },
+    { code:'HNR', production:23703,  collections:53787,  collectionRate:99.9, newPatients:24, recareRate:71.2, phoneAnswerRate:68.3, activePatients:298, suppliesPct:7.1, status:'critical' },
+    { code:'HNS', production:57169,  collections:22411,  collectionRate:39.2, newPatients:21, recareRate:66.4, phoneAnswerRate:72.1, activePatients:276, suppliesPct:7.4, status:'critical' },
+    { code:'PB',  production:116348, collections:103382, collectionRate:88.9, newPatients:32, recareRate:88.1, phoneAnswerRate:83.4, activePatients:389, suppliesPct:5.4, status:'on_pace'  },
+    { code:'PR',  production:188424, collections:19471,  collectionRate:10.3, newPatients:32, recareRate:91.2, phoneAnswerRate:97.1, activePatients:321, suppliesPct:5.1, status:'on_pace'  },
+    { code:'OSB', production:50150,  collections:44045,  collectionRate:87.8, newPatients:19, recareRate:91.8, phoneAnswerRate:76.8, activePatients:292, suppliesPct:6.2, status:'on_pace', isOSB:true },
   ],
+
+  // Source: Dentrix ProviderTotals 04/01–04/09/2026
+  // ytdProd = estimated gross YTD (Jan–Apr) based on March MTD net × 2.26 gross/net ratio × 3 + April gross
   doctors: [
-    { name:'Nichols, Christopher G', locationCode:'LKW', grossProd:84200, collections:69800, collRate:82.9, prodPerDay:9355, daysWorked:9,  ytdProd:412800 },
-    { name:'Connolly, Drew',         locationCode:'LT',  grossProd:87200, collections:74900, collRate:85.9, prodPerDay:8720, daysWorked:10, ytdProd:398100 },
-    { name:'Proctor, Sarah',         locationCode:'PB',  grossProd:71200, collections:62400, collRate:87.6, prodPerDay:7911, daysWorked:9,  ytdProd:331400 },
-    { name:'Weathers, L\'Cris',      locationCode:'PR',  grossProd:42800, collections:38900, collRate:90.9, prodPerDay:4755, daysWorked:9,  ytdProd:222100 },
-    { name:'Ballard, Erin',          locationCode:'PB',  grossProd:38400, collections:33700, collRate:87.8, prodPerDay:3840, daysWorked:10, ytdProd:169200 },
-    { name:'Chadwick, Evan',         locationCode:'LKW', grossProd:14200, collections:12300, collRate:86.6, prodPerDay:7100, daysWorked:2,  ytdProd:89200  },
+    { name:'Weathers, L\'Cris',    locationCode:'PR',  grossProd:96703,  collections:15516,  collRate:16.1, prodPerDay:13815, daysWorked:7, ytdProd:660000  },
+    { name:'Ballard, Erin',        locationCode:'PB',  grossProd:84181,  collections:27828,  collRate:33.1, prodPerDay:12026, daysWorked:7, ytdProd:430000  },
+    { name:'Nichols, Christopher', locationCode:'LKW', grossProd:67300,  collections:35423,  collRate:52.6, prodPerDay:9614,  daysWorked:7, ytdProd:1230000 },
+    { name:'Connolly, Noah',       locationCode:'HNS', grossProd:58938,  collections:29525,  collRate:50.1, prodPerDay:8420,  daysWorked:7, ytdProd:440000  },
+    { name:'Proctor, Sarah',       locationCode:'PB',  grossProd:50515,  collections:47227,  collRate:93.5, prodPerDay:7216,  daysWorked:7, ytdProd:785000  },
+    { name:'Nichols, Patrick',     locationCode:'LT',  grossProd:49091,  collections:33516,  collRate:68.3, prodPerDay:7013,  daysWorked:7, ytdProd:420000  },
+    { name:'Walters, Carrie',      locationCode:'LKW', grossProd:45047,  collections:15632,  collRate:34.7, prodPerDay:6435,  daysWorked:7, ytdProd:330000  },
+    { name:'Osbourne, Brian',      locationCode:'OSB', grossProd:31365,  collections:28878,  collRate:92.1, prodPerDay:4481,  daysWorked:7, ytdProd:120000,  isOSB:true },
+    { name:'Decker Haycraft, Kara',locationCode:'LT',  grossProd:26837,  collections:12936,  collRate:48.2, prodPerDay:3834,  daysWorked:7, ytdProd:120000  },
+    { name:'Gleason, Robert',      locationCode:'LKW', grossProd:25283,  collections:18938,  collRate:74.9, prodPerDay:3612,  daysWorked:7, ytdProd:320000  },
+    { name:'Skaggs, Ernest',       locationCode:'HNR', grossProd:16581,  collections:18483,  collRate:99.9, prodPerDay:2369,  daysWorked:7, ytdProd:80000   },
   ],
+
+  // Source: Dentrix ProviderTotals + Time Clock 04/01–04/09/2026
+  // recareRate = placeholder — update from Dentrix hygiene recare report
   hygienists: [
-    { name:'Haycraft, Kara',   locationCode:'LT',  grossProd:21800, collections:20100, collRate:92.2, hoursWorked:70.0, prodPerHr:311, recareRate:88.4 },
-    { name:'Berry, Tasha',     locationCode:'LKW', grossProd:18400, collections:17100, collRate:92.9, hoursWorked:62.5, prodPerHr:294, recareRate:82.1 },
-    { name:'Walters, Carrie',  locationCode:'LKW', grossProd:14200, collections:13100, collRate:92.3, hoursWorked:48.0, prodPerHr:296, recareRate:76.3 },
-    { name:'Ortega, Maria',    locationCode:'PB',  grossProd:16800, collections:15400, collRate:91.7, hoursWorked:56.0, prodPerHr:300, recareRate:90.2 },
-    { name:'Simmons, Dana',    locationCode:'PR',  grossProd:12100, collections:11200, collRate:92.6, hoursWorked:44.0, prodPerHr:275, recareRate:93.1 },
-    { name:'Fletcher, Renee',  locationCode:'HNR', grossProd:9800,  collections:8900,  collRate:90.8, hoursWorked:40.0, prodPerHr:245, recareRate:71.2 },
+    { name:'Howell, Dana',    locationCode:'LT',  grossProd:6553, collections:3445, collRate:52.6, hoursWorked:44.0, prodPerHr:149, recareRate:82.4 },
+    { name:'Kittle, Jolena',  locationCode:'LT',  grossProd:4048, collections:1960, collRate:48.4, hoursWorked:33.9, prodPerHr:120, recareRate:75.0 },
+    { name:'Harned, Stacy',   locationCode:'LT',  grossProd:3654, collections:2232, collRate:61.1, hoursWorked:27.8, prodPerHr:132, recareRate:80.0 },
+    { name:'Buzick, Rebecca', locationCode:'LT',  grossProd:2993, collections:2163, collRate:72.3, hoursWorked:19.8, prodPerHr:151, recareRate:78.0 },
+    { name:'Blandford, Cassi',locationCode:'LKW', grossProd:2537, collections:3483, collRate:99.9, hoursWorked:18.3, prodPerHr:139, recareRate:79.1 },
+    { name:'Youart, Britney', locationCode:'LKW', grossProd:1934, collections:1320, collRate:68.2, hoursWorked:13.6, prodPerHr:142, recareRate:79.1 },
+    { name:'Berry, Tasha',    locationCode:'LKW', grossProd:1894, collections:2629, collRate:99.9, hoursWorked:18.0, prodPerHr:105, recareRate:79.1 },
+    { name:'Bewley, Emma',    locationCode:'LKW', grossProd:1386, collections:2635, collRate:99.9, hoursWorked:7.1,  prodPerHr:195, recareRate:79.1 },
+    { name:'Culver, Angela',  locationCode:'OSB', grossProd:3768, collections:2561, collRate:68.0, hoursWorked:48.0, prodPerHr:78,  recareRate:88.0, isOSB:true },
+    { name:'Haydon, Kelsey',  locationCode:'OSB', grossProd:4184, collections:2571, collRate:61.4, hoursWorked:48.0, prodPerHr:87,  recareRate:92.0, isOSB:true },
+    { name:'Greenwell, Denise',locationCode:'OSB',grossProd:2308, collections:1160, collRate:50.3, hoursWorked:32.0, prodPerHr:72,  recareRate:85.0, isOSB:true },
   ],
+
+  // Placeholder — update manually from Mango Voice portal
   phones: [
     { code:'LKW', totalCalls:1124, answered:519,  missed:605, answerRate:46.2, estMissedRevenue:48400 },
     { code:'LT',  totalCalls:834,  answered:618,  missed:216, answerRate:74.1, estMissedRevenue:17280 },
@@ -77,21 +102,24 @@ export const DEMO_DATA = {
     { code:'PR',  totalCalls:644,  answered:625,  missed:19,  answerRate:97.1, estMissedRevenue:1520  },
     { code:'OSB', totalCalls:312,  answered:240,  missed:72,  answerRate:76.9, estMissedRevenue:5760  },
   ],
+
+  // Source: Dentrix AgedReceivables 04/09/2026 + Dental Intel OSB
+  // arToProd = Total AR / projected monthly gross production
   ar: {
-    asOf: '04/07/2026',
-    healthScore: 68,
-    total: 1621400,
-    buckets: { d0_30: 1151194, d31_60: 243210, d61_90: 113498, d90plus: 113498 },
-    pcts:    { d0_30: 71.0,    d31_60: 15.0,   d61_90: 7.0,    d90plus: 7.0 },
-    arToProdRatio: 1.36,
+    asOf: '04/09/2026',
+    healthScore: 47,
+    total: 1900468,
+    buckets: { d0_30: 1137156, d31_60: 408890, d61_90: 168083, d90plus: 186339 },
+    pcts:    { d0_30: 59.8,    d31_60: 21.5,   d61_90: 8.8,    d90plus: 9.8 },
+    arToProdRatio: 0.84,
     locations: [
-      { code:'LKW', total:564000, d0_30:372240, d31_60:87084, d61_90:52152, d90plus:52524, pct0_30:66.0, pct31_60:15.5, pct61_90:9.2, pct90plus:9.3, insuranceAR:367000, patientAR:197000, patientPct:35, arToProd:1.51, status:'needs_work' },
-      { code:'LT',  total:312000, d0_30:233376, d31_60:46800, d61_90:15600, d90plus:16224, pct0_30:74.8, pct31_60:15.0, pct61_90:5.0, pct90plus:5.2, insuranceAR:198000, patientAR:114000, patientPct:37, arToProd:1.21, status:'watch'     },
-      { code:'HNR', total:176000, d0_30:110176, d31_60:27456, d61_90:14080, d90plus:24288, pct0_30:62.6, pct31_60:15.6, pct61_90:8.0, pct90plus:13.8, insuranceAR:108000, patientAR:68000,  patientPct:39, arToProd:1.55, status:'needs_work' },
-      { code:'HNS', total:35000,  d0_30:29365,  d31_60:1190,  d61_90:595,   d90plus:3850,  pct0_30:83.9, pct31_60:3.4,  pct61_90:1.7, pct90plus:11.0, insuranceAR:16000,  patientAR:8000,   patientPct:22, arToProd:0.61, status:'watch'     },
-      { code:'PB',  total:331000, d0_30:241630, d31_60:41373, d61_90:27523, d90plus:20474, pct0_30:73.0, pct31_60:12.5, pct61_90:8.3, pct90plus:6.2,  insuranceAR:211000, patientAR:120000, patientPct:36, arToProd:1.81, status:'needs_work' },
-      { code:'PR',  total:168000, d0_30:155232, d31_60:9240,  d61_90:1680,  d90plus:1848,  pct0_30:92.4, pct31_60:5.5,  pct61_90:1.0, pct90plus:1.1,  insuranceAR:124000, patientAR:44000,  patientPct:26, arToProd:0.89, status:'good'      },
-      { code:'OSB', total:35400,  d0_30:28320,  d31_60:3894,  d61_90:1770,  d90plus:1416,  pct0_30:80.0, pct31_60:11.0, pct61_90:5.0, pct90plus:4.0,  insuranceAR:22000,  patientAR:13400,  patientPct:38, arToProd:0.94, status:'watch',    isOSB:true },
+      { code:'LKW', total:655907, d0_30:333769, d31_60:164127, d61_90:63300,  d90plus:94710,  pct0_30:50.9, pct31_60:25.0, pct61_90:9.7,  pct90plus:14.4, insuranceAR:207343, patientAR:319315, patientPct:61, arToProd:1.18, status:'needs_work' },
+      { code:'LT',  total:248004, d0_30:144032, d31_60:66801,  d61_90:14202,  d90plus:22969,  pct0_30:58.1, pct31_60:26.9, pct61_90:5.7,  pct90plus:9.3,  insuranceAR:103495, patientAR:37763,  patientPct:27, arToProd:0.81, status:'needs_work' },
+      { code:'HNR', total:168943, d0_30:99623,  d31_60:28056,  d61_90:13986,  d90plus:27278,  pct0_30:59.0, pct31_60:16.6, pct61_90:8.3,  pct90plus:16.2, insuranceAR:71408,  patientAR:51379,  patientPct:42, arToProd:2.27, status:'needs_work' },
+      { code:'HNS', total:51489,  d0_30:43255,  d31_60:2488,   d61_90:1529,   d90plus:4218,   pct0_30:84.0, pct31_60:4.8,  pct61_90:3.0,  pct90plus:8.2,  insuranceAR:21483,  patientAR:10990,  patientPct:34, arToProd:0.29, status:'watch'     },
+      { code:'PB',  total:269538, d0_30:171258, d31_60:64944,  d61_90:33336,  d90plus:0,      pct0_30:63.5, pct31_60:24.1, pct61_90:12.4, pct90plus:0.0,  insuranceAR:135509, patientAR:45794,  patientPct:25, arToProd:0.74, status:'watch'     },
+      { code:'PR',  total:423721, d0_30:312072, d31_60:68050,  d61_90:27306,  d90plus:16294,  pct0_30:73.7, pct31_60:16.1, pct61_90:6.4,  pct90plus:3.8,  insuranceAR:170548, patientAR:192849, patientPct:53, arToProd:0.72, status:'watch'     },
+      { code:'OSB', total:82866,  d0_30:33147,  d31_60:14424,  d61_90:14424,  d90plus:20870,  pct0_30:40.0, pct31_60:17.4, pct61_90:17.4, pct90plus:25.2, insuranceAR:42000,  patientAR:40866,  patientPct:49, arToProd:0.53, status:'needs_work', isOSB:true },
     ],
   },
 }

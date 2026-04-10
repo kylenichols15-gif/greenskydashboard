@@ -1,4 +1,5 @@
-import { DEMO_DATA, LOCATIONS, PERIOD_INFO } from '@/lib/data'
+import { LOCATIONS } from '@/lib/data'
+import { getData, getPeriodInfo } from '@/lib/getData'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
@@ -26,8 +27,9 @@ function getNextTier(pct: number) {
   return TIERS.find(t => pct < t.pct) ?? null
 }
 
-export default function BonusPage() {
-  const { locations } = DEMO_DATA
+export default async function BonusPage() {
+  const [data, PERIOD_INFO] = await Promise.all([getData(), getPeriodInfo()])
+  const { locations } = data
   const orgTotal = locations.reduce((s, l) => s + l.collections, 0)
   const orgGoal  = Object.values(MONTHLY_GOALS).reduce((s, g) => s + g, 0)
   const orgPct   = (orgTotal / orgGoal) * 100

@@ -1,4 +1,5 @@
-import { DEMO_DATA, LOCATIONS } from '@/lib/data'
+import { LOCATIONS } from '@/lib/data'
+import { getData } from '@/lib/getData'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
@@ -25,8 +26,9 @@ function HealthScore({ score }: { score: number }) {
   )
 }
 
-export default function ARAgingPage() {
-  const { ar } = DEMO_DATA
+export default async function ARAgingPage() {
+  const data = await getData()
+  const { ar } = data
 
   const statusLabel = (s: string) => {
     if (s === 'needs_work') return { label: '✗ Needs Work', cls: 'bg-red-500/10 text-red-400 border-red-500/20' }
