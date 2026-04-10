@@ -5,7 +5,7 @@ import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
 
 const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 120000, LT: 100000, HNR: 70000, HNS: 65000, PB: 80000, PR: 55000, OSB: 30000,
+  LKW: 120000, LT: 100000, HNR: 70000, HNS: 65000, PB: 275000, PR: 55000, OSB: 30000,
 }
 
 // T1=95%, T2(Bonus)=100%, T3=106%, T4=112%, T5=118%
