@@ -27,9 +27,9 @@ export const BENCHMARKS = {
 // April 2026 — as of April 9, 2026 (7 business days complete)
 export const PERIOD_INFO = {
   label:          'April 2026',
-  totalBizDays:   22,
+  totalBizDays:   21,   // Good Friday (Apr 3) not worked
   daysComplete:   7,
-  daysRemaining:  15,
+  daysRemaining:  14,
 }
 
 // ─── Live Data (Sources: Dentrix Ascend ProviderTotals + AgedReceivables + Dental Intel OSB) ───
@@ -51,13 +51,13 @@ export const DEMO_DATA = {
   // NOTE: collectionRate = MTD applied payments / MTD gross production.
   // HNR >100% and PR <20% are expected early-month due to AR timing — not errors.
   locations: [
-    { code:'LKW', production:176742, collections:87178,  collectionRate:49.3, newPatients:40, recareRate:79.1, phoneAnswerRate:46.2, activePatients:534, suppliesPct:6.8, status:'behind'   },
-    { code:'LT',  production:97440,  collections:64632,  collectionRate:66.3, newPatients:23, recareRate:82.4, phoneAnswerRate:74.1, activePatients:421, suppliesPct:5.9, status:'on_pace'  },
-    { code:'HNR', production:23703,  collections:53787,  collectionRate:99.9, newPatients:24, recareRate:71.2, phoneAnswerRate:68.3, activePatients:298, suppliesPct:7.1, status:'critical' },
-    { code:'HNS', production:57169,  collections:22411,  collectionRate:39.2, newPatients:21, recareRate:66.4, phoneAnswerRate:72.1, activePatients:276, suppliesPct:7.4, status:'critical' },
-    { code:'PB',  production:116348, collections:103382, collectionRate:88.9, newPatients:32, recareRate:88.1, phoneAnswerRate:83.4, activePatients:389, suppliesPct:5.4, status:'on_pace'  },
-    { code:'PR',  production:188424, collections:19471,  collectionRate:10.3, newPatients:32, recareRate:91.2, phoneAnswerRate:97.1, activePatients:321, suppliesPct:5.1, status:'on_pace'  },
-    { code:'OSB', production:50150,  collections:44045,  collectionRate:87.8, newPatients:19, recareRate:91.8, phoneAnswerRate:76.8, activePatients:292, suppliesPct:6.2, status:'on_pace', isOSB:true },
+    { code:'LKW', production:176742, collections:87178,  collectionRate:49.3, newPatients:40, recareRate:79.1, phoneAnswerRate:46.2, activePatients:534, suppliesPct:5.76,  status:'behind'   },
+    { code:'LT',  production:97440,  collections:64632,  collectionRate:66.3, newPatients:23, recareRate:82.4, phoneAnswerRate:74.1, activePatients:421, suppliesPct:5.38,  status:'on_pace'  },
+    { code:'HNR', production:23703,  collections:53787,  collectionRate:99.9, newPatients:24, recareRate:71.2, phoneAnswerRate:68.3, activePatients:298, suppliesPct:6.92,  status:'critical' },
+    { code:'HNS', production:57169,  collections:22411,  collectionRate:39.2, newPatients:21, recareRate:66.4, phoneAnswerRate:72.1, activePatients:276, suppliesPct:3.62,  status:'critical' },
+    { code:'PB',  production:116348, collections:103382, collectionRate:88.9, newPatients:32, recareRate:88.1, phoneAnswerRate:83.4, activePatients:389, suppliesPct:6.77,  status:'on_pace'  },
+    { code:'PR',  production:188424, collections:19471,  collectionRate:10.3, newPatients:32, recareRate:91.2, phoneAnswerRate:97.1, activePatients:321, suppliesPct:10.58, status:'on_pace'  },
+    { code:'OSB', production:50150,  collections:44045,  collectionRate:87.8, newPatients:19, recareRate:91.8, phoneAnswerRate:76.8, activePatients:292, suppliesPct:2.09,  status:'on_pace', isOSB:true },
   ],
 
   // Source: Dentrix ProviderTotals 04/01–04/09/2026
