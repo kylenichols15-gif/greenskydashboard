@@ -13,7 +13,6 @@ const TIERS = [
   { label: 'Diamond',  tag:'T5', pct: 118, color: 'text-violet-600', bg: 'bg-violet-50  border-violet-300', barColor: '#8B5CF6', amount: 2000 },
 ]
 
-// Max bar scale (120% = full width)
 const BAR_MAX = 120
 
 function getCurrentTier(pct: number) {
@@ -25,25 +24,57 @@ function getCurrentTier(pct: number) {
 function getNextTier(pct: number) {
   return TIERS.find(t => pct < t.pct) ?? null
 }
-function barFillColor(pct: number) {
+
+// Pace-relative fill color: green when on/ahead of pace, amber when close,
+// red only when significantly behind. Tier colors lock in once a tier is reached.
+function barFillColor(pct: number, pacePct: number) {
   if (pct >= 118) return '#8B5CF6'
   if (pct >= 112) return '#06B6D4'
   if (pct >= 106) return '#EAB308'
   if (pct >= 100) return '#F59E0B'
   if (pct >= 95)  return '#94A3B8'
-  return '#EF4444'
+  // Below T1 — reflect pace performance
+  if (pct >= pacePct)            return '#10B981'  // at or ahead of pace
+  const ratio = pct / pacePct
+  if (ratio >= 0.85)             return '#F59E0B'  // within 15% of pace
+  return '#EF4444'                                  // significantly behind
+}
+
+// Text color matching the fill color logic
+function paceTextColor(pct: number, pacePct: number) {
+  if (pct >= 118) return 'text-violet-600'
+  if (pct >= 112) return 'text-cyan-600'
+  if (pct >= 106) return 'text-yellow-600'
+  if (pct >= 100) return 'text-amber-600'
+  if (pct >= 95)  return 'text-slate-500'
+  if (pct >= pacePct) return 'text-green-600'
+  const ratio = pct / pacePct
+  if (ratio >= 0.85) return 'text-amber-600'
+  return 'text-red-600'
 }
 
 export default async function BonusPage() {
-  const [data, PERIOD_INFO] = await Promise.all([getData(), getPeriodInfo()])
+  const [data, periodInfo] = await Promise.all([getData(), getPeriodInfo()])
   const { locations } = data
+  const { daysComplete, totalBizDays, daysRemaining } = periodInfo
+  const dataAsOf = (periodInfo as any).dataAsOf ?? `Day ${daysComplete}`
+
+  const pacePct = (daysComplete / totalBizDays) * 100   // e.g. 63.6%
+
   const orgTotal = locations.reduce((s, l) => s + l.collections, 0)
   const orgGoal  = Object.values(MONTHLY_GOALS).reduce((s, g) => s + g, 0)
   const orgPct   = (orgTotal / orgGoal) * 100
   const orgTier  = getCurrentTier(orgPct)
   const orgNext  = getNextTier(orgPct)
   const orgDollarToNext = orgNext ? Math.max(0, (orgNext.pct / 100) * orgGoal - orgTotal) : 0
-  const orgPerDay = PERIOD_INFO.daysRemaining > 0 ? orgDollarToNext / PERIOD_INFO.daysRemaining : 0
+  const orgPerDay = daysRemaining > 0 ? orgDollarToNext / daysRemaining : 0
+
+  // Org projected final % (straight-line from current pace)
+  const orgProjectedPct = daysComplete > 0 ? (orgTotal / daysComplete) * totalBizDays / orgGoal * 100 : orgPct
+  const orgProjectedTier = getCurrentTier(orgProjectedPct)
+
+  // Pace marker position on 0–120 bar scale
+  const paceBarLeft = Math.min((pacePct / BAR_MAX) * 100, 99)
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -57,13 +88,13 @@ export default async function BonusPage() {
             </div>
             <p className="text-[#64748b] text-sm">Hit your collection goal and the whole team gets paid. Every dollar counts!</p>
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#64748b]">
-              <span>Day {PERIOD_INFO.daysComplete} of {PERIOD_INFO.totalBizDays}</span>
+              <span>Day {daysComplete} of {totalBizDays}</span>
               <div className="w-32 h-1.5 bg-[#f1f5fb] rounded-full overflow-hidden">
-                <div className="h-full bg-[#F59E0B] rounded-full" style={{ width: `${(PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100}%` }} />
+                <div className="h-full bg-[#F59E0B] rounded-full" style={{ width: `${pacePct}%` }} />
               </div>
-              <span>{Math.round((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100)}%</span>
+              <span>{Math.round(pacePct)}%</span>
               <span className="text-[#94a3b8]">·</span>
-              <span className="text-[#94a3b8] text-xs">Data as of {(PERIOD_INFO as any).dataAsOf ?? `Day ${PERIOD_INFO.daysComplete}`}</span>
+              <span className="text-[#94a3b8] text-xs">Data as of {dataAsOf}</span>
             </div>
           </div>
           <DaysLeft />
@@ -86,34 +117,40 @@ export default async function BonusPage() {
 
       {/* Org Total */}
       <div className="bg-white border border-[#d1dce9] rounded-xl p-5 mb-6">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-1">
           <div className="text-[#64748b] text-xs font-semibold uppercase tracking-wider">Organization Total</div>
-          <div className={`text-2xl font-bold ${orgTier ? orgTier.color : 'text-red-600'}`}>
+          <div className={`text-2xl font-bold ${paceTextColor(orgPct, pacePct)}`}>
             {formatPct(orgPct, 1)} of Goal
           </div>
         </div>
+        {/* Projected tier callout */}
+        <div className="flex items-center gap-2 mb-3">
+          {orgProjectedTier ? (
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${orgProjectedTier.bg} ${orgProjectedTier.color}`}>
+              On pace for {orgProjectedTier.tag} — {orgProjectedTier.label} ({formatPct(orgProjectedPct, 0)} projected)
+            </span>
+          ) : (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border bg-red-50 border-red-200 text-red-600">
+              Projected {formatPct(orgProjectedPct, 0)} — no tier at current pace
+            </span>
+          )}
+        </div>
 
-        {/* Pace marker above bar */}
-        {(() => {
-          const paceLeft = Math.min((((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100) / BAR_MAX) * 100, 99)
-          return (
-            <div className="relative" style={{ paddingTop: 14 }}>
-              <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)' }}>
-                <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
-                <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
-              </div>
-              <div className="relative h-5 bg-[#f1f5fb] rounded-full overflow-hidden mb-1">
-                <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((orgPct / BAR_MAX) * 100, 100)}%`, backgroundColor: barFillColor(orgPct) }} />
-                {TIERS.map(t => (
-                  <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
-                ))}
-                {/* Pace line inside bar */}
-                <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
-              </div>
-            </div>
-          )
-        })()}
-        <div className="flex text-[10px] text-[#94a3b8] mb-3 relative h-4">
+        {/* Bar with pace marker */}
+        <div className="relative" style={{ paddingTop: 14 }}>
+          <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)' }}>
+            <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
+            <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
+          </div>
+          <div className="relative h-5 bg-[#f1f5fb] rounded-full overflow-hidden mb-1">
+            <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((orgPct / BAR_MAX) * 100, 100)}%`, backgroundColor: barFillColor(orgPct, pacePct) }} />
+            {TIERS.map(t => (
+              <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
+            ))}
+            <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
+          </div>
+        </div>
+        <div className="flex text-[10px] text-[#94a3b8] mb-4 relative h-4">
           {TIERS.map(t => (
             <span key={t.tag} className="absolute" style={{ left: `${(t.pct / BAR_MAX) * 100}%`, transform: 'translateX(-50%)' }}>{t.pct}%</span>
           ))}
@@ -136,8 +173,8 @@ export default async function BonusPage() {
             <div className="text-[#64748b] text-xs">needed to hit T2</div>
           </div>
           <div>
-            <div className="text-[#64748b] text-xs">Projected Pace</div>
-            <div className="text-[#0f172a] font-bold">{formatPct(orgPct / (PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 0.87, 0)}</div>
+            <div className="text-[#64748b] text-xs">Projected Final</div>
+            <div className={`font-bold ${paceTextColor(orgProjectedPct, 100)}`}>{formatPct(orgProjectedPct, 0)}</div>
             <div className="text-[#64748b] text-xs">if pace holds</div>
           </div>
         </div>
@@ -146,7 +183,7 @@ export default async function BonusPage() {
       {/* Motivational callout */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-center">
         <div className="text-amber-600 font-bold text-lg mb-1">
-          💪 The race is ON! {PERIOD_INFO.daysRemaining} days to close the gap and earn that bonus!
+          💪 The race is ON! {daysRemaining} days to close the gap and earn that bonus!
         </div>
         {orgNext && orgPerDay > 0 && (
           <div className="text-[#475569] text-sm">
@@ -170,9 +207,17 @@ export default async function BonusPage() {
           const tier  = getCurrentTier(pct)
           const next  = getNextTier(pct)
           const dollarToNext = next ? Math.max(0, (next.pct / 100) * goal - loc.collections) : 0
-          const perDay = PERIOD_INFO.daysRemaining > 0 ? dollarToNext / PERIOD_INFO.daysRemaining : 0
+          const perDay = daysRemaining > 0 ? dollarToNext / daysRemaining : 0
           const barWidth = Math.min((pct / BAR_MAX) * 100, 100)
-          const fill = barFillColor(pct)
+          const fill = barFillColor(pct, pacePct)
+
+          // Projected final % at current daily pace
+          const projectedPct = daysComplete > 0 ? (loc.collections / daysComplete) * totalBizDays / goal * 100 : pct
+          const projectedTier = getCurrentTier(projectedPct)
+
+          // Status badge: show current tier if reached, projected tier if on pace, or warning if behind
+          const ratio = pct / pacePct
+          const aheadOfPace = pct >= pacePct
 
           return (
             <div key={loc.code} className="bg-white border border-[#d1dce9] rounded-xl p-5">
@@ -189,13 +234,23 @@ export default async function BonusPage() {
                     <div className="text-[#64748b] text-xs">{meta?.brand}</div>
                   </div>
                 </div>
+
+                {/* Status badge — current tier if reached, projected tier if ahead of pace, warning if behind */}
                 {tier ? (
                   <span className={`px-3 py-1 rounded-lg border text-sm font-bold ${tier.color} ${tier.bg}`}>
-                    {tier.tag} — {tier.label}
+                    {tier.tag} — {tier.label} ✓
+                  </span>
+                ) : projectedTier && aheadOfPace ? (
+                  <span className={`px-3 py-1 rounded-lg border text-sm font-semibold ${projectedTier.color} ${projectedTier.bg}`}>
+                    On Pace → {projectedTier.tag} {projectedTier.label}
+                  </span>
+                ) : projectedTier && ratio >= 0.85 ? (
+                  <span className={`px-3 py-1 rounded-lg border text-sm font-semibold text-amber-600 bg-amber-50 border-amber-300`}>
+                    Close → {projectedTier.tag} {projectedTier.label} projected
                   </span>
                 ) : (
                   <span className="px-3 py-1 rounded-lg border text-sm font-medium text-red-600 bg-red-50 border-red-200">
-                    No Bonus Yet
+                    Behind Pace
                   </span>
                 )}
               </div>
@@ -203,41 +258,39 @@ export default async function BonusPage() {
               {/* Progress bar with tier markers + pace indicator */}
               <div className="mb-2">
                 <div className="flex justify-between text-xs text-[#64748b] mb-1.5">
-                  <span>{formatCurrency(loc.collections)} collected</span>
+                  <span>{formatCurrency(loc.collections)} collected · <span className="font-medium">projected {formatPct(projectedPct, 0)}</span></span>
                   <span className="font-semibold" style={{ color: fill }}>{formatPct(pct, 1)} of {formatCurrency(goal, true)} goal</span>
                 </div>
-                {(() => {
-                  const paceLeft = Math.min((((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100) / BAR_MAX) * 100, 99)
-                  return (
-                    <div className="relative" style={{ paddingTop: 14 }}>
-                      <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)' }}>
-                        <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
-                        <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
-                      </div>
-                      <div className="relative h-4 bg-[#f1f5fb] rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: fill }} />
-                        {TIERS.map(t => (
-                          <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
-                        ))}
-                        <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
-                      </div>
-                    </div>
-                  )
-                })()}
+                <div className="relative" style={{ paddingTop: 14 }}>
+                  <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)' }}>
+                    <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
+                    <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
+                  </div>
+                  <div className="relative h-4 bg-[#f1f5fb] rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: fill }} />
+                    {TIERS.map(t => (
+                      <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
+                    ))}
+                    <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
+                  </div>
+                </div>
               </div>
 
               {/* Tier milestone row */}
               <div className="grid grid-cols-5 gap-1 mb-3">
                 {TIERS.map(t => {
                   const dollarAtTier = (t.pct / 100) * goal
-                  const reached = pct >= t.pct
-                  const isNext  = !reached && t === next
+                  const reached    = pct >= t.pct
+                  const isNext     = !reached && t === next
+                  const isProjected = !reached && projectedTier?.tag === t.tag
                   return (
                     <div
                       key={t.tag}
                       className={`rounded-lg border px-2 py-1.5 text-center text-xs transition-all ${
                         reached
                           ? `${t.bg} ${t.color} border-current font-semibold`
+                          : isProjected && aheadOfPace
+                          ? `${t.bg} ${t.color} border-current font-semibold ring-1 ring-current opacity-70`
                           : isNext
                           ? 'bg-amber-50 border-amber-300 text-amber-600 font-semibold ring-1 ring-amber-300'
                           : 'bg-[#f8fafc] border-[#e2e8f0] text-[#94a3b8]'
@@ -246,13 +299,14 @@ export default async function BonusPage() {
                       <div className="font-bold">{t.tag}</div>
                       <div className="text-[10px] leading-tight">{formatCurrency(dollarAtTier, true)}</div>
                       {reached && <div className="text-[10px] mt-0.5">✓</div>}
-                      {isNext && <div className="text-[10px] mt-0.5">← next</div>}
+                      {!reached && isProjected && aheadOfPace && <div className="text-[10px] mt-0.5">→ pace</div>}
+                      {isNext && !isProjected && <div className="text-[10px] mt-0.5">← next</div>}
                     </div>
                   )
                 })}
               </div>
 
-              {/* Bridge to next tier */}
+              {/* Bridge callout */}
               {next && dollarToNext > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div>
@@ -262,7 +316,7 @@ export default async function BonusPage() {
                   <div className="text-sm">
                     <span className="text-[#64748b]">That's </span>
                     <span className="text-amber-600 font-semibold">{formatCurrency(perDay, true)}/day</span>
-                    <span className="text-[#64748b]"> for {PERIOD_INFO.daysRemaining} days</span>
+                    <span className="text-[#64748b]"> for {daysRemaining} days</span>
                   </div>
                 </div>
               )}
