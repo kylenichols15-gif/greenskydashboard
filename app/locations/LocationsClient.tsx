@@ -66,7 +66,6 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
           const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
           const collStatus     = getStatusHigh(Math.min(loc.collectionRate, 99), BENCHMARKS.collections_rate.target, BENCHMARKS.collections_rate.flagBelow)
 
-          const barColor  = pct >= 100 ? '#10B981' : pct >= 80 ? '#0A9E8A' : pct >= 60 ? '#F59E0B' : '#EF4444'
           const phoneC    = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[phoneStatus]
           const recareC   = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[recareStatus]
           const suppliesC = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[suppliesStatus]
@@ -111,7 +110,7 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
                 </div>
 
                 <div className="mb-1">
-                  <GoalBar pct={pct} height="thin" color={barColor} />
+                  <GoalBar pct={pct} height="thin" />
                 </div>
                 <div className="flex justify-between text-xs mb-4">
                   <span className={`font-semibold ${{ green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[status]}`}>{pct}% to goal</span>

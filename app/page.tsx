@@ -97,12 +97,13 @@ export default async function OverviewPage() {
             const gb = MONTHLY_GOALS[b.code] ?? 100000
             return pctToGoal(b.collections, gb) - pctToGoal(a.collections, ga)
           }).map((loc, i) => {
-            const goal   = MONTHLY_GOALS[loc.code] ?? 100000
-            const pct    = pctToGoal(loc.collections, goal)
-            const status = locationStatus(loc.status)
-            const dotBg  = { green: 'bg-green-500', amber: 'bg-amber-500', red: 'bg-red-500' }[status]
-            const barColor = pct >= 100 ? '#10B981' : pct >= 80 ? '#0A9E8A' : pct >= 60 ? '#F59E0B' : '#EF4444'
-            const pctColor = { green: 'text-green-600', amber: 'text-amber-600', red: 'text-red-600' }[status]
+            const goal     = MONTHLY_GOALS[loc.code] ?? 100000
+            const pct      = pctToGoal(loc.collections, goal)
+            const pacePct  = Math.round((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100)
+            const ratio    = pct / pacePct
+            const paceStatus = pct >= pacePct ? 'green' : ratio >= 0.92 ? 'amber' : ratio >= 0.78 ? 'orange' : 'red'
+            const dotBg    = { green: 'bg-green-500', amber: 'bg-amber-500', orange: 'bg-orange-500', red: 'bg-red-500' }[paceStatus]
+            const pctColor = { green: 'text-green-600', amber: 'text-amber-600', orange: 'text-orange-500', red: 'text-red-600' }[paceStatus]
             const rank = i + 1
 
             return (
@@ -117,7 +118,7 @@ export default async function OverviewPage() {
                 </div>
                 <div className="text-[#0f172a] font-semibold text-lg">{formatCurrency(loc.collections, true)}</div>
                 <div className="text-[#64748b] text-xs mb-2">of {formatCurrency(goal, true)} goal</div>
-                <GoalBar pct={pct} height="thin" color={barColor} />
+                <GoalBar pct={pct} height="thin" />
                 <div className={`text-xs mt-1 font-medium ${pctColor}`}>{pct}% to goal</div>
               </div>
             )
