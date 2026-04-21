@@ -1,6 +1,6 @@
 import { BENCHMARKS, MONTHLY_GOALS, PERIOD_INFO } from '@/lib/data'
 import { getData, getPeriodInfo } from '@/lib/getData'
-import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus, pctToGoal } from '@/lib/utils'
+import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
 import KPICard from '@/components/KPICard'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
@@ -97,13 +97,11 @@ export default async function OverviewPage() {
             const gb = MONTHLY_GOALS[b.code] ?? 100000
             return pctToGoal(b.collections, gb) - pctToGoal(a.collections, ga)
           }).map((loc, i) => {
-            const goal     = MONTHLY_GOALS[loc.code] ?? 100000
-            const pct      = pctToGoal(loc.collections, goal)
-            const pacePct  = Math.round((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100)
-            const ratio    = pct / pacePct
-            const paceStatus = pct >= pacePct ? 'green' : ratio >= 0.92 ? 'amber' : ratio >= 0.78 ? 'orange' : 'red'
-            const dotBg    = { green: 'bg-green-500', amber: 'bg-amber-500', orange: 'bg-orange-500', red: 'bg-red-500' }[paceStatus]
-            const pctColor = { green: 'text-green-600', amber: 'text-amber-600', orange: 'text-orange-500', red: 'text-red-600' }[paceStatus]
+            const goal       = MONTHLY_GOALS[loc.code] ?? 100000
+            const pct        = pctToGoal(loc.collections, goal)
+            const paceStatus = collectionsVsPaceStatus(loc.collections, goal, PERIOD_INFO.daysComplete, PERIOD_INFO.totalBizDays)
+            const dotBg      = { green: 'bg-green-500', amber: 'bg-amber-500', red: 'bg-red-500' }[paceStatus]
+            const pctColor   = { green: 'text-green-600', amber: 'text-amber-600', red: 'text-red-600' }[paceStatus]
             const rank = i + 1
 
             return (

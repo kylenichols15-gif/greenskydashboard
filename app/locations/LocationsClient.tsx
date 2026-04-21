@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { LOCATIONS, MONTHLY_GOALS, BENCHMARKS } from '@/lib/data'
-import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus, pctToGoal } from '@/lib/utils'
+import { LOCATIONS, MONTHLY_GOALS, BENCHMARKS, PERIOD_INFO } from '@/lib/data'
+import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import StatusBadge from '@/components/StatusBadge'
 import DaysLeft from '@/components/DaysLeft'
@@ -57,7 +57,7 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
           const meta         = LOCATIONS.find(l => l.code === loc.code)
           const goal         = MONTHLY_GOALS[loc.code] ?? 100000
           const pct          = pctToGoal(loc.collections, goal)
-          const status       = locationStatus(loc.status)
+          const status       = collectionsVsPaceStatus(loc.collections, goal, PERIOD_INFO.daysComplete, PERIOD_INFO.totalBizDays)
           const dollarToGoal = Math.max(0, goal - loc.collections)
           const perDay       = daysRemaining > 0 ? dollarToGoal / daysRemaining : 0
 

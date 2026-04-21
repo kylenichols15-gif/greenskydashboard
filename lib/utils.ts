@@ -22,9 +22,9 @@ export function getStatusColor(level: StatusLevel): string {
 
 export function getStatusBg(level: StatusLevel): string {
   switch (level) {
-    case 'green': return 'bg-green-500/10 text-green-400 border-green-500/20'
-    case 'amber': return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-    case 'red':   return 'bg-red-500/10 text-red-400 border-red-500/20'
+    case 'green': return 'bg-green-50 text-green-700 border-green-200'
+    case 'amber': return 'bg-amber-50 text-amber-700 border-amber-200'
+    case 'red':   return 'bg-red-50 text-red-700 border-red-200'
   }
 }
 
@@ -43,9 +43,26 @@ export function getStatusLow(value: number, target: number, flagAbove: number): 
   return 'red'
 }
 
+// Legacy — kept for any callers that still need it
 export function locationStatus(status: string): StatusLevel {
   if (status === 'on_pace') return 'green'
   if (status === 'behind')  return 'amber'
+  return 'red'
+}
+
+// Compute location status from actual collections vs. pace — this is the source of truth.
+// Green = at/ahead of pace. Amber = within 15% of pace. Red = >15% behind pace.
+export function collectionsVsPaceStatus(
+  collections: number,
+  goal: number,
+  daysComplete: number,
+  totalBizDays: number,
+): StatusLevel {
+  const pct     = (collections / goal) * 100
+  const pacePct = (daysComplete / totalBizDays) * 100
+  if (pct >= pacePct)            return 'green'
+  const ratio = pct / pacePct
+  if (ratio >= 0.85)             return 'amber'
   return 'red'
 }
 

@@ -1,5 +1,5 @@
-import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus, pctToGoal } from '@/lib/utils'
-import { BENCHMARKS, LOCATIONS } from '@/lib/data'
+import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
+import { BENCHMARKS, LOCATIONS, MONTHLY_GOALS, PERIOD_INFO } from '@/lib/data'
 import StatusBadge from './StatusBadge'
 import OSBBadge from './OSBBadge'
 import BenchmarkBar from './BenchmarkBar'
@@ -19,24 +19,21 @@ interface LocationData {
   isOSB?: boolean
 }
 
-const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 120000,
-  LT:  100000,
-  HNR:  70000,
-  HNS:  65000,
-  PB:   80000,
-  PR:   55000,
-  OSB:  30000,
-}
-
 export default function LocationCard({ loc }: { loc: LocationData }) {
   const meta   = LOCATIONS.find(l => l.code === loc.code)
   const goal   = MONTHLY_GOALS[loc.code] ?? 100000
   const pct    = pctToGoal(loc.production, goal)
-  const status = locationStatus(loc.status)
 
-  const phoneStatus   = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-  const recareStatus  = getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
+  // Status driven by collections vs. pace — not the manual status string in data.ts
+  const status = collectionsVsPaceStatus(
+    loc.collections,
+    goal,
+    PERIOD_INFO.daysComplete,
+    PERIOD_INFO.totalBizDays,
+  )
+
+  const phoneStatus    = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
+  const recareStatus   = getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
   const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
 
   const metricDot = (s: 'green' | 'amber' | 'red') => ({
@@ -101,7 +98,7 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
           </div>
         </div>
 
-        {/* Production progress bar */}
+        {/* Production progress bar (vs collections goal) */}
         <div className="mb-3">
           <div className="flex justify-between text-xs text-[#64748b] mb-1">
             <span>vs. {formatCurrency(goal, true)} goal</span>
