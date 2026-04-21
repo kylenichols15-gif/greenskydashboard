@@ -1,21 +1,20 @@
-import { LOCATIONS } from '@/lib/data'
+import { LOCATIONS, MONTHLY_GOALS, PERIOD_INFO } from '@/lib/data'
 import { getData, getPeriodInfo } from '@/lib/getData'
 import { formatCurrency, formatPct } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
 
-const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 120000, LT: 100000, HNR: 70000, HNS: 65000, PB: 275000, PR: 55000, OSB: 30000,
-}
-
 // T1=95%, T2(Bonus)=100%, T3=106%, T4=112%, T5=118%
 const TIERS = [
-  { label: 'Silver',   tag:'T1', pct: 95,  color: 'text-slate-300',   bg: 'bg-slate-500/10  border-slate-400/20',  amount: 500  },
-  { label: 'Bonus',    tag:'T2', pct: 100, color: 'text-[#F59E0B]',   bg: 'bg-[#F59E0B]/10  border-[#F59E0B]/25',  amount: 1000, isTarget: true },
-  { label: 'Gold',     tag:'T3', pct: 106, color: 'text-yellow-300',  bg: 'bg-yellow-500/10 border-yellow-500/20', amount: 1500 },
-  { label: 'Sapphire', tag:'T4', pct: 112, color: 'text-cyan-300',    bg: 'bg-cyan-500/10   border-cyan-500/20',   amount: 1750 },
-  { label: 'Diamond',  tag:'T5', pct: 118, color: 'text-violet-300',  bg: 'bg-violet-500/10 border-violet-500/20', amount: 2000 },
+  { label: 'Silver',   tag:'T1', pct: 95,  color: 'text-slate-500',  bg: 'bg-slate-100  border-slate-300',  barColor: '#94A3B8', amount: 500  },
+  { label: 'Bonus',    tag:'T2', pct: 100, color: 'text-amber-600',  bg: 'bg-amber-50   border-amber-300',  barColor: '#F59E0B', amount: 1000, isTarget: true },
+  { label: 'Gold',     tag:'T3', pct: 106, color: 'text-yellow-600', bg: 'bg-yellow-50  border-yellow-300', barColor: '#EAB308', amount: 1500 },
+  { label: 'Sapphire', tag:'T4', pct: 112, color: 'text-cyan-600',   bg: 'bg-cyan-50    border-cyan-300',   barColor: '#06B6D4', amount: 1750 },
+  { label: 'Diamond',  tag:'T5', pct: 118, color: 'text-violet-600', bg: 'bg-violet-50  border-violet-300', barColor: '#8B5CF6', amount: 2000 },
 ]
+
+// Max bar scale (120% = full width)
+const BAR_MAX = 120
 
 function getCurrentTier(pct: number) {
   for (let i = TIERS.length - 1; i >= 0; i--) {
@@ -25,6 +24,14 @@ function getCurrentTier(pct: number) {
 }
 function getNextTier(pct: number) {
   return TIERS.find(t => pct < t.pct) ?? null
+}
+function barFillColor(pct: number) {
+  if (pct >= 118) return '#8B5CF6'
+  if (pct >= 112) return '#06B6D4'
+  if (pct >= 106) return '#EAB308'
+  if (pct >= 100) return '#F59E0B'
+  if (pct >= 95)  return '#94A3B8'
+  return '#EF4444'
 }
 
 export default async function BonusPage() {
@@ -41,20 +48,22 @@ export default async function BonusPage() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="bg-[#0D2B45] border border-[#0A9E8A]/20 rounded-xl p-6 mb-8">
-        <div className="flex items-start justify-between gap-4">
+      <div className="bg-[#eff6ff] border border-[#2563eb]/20 rounded-xl p-6 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-2xl">💰</span>
-              <h1 className="text-[#F1F5F9] text-2xl font-bold">April Bonus Race</h1>
+              <h1 className="text-[#0f172a] text-2xl font-bold">April Bonus Race</h1>
             </div>
-            <p className="text-[#94A3B8] text-sm">Hit your collection goal and the whole team gets paid. Every dollar counts!</p>
-            <div className="mt-3 flex items-center gap-2 text-sm text-[#64748B]">
+            <p className="text-[#64748b] text-sm">Hit your collection goal and the whole team gets paid. Every dollar counts!</p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#64748b]">
               <span>Day {PERIOD_INFO.daysComplete} of {PERIOD_INFO.totalBizDays}</span>
-              <div className="flex-1 max-w-[200px] h-1.5 bg-[#1E2A3A] rounded-full overflow-hidden">
+              <div className="w-32 h-1.5 bg-[#f1f5fb] rounded-full overflow-hidden">
                 <div className="h-full bg-[#F59E0B] rounded-full" style={{ width: `${(PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100}%` }} />
               </div>
               <span>{Math.round((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100)}%</span>
+              <span className="text-[#94a3b8]">·</span>
+              <span className="text-[#94a3b8] text-xs">Data as of {(PERIOD_INFO as any).dataAsOf ?? `Day ${PERIOD_INFO.daysComplete}`}</span>
             </div>
           </div>
           <DaysLeft />
@@ -64,9 +73,9 @@ export default async function BonusPage() {
       {/* Tier Legend */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-8">
         {TIERS.map(tier => (
-          <div key={tier.label} className={`rounded-xl border px-4 py-3 text-center relative ${tier.bg} ${tier.isTarget ? 'ring-1 ring-[#F59E0B]/40' : ''}`}>
+          <div key={tier.label} className={`rounded-xl border px-4 py-3 text-center relative ${tier.bg} ${tier.isTarget ? 'ring-1 ring-amber-400/40' : ''}`}>
             {tier.isTarget && (
-              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-[#F59E0B] text-[#0A0F1E] text-[10px] font-bold px-2 py-0.5 rounded-full">THE TARGET</div>
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">THE TARGET</div>
             )}
             <div className={`font-bold text-sm ${tier.color}`}>{tier.tag} — {tier.label}</div>
             <div className={`text-xs mt-0.5 opacity-70 ${tier.color}`}>{tier.pct}% of Goal</div>
@@ -76,72 +85,80 @@ export default async function BonusPage() {
       </div>
 
       {/* Org Total */}
-      <div className="bg-[#0D1629] border border-[#1E2A3A] rounded-xl p-5 mb-6">
+      <div className="bg-white border border-[#d1dce9] rounded-xl p-5 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider">Organization Total</div>
-          <div className={`text-2xl font-bold ${orgTier ? orgTier.color : 'text-red-400'}`}>
+          <div className="text-[#64748b] text-xs font-semibold uppercase tracking-wider">Organization Total</div>
+          <div className={`text-2xl font-bold ${orgTier ? orgTier.color : 'text-red-600'}`}>
             {formatPct(orgPct, 1)} of Goal
           </div>
         </div>
 
-        <div className="relative h-5 bg-[#1E2A3A] rounded-full overflow-hidden mb-1">
-          <div
-            className="h-full rounded-full transition-all"
-            style={{
-              width: `${Math.min((orgPct / 120) * 100, 100)}%`,
-              backgroundColor: orgPct >= 118 ? '#8B5CF6' : orgPct >= 112 ? '#06B6D4' : orgPct >= 106 ? '#EAB308' : orgPct >= 100 ? '#F59E0B' : orgPct >= 95 ? '#94A3B8' : '#EF4444',
-            }}
-          />
+        {/* Pace marker above bar */}
+        {(() => {
+          const paceLeft = Math.min((((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100) / BAR_MAX) * 100, 99)
+          return (
+            <div className="relative" style={{ paddingTop: 14 }}>
+              <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)' }}>
+                <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
+                <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
+              </div>
+              <div className="relative h-5 bg-[#f1f5fb] rounded-full overflow-hidden mb-1">
+                <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((orgPct / BAR_MAX) * 100, 100)}%`, backgroundColor: barFillColor(orgPct) }} />
+                {TIERS.map(t => (
+                  <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
+                ))}
+                {/* Pace line inside bar */}
+                <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
+              </div>
+            </div>
+          )
+        })()}
+        <div className="flex text-[10px] text-[#94a3b8] mb-3 relative h-4">
           {TIERS.map(t => (
-            <div key={t.tag} className="absolute top-0 h-full w-px bg-[#0A0F1E]/50" style={{ left: `${(t.pct / 120) * 100}%` }} />
-          ))}
-        </div>
-        <div className="flex justify-between text-[10px] text-[#3A4A5A] mb-3">
-          {TIERS.map(t => (
-            <span key={t.tag} style={{ marginLeft: `${(t.pct / 120) * 100 - 4}%` }}>{t.pct}%</span>
+            <span key={t.tag} className="absolute" style={{ left: `${(t.pct / BAR_MAX) * 100}%`, transform: 'translateX(-50%)' }}>{t.pct}%</span>
           ))}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <div>
-            <div className="text-[#64748B] text-xs">Collected</div>
-            <div className="text-[#F1F5F9] font-bold">{formatCurrency(orgTotal)}</div>
-            <div className="text-[#64748B] text-xs">7 locations</div>
+            <div className="text-[#64748b] text-xs">Collected</div>
+            <div className="text-[#0f172a] font-bold">{formatCurrency(orgTotal)}</div>
+            <div className="text-[#64748b] text-xs">7 locations</div>
           </div>
           <div>
-            <div className="text-[#64748B] text-xs">Goal (T2 Bonus)</div>
-            <div className="text-[#F1F5F9] font-bold">{formatCurrency(orgGoal)}</div>
-            <div className="text-[#64748B] text-xs">100% = bonus for all</div>
+            <div className="text-[#64748b] text-xs">Goal (T2 Bonus)</div>
+            <div className="text-[#0f172a] font-bold">{formatCurrency(orgGoal)}</div>
+            <div className="text-[#64748b] text-xs">100% = bonus for all</div>
           </div>
           <div>
-            <div className="text-[#64748B] text-xs">Bridge to Bonus</div>
-            <div className="text-red-400 font-bold">{formatCurrency(Math.max(0, orgGoal - orgTotal), true)}</div>
-            <div className="text-[#64748B] text-xs">needed to hit T2</div>
+            <div className="text-[#64748b] text-xs">Bridge to Bonus</div>
+            <div className="text-red-600 font-bold">{formatCurrency(Math.max(0, orgGoal - orgTotal), true)}</div>
+            <div className="text-[#64748b] text-xs">needed to hit T2</div>
           </div>
           <div>
-            <div className="text-[#64748B] text-xs">Projected Pace</div>
-            <div className="text-[#F1F5F9] font-bold">{formatPct(orgPct / (PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 0.87, 0)}</div>
-            <div className="text-[#64748B] text-xs">if pace holds</div>
+            <div className="text-[#64748b] text-xs">Projected Pace</div>
+            <div className="text-[#0f172a] font-bold">{formatPct(orgPct / (PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 0.87, 0)}</div>
+            <div className="text-[#64748b] text-xs">if pace holds</div>
           </div>
         </div>
       </div>
 
       {/* Motivational callout */}
-      <div className="bg-[#F59E0B]/8 border border-[#F59E0B]/20 rounded-xl p-4 mb-8 text-center">
-        <div className="text-[#F59E0B] font-bold text-lg mb-1">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-center">
+        <div className="text-amber-600 font-bold text-lg mb-1">
           💪 The race is ON! {PERIOD_INFO.daysRemaining} days to close the gap and earn that bonus!
         </div>
         {orgNext && orgPerDay > 0 && (
-          <div className="text-[#94A3B8] text-sm">
-            We need <strong className="text-[#F59E0B]">{formatCurrency(orgPerDay, true)}/day</strong> org-wide to reach {orgNext.label}.
+          <div className="text-[#475569] text-sm">
+            We need <strong className="text-amber-600">{formatCurrency(orgPerDay, true)}/day</strong> org-wide to reach {orgNext.label}.
             Schedule, collect, follow up — let's make it happen!
           </div>
         )}
       </div>
 
       {/* Per-location */}
-      <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-4">Location Breakdown</h2>
-      <div className="flex flex-col gap-3">
+      <h2 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-4">Location Breakdown</h2>
+      <div className="flex flex-col gap-4">
         {[...locations].sort((a, b) => {
           const pctA = (a.collections / (MONTHLY_GOALS[a.code] ?? 100000)) * 100
           const pctB = (b.collections / (MONTHLY_GOALS[b.code] ?? 100000)) * 100
@@ -154,21 +171,22 @@ export default async function BonusPage() {
           const next  = getNextTier(pct)
           const dollarToNext = next ? Math.max(0, (next.pct / 100) * goal - loc.collections) : 0
           const perDay = PERIOD_INFO.daysRemaining > 0 ? dollarToNext / PERIOD_INFO.daysRemaining : 0
-          const barWidth = Math.min((pct / 120) * 100, 100)
-          const barColor = pct >= 118 ? '#8B5CF6' : pct >= 112 ? '#06B6D4' : pct >= 106 ? '#EAB308' : pct >= 100 ? '#F59E0B' : pct >= 95 ? '#94A3B8' : pct >= 70 ? '#F59E0B' : '#EF4444'
+          const barWidth = Math.min((pct / BAR_MAX) * 100, 100)
+          const fill = barFillColor(pct)
 
           return (
-            <div key={loc.code} className="bg-[#0D1629] border border-[#1E2A3A] rounded-xl p-5">
+            <div key={loc.code} className="bg-white border border-[#d1dce9] rounded-xl p-5">
+              {/* Location header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-[#64748B] text-sm font-bold">#{i + 1}</span>
-                  <span className="bg-[#0A9E8A]/10 text-[#0A9E8A] text-sm font-bold px-3 py-1 rounded border border-[#0A9E8A]/20">{loc.code}</span>
+                  <span className="text-[#64748b] text-sm font-bold">#{i + 1}</span>
+                  <span className="bg-[#2563eb]/10 text-[#2563eb] text-sm font-bold px-3 py-1 rounded border border-[#2563eb]/20">{loc.code}</span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[#F1F5F9] font-semibold">{meta?.name}</span>
+                      <span className="text-[#0f172a] font-semibold">{meta?.name}</span>
                       {loc.isOSB && <OSBBadge />}
                     </div>
-                    <div className="text-[#64748B] text-xs">{meta?.brand}</div>
+                    <div className="text-[#64748b] text-xs">{meta?.brand}</div>
                   </div>
                 </div>
                 {tier ? (
@@ -176,42 +194,80 @@ export default async function BonusPage() {
                     {tier.tag} — {tier.label}
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-lg border text-sm font-medium text-red-400 bg-red-500/10 border-red-500/20">
+                  <span className="px-3 py-1 rounded-lg border text-sm font-medium text-red-600 bg-red-50 border-red-200">
                     No Bonus Yet
                   </span>
                 )}
               </div>
 
-              {/* Bar */}
-              <div className="mb-1">
-                <div className="flex justify-between text-xs text-[#64748B] mb-1.5">
+              {/* Progress bar with tier markers + pace indicator */}
+              <div className="mb-2">
+                <div className="flex justify-between text-xs text-[#64748b] mb-1.5">
                   <span>{formatCurrency(loc.collections)} collected</span>
-                  <span className="font-semibold" style={{ color: barColor }}>{formatPct(pct, 1)} of {formatCurrency(goal, true)} goal</span>
+                  <span className="font-semibold" style={{ color: fill }}>{formatPct(pct, 1)} of {formatCurrency(goal, true)} goal</span>
                 </div>
-                <div className="relative h-4 bg-[#1E2A3A] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: barColor }} />
-                  {TIERS.map(t => (
-                    <div key={t.tag} className="absolute top-0 h-full w-px bg-[#0A0F1E]/60" style={{ left: `${(t.pct / 120) * 100}%` }} />
-                  ))}
-                </div>
+                {(() => {
+                  const paceLeft = Math.min((((PERIOD_INFO.daysComplete / PERIOD_INFO.totalBizDays) * 100) / BAR_MAX) * 100, 99)
+                  return (
+                    <div className="relative" style={{ paddingTop: 14 }}>
+                      <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)' }}>
+                        <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
+                        <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
+                      </div>
+                      <div className="relative h-4 bg-[#f1f5fb] rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: fill }} />
+                        {TIERS.map(t => (
+                          <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
+                        ))}
+                        <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
 
-              {/* Bridge to bonus */}
+              {/* Tier milestone row */}
+              <div className="grid grid-cols-5 gap-1 mb-3">
+                {TIERS.map(t => {
+                  const dollarAtTier = (t.pct / 100) * goal
+                  const reached = pct >= t.pct
+                  const isNext  = !reached && t === next
+                  return (
+                    <div
+                      key={t.tag}
+                      className={`rounded-lg border px-2 py-1.5 text-center text-xs transition-all ${
+                        reached
+                          ? `${t.bg} ${t.color} border-current font-semibold`
+                          : isNext
+                          ? 'bg-amber-50 border-amber-300 text-amber-600 font-semibold ring-1 ring-amber-300'
+                          : 'bg-[#f8fafc] border-[#e2e8f0] text-[#94a3b8]'
+                      }`}
+                    >
+                      <div className="font-bold">{t.tag}</div>
+                      <div className="text-[10px] leading-tight">{formatCurrency(dollarAtTier, true)}</div>
+                      {reached && <div className="text-[10px] mt-0.5">✓</div>}
+                      {isNext && <div className="text-[10px] mt-0.5">← next</div>}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Bridge to next tier */}
               {next && dollarToNext > 0 && (
-                <div className="mt-3 bg-[#F59E0B]/8 border border-[#F59E0B]/20 rounded-lg px-4 py-2.5 flex items-center justify-between">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div>
-                    <span className="text-[#F59E0B] font-semibold">💰 Unlock {next.label}</span>
-                    <span className="text-[#94A3B8] text-sm"> — Collect {formatCurrency(dollarToNext, true)} more</span>
+                    <span className="text-amber-600 font-semibold">💰 Unlock {next.label}</span>
+                    <span className="text-[#64748b] text-sm"> — Collect {formatCurrency(dollarToNext, true)} more</span>
                   </div>
-                  <div className="text-right text-sm">
-                    <span className="text-[#94A3B8]">That's </span>
-                    <span className="text-[#F59E0B] font-semibold">{formatCurrency(perDay, true)}/day</span>
-                    <span className="text-[#94A3B8]"> for {PERIOD_INFO.daysRemaining} days</span>
+                  <div className="text-sm">
+                    <span className="text-[#64748b]">That's </span>
+                    <span className="text-amber-600 font-semibold">{formatCurrency(perDay, true)}/day</span>
+                    <span className="text-[#64748b]"> for {PERIOD_INFO.daysRemaining} days</span>
                   </div>
                 </div>
               )}
               {!next && tier?.tag === 'T5' && (
-                <div className="mt-3 text-violet-400 text-sm font-semibold text-center">💎 Diamond tier achieved — maximum bonus unlocked!</div>
+                <div className="mt-2 text-violet-600 text-sm font-semibold text-center">💎 Diamond tier achieved — maximum bonus unlocked!</div>
               )}
             </div>
           )

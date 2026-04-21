@@ -4,6 +4,7 @@ import { formatCurrency, formatPct, getStatusHigh, getStatusLow, locationStatus,
 import KPICard from '@/components/KPICard'
 import OSBBadge from '@/components/OSBBadge'
 import DaysLeft from '@/components/DaysLeft'
+import GoalBar from '@/components/GoalBar'
 
 export default async function OverviewPage() {
   const data        = await getData()
@@ -116,9 +117,7 @@ export default async function OverviewPage() {
                 </div>
                 <div className="text-[#0f172a] font-semibold text-lg">{formatCurrency(loc.collections, true)}</div>
                 <div className="text-[#64748b] text-xs mb-2">of {formatCurrency(goal, true)} goal</div>
-                <div className="h-1.5 bg-[#f1f5fb] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: barColor }} />
-                </div>
+                <GoalBar pct={pct} height="thin" color={barColor} />
                 <div className={`text-xs mt-1 font-medium ${pctColor}`}>{pct}% to goal</div>
               </div>
             )
@@ -129,9 +128,7 @@ export default async function OverviewPage() {
             <div className="text-[#2563eb] font-bold text-sm mb-2">ORG TOTAL</div>
             <div className="text-[#0f172a] font-semibold text-lg">{formatCurrency(org.collections, true)}</div>
             <div className="text-[#64748b] text-xs mb-2">of {formatCurrency(org.collectionsGoal, true)} goal</div>
-            <div className="h-1.5 bg-[#f1f5fb] rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-[#2563eb]" style={{ width: `${Math.min(collPct, 100)}%` }} />
-            </div>
+                <GoalBar pct={collPct} height="thin" color="#2563eb" />
             <div className="text-xs mt-1 font-medium text-[#2563eb]">{collPct}% to goal</div>
           </div>
         </div>
