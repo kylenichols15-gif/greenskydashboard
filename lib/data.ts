@@ -28,10 +28,10 @@ export const BENCHMARKS = {
 // Business days: Apr 1, 2, [3 Good Fri skip], 6-10, 13-17, 20 = 13 complete; Apr 21 = BD14 underway
 export const PERIOD_INFO = {
   label:          'April 2026',
-  dataAsOf:       'April 21',   // Date of last data pull — update with each refresh
+  dataAsOf:       'April 20',   // Date of last data pull — update with each refresh
   totalBizDays:   22,           // All weekdays Apr 1–30 (Good Friday Apr 3 = working day)
-  daysComplete:   15,
-  daysRemaining:  7,
+  daysComplete:   14,
+  daysRemaining:  8,
 }
 
 // ─── Live Data — Sources: Dentrix + Mango Voice + Dental Intel OSB ───
