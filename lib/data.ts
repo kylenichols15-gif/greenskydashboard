@@ -29,8 +29,8 @@ export const BENCHMARKS = {
 export const PERIOD_INFO = {
   label:          'April 2026',
   dataAsOf:       'April 21',   // Date of last data pull — update with each refresh
-  totalBizDays:   21,           // Good Friday (Apr 3) not worked
-  daysComplete:   14,
+  totalBizDays:   22,           // All weekdays Apr 1–30 (Good Friday Apr 3 = working day)
+  daysComplete:   15,
   daysRemaining:  7,
 }
 
