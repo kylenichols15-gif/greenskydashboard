@@ -81,7 +81,6 @@ export const DEMO_DATA = {
     { name:'Decker Haycraft, Kara',locationCode:'LT',  grossProd:54828,  collections:25403,  collRate:46.3, prodPerDay:3655,  daysWorked:15, ytdProd:150000  },
     { name:'Chadwick, Evan',       locationCode:'PR',  grossProd:50518,  collections:22451,  collRate:44.4, prodPerDay:3368,  daysWorked:15, ytdProd:150000  },
     { name:'Gleason, Robert',      locationCode:'LKW', grossProd:48031,  collections:31221,  collRate:65.0, prodPerDay:3202,  daysWorked:15, ytdProd:378000  },
-    { name:'Keehan, Joshua',       locationCode:'PB',  grossProd:29775,  collections:11703,  collRate:39.3, prodPerDay:1985,  daysWorked:15, ytdProd:85000   },
   ],
 
   // Source: Dentrix ProviderTotals (7) + Time Clock 04/01–04/21/2026
