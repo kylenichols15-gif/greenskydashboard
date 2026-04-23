@@ -12,7 +12,8 @@ export default async function OverviewPage() {
   const prodPct     = pctToGoal(org.production, org.productionGoal)
   const collPct     = pctToGoal(org.collections, org.collectionsGoal)
   const phoneStatus = getStatusHigh(org.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-  const recareStatus = getStatusHigh(org.hygieneRecare, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
+  const hasOrgRecare  = org.hygieneRecare > 0
+  const recareStatus  = hasOrgRecare ? getStatusHigh(org.hygieneRecare, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : 'amber'
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -83,10 +84,10 @@ export default async function OverviewPage() {
         />
         <KPICard
           label="Hygiene Recare"
-          value={formatPct(org.hygieneRecare)}
-          subValue={`Target: ${BENCHMARKS.hygiene_recare.target}%`}
-          status={recareStatus}
-          detail={recareStatus === 'red' ? 'Below threshold' : recareStatus === 'amber' ? 'Below target' : 'On target'}
+          value={hasOrgRecare ? formatPct(org.hygieneRecare) : '—'}
+          subValue={hasOrgRecare ? `Target: ${BENCHMARKS.hygiene_recare.target}%` : 'No report available'}
+          status={hasOrgRecare ? recareStatus : 'amber'}
+          detail={hasOrgRecare ? (recareStatus === 'red' ? 'Below threshold' : recareStatus === 'amber' ? 'Below target' : 'On target') : 'Run Dentrix recare report to populate'}
         />
       </div>
 

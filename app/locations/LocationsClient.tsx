@@ -62,7 +62,8 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
           const perDay       = daysRemaining > 0 ? dollarToGoal / daysRemaining : 0
 
           const phoneStatus    = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-          const recareStatus   = getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
+          const hasRecare      = loc.recareRate > 0
+          const recareStatus   = hasRecare ? getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : 'amber'
           const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
           const collStatus     = getStatusHigh(Math.min(loc.collectionRate, 99), BENCHMARKS.collections_rate.target, BENCHMARKS.collections_rate.flagBelow)
 
@@ -143,13 +144,15 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
                     <div className={`font-bold text-lg ${phoneC}`}>{formatPct(loc.phoneAnswerRate)}</div>
                     <div className="text-[#64748b] text-xs">Target &gt;80%</div>
                   </div>
-                  <div className={`rounded-lg border p-3 col-span-2 ${recareStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : recareStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
+                  <div className={`rounded-lg border p-3 col-span-2 ${hasRecare ? (recareStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : recareStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20') : 'bg-slate-500/5 border-slate-300/30'}`}>
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="text-[#64748b] text-xs">Hygiene Recare</div>
-                        <div className={`font-bold text-lg ${recareC}`}>{formatPct(loc.recareRate)}</div>
+                        <div className={`font-bold text-lg ${hasRecare ? recareC : 'text-[#94a3b8]'}`}>
+                          {hasRecare ? formatPct(loc.recareRate) : '—'}
+                        </div>
                       </div>
-                      <div className="text-[#64748b] text-xs">Target 85%</div>
+                      <div className="text-[#64748b] text-xs">{hasRecare ? 'Target 85%' : 'No report'}</div>
                     </div>
                   </div>
                 </div>

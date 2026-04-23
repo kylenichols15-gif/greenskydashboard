@@ -33,7 +33,8 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
   )
 
   const phoneStatus    = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-  const recareStatus   = getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow)
+  const hasRecare      = loc.recareRate > 0
+  const recareStatus   = hasRecare ? getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : 'amber'
   const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
 
   const metricDot = (s: 'green' | 'amber' | 'red') => ({
@@ -90,7 +91,9 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
           </div>
           <div>
             <div className="text-[#64748b] text-xs mb-0.5">Recare %</div>
-            <div className={`font-semibold text-sm ${metricDot(recareStatus)}`}>{formatPct(loc.recareRate)}</div>
+            <div className={`font-semibold text-sm ${hasRecare ? metricDot(recareStatus) : 'text-[#94a3b8]'}`}>
+              {hasRecare ? formatPct(loc.recareRate) : '—'}
+            </div>
           </div>
           <div>
             <div className="text-[#64748b] text-xs mb-0.5">Phone Ans.</div>
