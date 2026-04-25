@@ -50,7 +50,7 @@ export const DEMO_DATA = {
     collectionsGoal: 1320000,
     newPatients:        500,   // LKW:102 LT:49 HNR:85 HNS:54 PB:83 PR:79 OSB:48
     activePatients:    2531,
-    phoneAnswerRate:   66.2,   // Mango Voice 04/01–04/20 — unchanged (no new pull)
+    phoneAnswerRate:   67.6,   // Mango Voice 04/01–04/25 — all 7 locations confirmed from screenshots
     hygieneRecare:      0,     // No verified Ascend recare report — not displayed
   },
 
@@ -59,13 +59,13 @@ export const DEMO_DATA = {
   // Note: HNR/PB/OSB collectionRate >100% = collecting on prior-month AR (expected)
   // recareRate: 0 = no verified data; UI shows "—". OSB only from DI operations-performance.
   locations: [
-    { code:'LKW', production:351065, collections:237052, collectionRate:67.5,  newPatients:102, recareRate:0,    phoneAnswerRate:63.7, activePatients:534, suppliesPct:5.76, status:'on_pace'  },
-    { code:'LT',  production:175505, collections:141304, collectionRate:80.5,  newPatients:49,  recareRate:0,    phoneAnswerRate:73.7, activePatients:421, suppliesPct:5.38, status:'watch'    },
-    { code:'HNR', production:85777,  collections:86319,  collectionRate:100.6, newPatients:85,  recareRate:0,    phoneAnswerRate:66.1, activePatients:298, suppliesPct:6.92, status:'on_pace'  },
-    { code:'HNS', production:68204,  collections:49683,  collectionRate:72.8,  newPatients:54,  recareRate:0,    phoneAnswerRate:65.0, activePatients:276, suppliesPct:3.62, status:'on_pace'  },
-    { code:'PB',  production:222385, collections:249774, collectionRate:112.3, newPatients:83,  recareRate:0,    phoneAnswerRate:61.8, activePatients:389, suppliesPct:6.77, status:'on_pace'  },
-    { code:'PR',  production:159884, collections:116989, collectionRate:73.2,  newPatients:79,  recareRate:0,    phoneAnswerRate:68.0, activePatients:321, suppliesPct:10.58,status:'on_pace'  },
-    { code:'OSB', production:90621,  collections:149256, collectionRate:164.7, newPatients:48,  recareRate:92.7, phoneAnswerRate:68.7, activePatients:292, suppliesPct:2.09, status:'watch',   isOSB:true },
+    { code:'LKW', production:351065, collections:237052, collectionRate:67.5,  newPatients:102, recareRate:0,    phoneAnswerRate:68.5, activePatients:534, suppliesPct:5.76, status:'on_pace'  },
+    { code:'LT',  production:175505, collections:141304, collectionRate:80.5,  newPatients:49,  recareRate:0,    phoneAnswerRate:74.8, activePatients:421, suppliesPct:5.38, status:'watch'    },
+    { code:'HNR', production:85777,  collections:86319,  collectionRate:100.6, newPatients:85,  recareRate:0,    phoneAnswerRate:67.5, activePatients:298, suppliesPct:6.92, status:'on_pace'  },
+    { code:'HNS', production:68204,  collections:49683,  collectionRate:72.8,  newPatients:54,  recareRate:0,    phoneAnswerRate:64.0, activePatients:276, suppliesPct:3.62, status:'on_pace'  },
+    { code:'PB',  production:222385, collections:249774, collectionRate:112.3, newPatients:83,  recareRate:0,    phoneAnswerRate:60.1, activePatients:389, suppliesPct:6.77, status:'on_pace'  },
+    { code:'PR',  production:159884, collections:116989, collectionRate:73.2,  newPatients:79,  recareRate:0,    phoneAnswerRate:67.8, activePatients:321, suppliesPct:10.58,status:'on_pace'  },
+    { code:'OSB', production:90621,  collections:149256, collectionRate:164.7, newPatients:48,  recareRate:92.7, phoneAnswerRate:70.6, activePatients:292, suppliesPct:2.09, status:'watch',   isOSB:true },
   ],
 
   // Source: Dentrix ProviderTotals (10) 04/01–04/24/2026 + Dental Intel OSB providers-performance 04/24
@@ -123,16 +123,16 @@ export const DEMO_DATA = {
     { name:'Yates, Jaclyn',    locationCode:'OSB', grossProd:3662,  collections:6418,  collRate:175.3,hoursWorked:35.0,  prodPerHr:105, recareRate:92.7, isOSB:true },
   ],
 
-  // Source: Mango Voice 04/01–04/20/2026 — ALL 7 locations confirmed from screenshots
-  // PB/PR note: "External" calls (35%/31%) counted as missed — routed externally, not answered in-office
+  // Source: Mango Voice 04/01–04/25/2026 — ALL 7 locations confirmed from screenshots
+  // PB/PR note: "External" calls (37%/31%) counted as missed — routed externally, not answered in-office
   phones: [
-    { code:'LKW', totalCalls:1236, answered:787, missed:449, answerRate:63.7, estMissedRevenue:79473 },
-    { code:'LT',  totalCalls:604,  answered:445, missed:159, answerRate:73.7, estMissedRevenue:28143 },
-    { code:'HNR', totalCalls:604,  answered:399, missed:205, answerRate:66.1, estMissedRevenue:36285 },
-    { code:'HNS', totalCalls:311,  answered:202, missed:109, answerRate:65.0, estMissedRevenue:19293 },
-    { code:'PB',  totalCalls:862,  answered:533, missed:329, answerRate:61.8, estMissedRevenue:58233 },
-    { code:'PR',  totalCalls:672,  answered:457, missed:215, answerRate:68.0, estMissedRevenue:38055 },
-    { code:'OSB', totalCalls:726,  answered:499, missed:227, answerRate:68.7, estMissedRevenue:40179 },
+    { code:'LKW', totalCalls:1742, answered:1194, missed:548, answerRate:68.5, estMissedRevenue:96996 },
+    { code:'LT',  totalCalls:818,  answered:612,  missed:206, answerRate:74.8, estMissedRevenue:36462 },
+    { code:'HNR', totalCalls:812,  answered:548,  missed:264, answerRate:67.5, estMissedRevenue:46728 },
+    { code:'HNS', totalCalls:461,  answered:295,  missed:166, answerRate:64.0, estMissedRevenue:29382 },
+    { code:'PB',  totalCalls:1252, answered:752,  missed:500, answerRate:60.1, estMissedRevenue:88500 },
+    { code:'PR',  totalCalls:991,  answered:672,  missed:319, answerRate:67.8, estMissedRevenue:56463 },
+    { code:'OSB', totalCalls:958,  answered:676,  missed:282, answerRate:70.6, estMissedRevenue:49914 },
   ],
 
   // Source: Dentrix AgedReceivables (10) 04/24/2026 + Dental Intel OSB ar-overview 04/24/2026
