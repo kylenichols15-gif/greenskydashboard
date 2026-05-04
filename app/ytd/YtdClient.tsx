@@ -54,81 +54,24 @@ function LineChart({
 
   return (
     <svg viewBox={`0 0 ${W} ${svgH}`} className="w-full overflow-visible" preserveAspectRatio="xMidYMid meet">
-      {/* Area fill */}
       <polygon points={areaPoints} fill={danger ? 'rgba(239,68,68,0.07)' : `${color}12`} />
-      {/* Goal line */}
       {goalY !== null && (
         <>
           <line x1={0} y1={goalY} x2={W} y2={goalY} stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="5,4" />
           {goalLabel && <text x={W - 2} y={goalY - 3} textAnchor="end" fill="#f59e0b" fontSize="8" fontWeight="600">{goalLabel}</text>}
         </>
       )}
-      {/* Line */}
       <polyline points={linePoints} fill="none" stroke={lineColor} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-      {/* Dots + labels */}
       {data.map((d, i) => {
         const cx = ptX(i)
         const cy = ptY(d.value)
         return (
           <g key={i}>
             <circle cx={cx} cy={cy} r={DOT_R + 2} fill="white" stroke={lineColor} strokeWidth="2.5" />
-            <text
-              x={cx}
-              y={Math.max(cy - DOT_R - 4, VAL_H - 2)}
-              textAnchor="middle"
-              fill={lineColor}
-              fontSize="9"
-              fontWeight="700"
-            >{formatVal(d.value)}</text>
-            <text x={cx} y={VAL_H + height + DOT_R + LABEL_H - 3} textAnchor="middle" fill="#64748b" fontSize="10">{d.label}</text>
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
-function BarChart({
-  data,
-  color = '#2563eb',
-  height = 100,
-  formatVal = (v: number) => String(v),
-  goalValue,
-}: {
-  data: { label: string; value: number }[]
-  color?: string
-  height?: number
-  formatVal?: (v: number) => string
-  goalValue?: number
-}) {
-  const maxVal = Math.max(...data.map(d => d.value), goalValue ?? 0) * 1.08 || 1
-  const BAR_W  = 44
-  const GAP    = 20
-  const VAL_H  = 14
-  const LBL_H  = 18
-  const totalW = data.length * (BAR_W + GAP) - GAP
-  const svgH   = VAL_H + height + LBL_H
-  const goalY  = goalValue ? VAL_H + height - (goalValue / maxVal) * height : null
-
-  return (
-    <svg viewBox={`0 0 ${totalW} ${svgH}`} className="w-full overflow-visible" preserveAspectRatio="xMidYMid meet">
-      {goalY !== null && (
-        <>
-          <line x1={0} y1={goalY} x2={totalW} y2={goalY} stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="5,4" />
-          <text x={totalW - 1} y={goalY - 3} textAnchor="end" fill="#f59e0b" fontSize="7.5" fontWeight="600">Goal</text>
-        </>
-      )}
-      {data.map((d, i) => {
-        const barH = maxVal > 0 ? Math.max((d.value / maxVal) * height, d.value > 0 ? 2 : 0) : 0
-        const x    = i * (BAR_W + GAP)
-        const y    = VAL_H + height - barH
-        return (
-          <g key={i}>
-            <rect x={x} y={y} width={BAR_W} height={barH} fill={color} rx="3" />
-            <text x={x + BAR_W / 2} y={Math.max(y - 3, 10)} textAnchor="middle" fill="#0f172a" fontSize="8.5" fontWeight="600">
-              {d.value > 0 ? formatVal(d.value) : '—'}
+            <text x={cx} y={Math.max(cy - DOT_R - 4, VAL_H - 2)} textAnchor="middle" fill={lineColor} fontSize="9" fontWeight="700">
+              {formatVal(d.value)}
             </text>
-            <text x={x + BAR_W / 2} y={VAL_H + height + LBL_H - 2} textAnchor="middle" fill="#64748b" fontSize="10">{d.label}</text>
+            <text x={cx} y={VAL_H + height + DOT_R + LABEL_H - 3} textAnchor="middle" fill="#64748b" fontSize="10">{d.label}</text>
           </g>
         )
       })}
@@ -141,20 +84,37 @@ function BarChart({
 const shortLabel = (m: typeof HISTORICAL_MONTHS[0]) => m.periodInfo.label.split(' ')[0].slice(0, 3)
 const mom = (cur: number, prev: number) => prev > 0 ? ((cur - prev) / prev) * 100 : null
 
+// Abbreviate "Last, First" → "F. Last" (e.g. "Decker Haycraft, Kara" → "K. Haycraft")
+const fmtDoc = (name: string) => {
+  const [last, first = ''] = name.split(', ')
+  const lastName = last.split(' ').pop() ?? last
+  return first ? `${first[0]}. ${lastName}` : last
+}
+
 const LOC_COLORS: Record<string, string> = {
   LKW: '#2563eb', LT: '#10b981', HNR: '#f59e0b',
   HNS: '#8b5cf6', PB: '#ef4444', PR: '#06b6d4', OSB: '#f97316',
 }
 
-type MetricKey = 'production' | 'collections' | 'collRate' | 'phoneRate' | 'newPatients' | 'arScore'
+// ─── Metric configs ───────────────────────────────────────────────────────────
 
-const METRICS: { key: MetricKey; label: string; color: string; orgOnly?: boolean }[] = [
+type OrgMetricKey  = 'production' | 'collections' | 'collRate' | 'phoneRate' | 'newPatients' | 'arScore'
+type ProvMetricKey = 'collections' | 'production' | 'collRate' | 'prodPerDay'
+
+const ORG_METRICS: { key: OrgMetricKey; label: string; color: string; orgOnly?: boolean }[] = [
   { key: 'production',  label: 'Production',   color: '#2563eb' },
   { key: 'collections', label: 'Collections',  color: '#10b981' },
   { key: 'collRate',    label: 'Coll Rate',     color: '#f59e0b' },
   { key: 'phoneRate',   label: 'Phone Rate',    color: '#8b5cf6' },
   { key: 'newPatients', label: 'New Patients',  color: '#06b6d4' },
   { key: 'arScore',     label: 'AR Score',      color: '#ef4444', orgOnly: true },
+]
+
+const PROV_METRICS: { key: ProvMetricKey; label: string; color: string }[] = [
+  { key: 'collections', label: 'Collections', color: '#10b981' },
+  { key: 'production',  label: 'Production',  color: '#2563eb' },
+  { key: 'collRate',    label: 'Coll Rate',   color: '#f59e0b' },
+  { key: 'prodPerDay',  label: 'Prod / Day',  color: '#8b5cf6' },
 ]
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -166,12 +126,17 @@ export default function YtdClient({
   currentData:   DashboardData
   currentPeriod: PeriodData
 }) {
+  // Org Trend Explorer state
   const [selectedLoc,    setSelectedLoc]    = useState<string>('ALL')
-  const [selectedMetric, setSelectedMetric] = useState<MetricKey>('production')
+  const [selectedMetric, setSelectedMetric] = useState<OrgMetricKey>('production')
 
-  const completed = HISTORICAL_MONTHS  // Jan–Apr in order
+  // Provider Trend Explorer state
+  const [selectedProvider,   setSelectedProvider]   = useState<string>('Nichols, Christopher')
+  const [selectedProvMetric, setSelectedProvMetric] = useState<ProvMetricKey>('collections')
 
-  // ── Static org-level trend data ───────────────────────────────────────────
+  const completed = HISTORICAL_MONTHS  // Jan–Apr
+
+  // ── Org trend ────────────────────────────────────────────────────────────
   const orgTrend = completed.map(m => ({
     label:          shortLabel(m),
     production:     m.data.org.production,
@@ -186,19 +151,19 @@ export default function YtdClient({
                       : 0,
   }))
 
-  // ── YTD summary totals ────────────────────────────────────────────────────
-  const ytdProduction  = completed.reduce((s, m) => s + m.data.org.production,    0)
-  const ytdCollections = completed.reduce((s, m) => s + m.data.org.collections,   0)
-  const ytdNewPatients = completed.reduce((s, m) => s + m.data.org.newPatients,   0)
+  // ── YTD totals ────────────────────────────────────────────────────────────
+  const ytdProduction  = completed.reduce((s, m) => s + m.data.org.production,     0)
+  const ytdCollections = completed.reduce((s, m) => s + m.data.org.collections,    0)
+  const ytdNewPatients = completed.reduce((s, m) => s + m.data.org.newPatients,    0)
   const ytdProdGoal    = completed.reduce((s, m) => s + m.data.org.productionGoal, 0)
   const ytdCollRate    = ytdProduction > 0 ? (ytdCollections / ytdProduction) * 100 : 0
   const ytdProdVsGoal  = ytdProdGoal  > 0 ? (ytdProduction  / ytdProdGoal)   * 100 : 0
   const avgPhoneRate   = orgTrend.reduce((s, m) => s + m.phoneAnswerRate, 0) / orgTrend.length
 
-  // ── Interactive chart data ────────────────────────────────────────────────
-  const effectiveLoc = METRICS.find(m => m.key === selectedMetric)?.orgOnly ? 'ALL' : selectedLoc
+  // ── Org interactive chart ─────────────────────────────────────────────────
+  const effectiveLoc = ORG_METRICS.find(m => m.key === selectedMetric)?.orgOnly ? 'ALL' : selectedLoc
 
-  const chartData = completed.map(m => {
+  const orgChartData = completed.map(m => {
     const label = shortLabel(m)
     if (effectiveLoc === 'ALL') {
       switch (selectedMetric) {
@@ -222,43 +187,64 @@ export default function YtdClient({
     }
   })
 
-  const metricCfg  = METRICS.find(m => m.key === selectedMetric)!
-  const chartColor = effectiveLoc === 'ALL' ? metricCfg.color : (LOC_COLORS[effectiveLoc] ?? metricCfg.color)
-  const isDanger   = selectedMetric === 'arScore'
-  const isCurrency = selectedMetric === 'production' || selectedMetric === 'collections'
-  const isPct      = selectedMetric === 'collRate' || selectedMetric === 'phoneRate'
+  const orgMetricCfg   = ORG_METRICS.find(m => m.key === selectedMetric)!
+  const orgChartColor  = effectiveLoc === 'ALL' ? orgMetricCfg.color : (LOC_COLORS[effectiveLoc] ?? orgMetricCfg.color)
+  const orgIsDanger    = selectedMetric === 'arScore'
+  const orgIsCurrency  = selectedMetric === 'production' || selectedMetric === 'collections'
+  const orgIsPct       = selectedMetric === 'collRate' || selectedMetric === 'phoneRate'
+  const orgFormatVal   = orgIsCurrency ? (v: number) => formatCurrency(v, true)
+                       : orgIsPct      ? (v: number) => `${v.toFixed(1)}%`
+                       :                 (v: number) => v > 0 ? String(v) : '—'
+  const orgChartGoal   = selectedMetric === 'production' && effectiveLoc === 'ALL' ? 2400000 : undefined
+  const orgChartVals   = orgChartData.map(d => d.value)
+  const orgChartSum    = orgIsCurrency ? orgChartVals.reduce((s, v) => s + v, 0) : null
+  const orgChartLast   = orgChartVals[orgChartVals.length - 1]
+  const orgChartPrev   = orgChartVals[orgChartVals.length - 2]
+  const orgChartMoM    = mom(orgChartLast, orgChartPrev)
+  const hasNpGap       = selectedMetric === 'newPatients' && effectiveLoc !== 'ALL' && effectiveLoc !== 'OSB'
 
-  const chartFormatVal = isCurrency
-    ? (v: number) => formatCurrency(v, true)
-    : isPct
-    ? (v: number) => `${v.toFixed(1)}%`
-    : (v: number) => v > 0 ? String(v) : '—'
-
-  // Chart goal line
-  const chartGoal      = selectedMetric === 'production' && effectiveLoc === 'ALL' ? 2400000 : undefined
-  const chartGoalLabel = chartGoal ? '$2.4M' : undefined
-
-  // Summary stat for chart header
-  const chartVals = chartData.map(d => d.value)
-  const chartSum  = isCurrency ? chartVals.reduce((s, v) => s + v, 0) : null
-  const chartLast = chartVals[chartVals.length - 1]
-  const chartPrev = chartVals[chartVals.length - 2]
-  const chartMoM  = mom(chartLast, chartPrev)
-
-  // New patients per-location data gap note
-  const hasNpGap = selectedMetric === 'newPatients' && effectiveLoc !== 'ALL' && effectiveLoc !== 'OSB'
-
-  // ── Doctor monthly cross-ref ──────────────────────────────────────────────
+  // ── Doctor rows — sorted by YTD collections ───────────────────────────────
   const aprDoctors = completed[completed.length - 1].data.doctors
   const doctorRows = [...aprDoctors]
-    .sort((a, b) => b.ytdProd - a.ytdProd)
-    .map(aprDoc => ({
-      name:    aprDoc.name,
-      loc:     aprDoc.locationCode,
-      isOSB:   aprDoc.isOSB,
-      ytd:     aprDoc.ytdProd,
-      monthly: completed.map(m => m.data.doctors.find(d => d.name === aprDoc.name)?.grossProd ?? 0),
-    }))
+    .map(aprDoc => {
+      const monthlyProd = completed.map(m => m.data.doctors.find(d => d.name === aprDoc.name)?.grossProd    ?? 0)
+      const monthlyColl = completed.map(m => m.data.doctors.find(d => d.name === aprDoc.name)?.collections  ?? 0)
+      const monthlyRate = completed.map(m => m.data.doctors.find(d => d.name === aprDoc.name)?.collRate      ?? 0)
+      const monthlyPPD  = completed.map(m => m.data.doctors.find(d => d.name === aprDoc.name)?.prodPerDay    ?? 0)
+      const ytdColl     = monthlyColl.reduce((s, v) => s + v, 0)
+      return {
+        name: aprDoc.name, loc: aprDoc.locationCode, isOSB: aprDoc.isOSB,
+        ytdProd: aprDoc.ytdProd, ytdColl,
+        monthlyProd, monthlyColl, monthlyRate, monthlyPPD,
+      }
+    })
+    .sort((a, b) => b.ytdColl - a.ytdColl)
+
+  // ── Provider interactive chart ────────────────────────────────────────────
+  const provRow = doctorRows.find(d => d.name === selectedProvider) ?? doctorRows[0]
+
+  const provChartData = completed.map((m, i) => {
+    const label = shortLabel(m)
+    switch (selectedProvMetric) {
+      case 'collections': return { label, value: provRow.monthlyColl[i] }
+      case 'production':  return { label, value: provRow.monthlyProd[i] }
+      case 'collRate':    return { label, value: provRow.monthlyRate[i] }
+      case 'prodPerDay':  return { label, value: provRow.monthlyPPD[i] }
+    }
+  })
+
+  const provMetricCfg  = PROV_METRICS.find(m => m.key === selectedProvMetric)!
+  const provColor      = LOC_COLORS[provRow.loc] ?? provMetricCfg.color
+  const provIsCurrency = selectedProvMetric === 'collections' || selectedProvMetric === 'production'
+  const provIsPct      = selectedProvMetric === 'collRate'
+  const provFormatVal  = provIsCurrency ? (v: number) => formatCurrency(v, true)
+                       : provIsPct      ? (v: number) => `${v.toFixed(1)}%`
+                       :                  (v: number) => `$${v.toLocaleString()}`
+  const provChartVals  = provChartData.map(d => d.value)
+  const provChartSum   = provIsCurrency ? provChartVals.reduce((s, v) => s + v, 0) : null
+  const provChartLast  = provChartVals[provChartVals.length - 1]
+  const provChartPrev  = provChartVals[provChartVals.length - 2]
+  const provChartMoM   = mom(provChartLast, provChartPrev)
 
   // ── Location monthly production ───────────────────────────────────────────
   const locationRows = ['LKW', 'LT', 'PB', 'PR', 'OSB', 'HNS', 'HNR'].map(code => {
@@ -267,8 +253,8 @@ export default function YtdClient({
   }).sort((a, b) => b.ytd - a.ytd)
 
   // ── Color helpers ─────────────────────────────────────────────────────────
-  const pctColor   = (v: number, t: number, f: number) => v >= t ? 'text-green-600' : v >= f ? 'text-amber-600' : 'text-red-600'
-  const arColor    = (s: number) => s >= 70 ? 'text-green-600' : s >= 55 ? 'text-amber-600' : 'text-red-600'
+  const pctColor = (v: number, t: number, f: number) => v >= t ? 'text-green-600' : v >= f ? 'text-amber-600' : 'text-red-600'
+  const arColor  = (s: number) => s >= 70 ? 'text-green-600' : s >= 55 ? 'text-amber-600' : 'text-red-600'
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -306,26 +292,22 @@ export default function YtdClient({
         </div>
       </div>
 
-      {/* ── Interactive Trend Chart ─────────────────────────────────────── */}
+      {/* ── Org Trend Explorer ──────────────────────────────────────────── */}
       <div className="bg-white border border-[#d1dce9] rounded-xl p-5 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-[#0f172a] font-semibold text-sm">Trend Explorer</h2>
-            <p className="text-[#64748b] text-xs mt-0.5">Select a metric and location to explore month-over-month trends</p>
+            <h2 className="text-[#0f172a] font-semibold text-sm">Org Trend Explorer</h2>
+            <p className="text-[#64748b] text-xs mt-0.5">Metric × location — month-over-month</p>
           </div>
-          {/* Chart summary stat */}
           <div className="text-right shrink-0">
-            {chartSum !== null && (
-              <div className="text-[#0f172a] font-bold text-lg">{formatCurrency(chartSum, true)}</div>
-            )}
-            {chartSum === null && (
-              <div className="text-[#0f172a] font-bold text-lg">{chartFormatVal(chartLast)}</div>
-            )}
+            <div className="text-[#0f172a] font-bold text-lg">
+              {orgChartSum !== null ? formatCurrency(orgChartSum, true) : orgFormatVal(orgChartLast)}
+            </div>
             <div className="text-[#64748b] text-xs">
-              {chartSum !== null ? 'YTD total' : 'Latest (Apr)'}
-              {chartMoM !== null && (
-                <span className={`ml-1.5 font-semibold ${chartMoM >= 0 ? 'text-green-600' : 'text-red-500'}`}>
-                  {chartMoM >= 0 ? '▲' : '▼'} {Math.abs(chartMoM).toFixed(1)}% MoM
+              {orgChartSum !== null ? 'YTD total' : 'Latest (Apr)'}
+              {orgChartMoM !== null && (
+                <span className={`ml-1.5 font-semibold ${orgChartMoM >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  {orgChartMoM >= 0 ? '▲' : '▼'} {Math.abs(orgChartMoM).toFixed(1)}% MoM
                 </span>
               )}
             </div>
@@ -334,17 +316,10 @@ export default function YtdClient({
 
         {/* Metric pills */}
         <div className="flex flex-wrap gap-1.5 mb-3">
-          {METRICS.map(m => (
-            <button
-              key={m.key}
-              onClick={() => setSelectedMetric(m.key)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
-                selectedMetric === m.key
-                  ? 'text-white border-transparent'
-                  : 'bg-white text-[#64748b] border-[#d1dce9] hover:text-[#0f172a]'
-              }`}
-              style={selectedMetric === m.key ? { backgroundColor: m.color, borderColor: m.color } : {}}
-            >
+          {ORG_METRICS.map(m => (
+            <button key={m.key} onClick={() => setSelectedMetric(m.key)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${selectedMetric === m.key ? 'text-white border-transparent' : 'bg-white text-[#64748b] border-[#d1dce9] hover:text-[#0f172a]'}`}
+              style={selectedMetric === m.key ? { backgroundColor: m.color, borderColor: m.color } : {}}>
               {m.label}{m.orgOnly ? ' (org)' : ''}
             </button>
           ))}
@@ -353,61 +328,41 @@ export default function YtdClient({
         {/* Location pills */}
         <div className="flex flex-wrap gap-1.5 mb-5">
           {(['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'PB', 'PR', 'OSB'] as const).map(code => {
-            const isOrgOnly  = metricCfg.orgOnly
-            const isDisabled = isOrgOnly && code !== 'ALL'
+            const isDisabled = orgMetricCfg.orgOnly && code !== 'ALL'
             const isActive   = effectiveLoc === code
             const locColor   = code === 'ALL' ? '#2563eb' : LOC_COLORS[code]
             return (
-              <button
-                key={code}
-                onClick={() => !isDisabled && setSelectedLoc(code)}
-                disabled={isDisabled}
+              <button key={code} onClick={() => !isDisabled && setSelectedLoc(code)} disabled={isDisabled}
                 className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
                   isDisabled ? 'opacity-30 cursor-not-allowed bg-[#f1f5fb] text-[#94a3b8] border-[#e2e8f0]' :
                   isActive   ? 'text-white border-transparent' :
                   'bg-white text-[#64748b] border-[#d1dce9] hover:text-[#0f172a]'
                 }`}
-                style={isActive && !isDisabled ? { backgroundColor: locColor, borderColor: locColor } : {}}
-              >
+                style={isActive && !isDisabled ? { backgroundColor: locColor, borderColor: locColor } : {}}>
                 {code === 'ALL' ? 'All Org' : code}
               </button>
             )
           })}
         </div>
 
-        {/* Data gap warning */}
         {hasNpGap && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700 mb-4">
-            ⚠ Per-location new patient data not available for Jan–Mar (non-OSB). Showing 0 for those months.
-            Use <strong>All Org</strong> for complete new patient trends.
+            ⚠ Per-location new patient data not available for Jan–Mar (non-OSB). Use <strong>All Org</strong> for complete trends.
           </div>
         )}
 
-        {/* Chart */}
         <div className="pt-2">
-          <LineChart
-            data={chartData}
-            color={chartColor}
-            danger={isDanger}
-            height={120}
-            formatVal={chartFormatVal}
-            goal={chartGoal}
-            goalLabel={chartGoalLabel}
-          />
+          <LineChart data={orgChartData} color={orgChartColor} danger={orgIsDanger} height={120} formatVal={orgFormatVal} goal={orgChartGoal} goalLabel={orgChartGoal ? '$2.4M' : undefined} />
         </div>
 
-        {/* AR Score declining callout */}
         {selectedMetric === 'arScore' && (
           <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-700">
-            🚨 AR Health Score has declined <strong>19 points</strong> (68 → 49) over 4 months.
-            90+ day balances grew from $88K to $223K. Requires immediate collection focus.
+            🚨 AR Health Score declined <strong>19 points</strong> (68 → 49) over 4 months. 90+ day balances grew from $88K to $223K.
           </div>
         )}
-        {/* Phone Rate improving callout */}
         {selectedMetric === 'phoneRate' && (
           <div className="mt-3 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
-            ✓ Phone answer rate improved <strong>+16.0pp</strong> Jan → Apr (53.3% → 69.3%).
-            Still {formatPct(69.3, 1)} vs 80% target — {(80 - 69.3).toFixed(1)}pp gap remaining.
+            ✓ Phone answer rate improved <strong>+16.0pp</strong> Jan → Apr (53.3% → 69.3%). Still {(80 - 69.3).toFixed(1)}pp below 80% target.
           </div>
         )}
       </div>
@@ -427,7 +382,6 @@ export default function YtdClient({
               </tr>
             </thead>
             <tbody>
-              {/* Production */}
               <tr className="border-b border-[#d1dce9]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">Production</td>
                 {orgTrend.map((m, i) => {
@@ -441,7 +395,6 @@ export default function YtdClient({
                 })}
                 <td className="px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 text-[#1d4ed8] font-bold">{formatCurrency(ytdProduction, true)}</td>
               </tr>
-              {/* vs Goal */}
               <tr className="border-b border-[#d1dce9]/50 bg-[#f8fafc]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">vs Goal</td>
                 {orgTrend.map((m, i) => {
@@ -450,7 +403,6 @@ export default function YtdClient({
                 })}
                 <td className={`px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 font-bold ${pctColor(ytdProdVsGoal, 100, 90)}`}>{formatPct(ytdProdVsGoal, 1)}</td>
               </tr>
-              {/* Collections */}
               <tr className="border-b border-[#d1dce9]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">Collections</td>
                 {orgTrend.map((m, i) => {
@@ -464,7 +416,6 @@ export default function YtdClient({
                 })}
                 <td className="px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 text-[#1d4ed8] font-bold">{formatCurrency(ytdCollections, true)}</td>
               </tr>
-              {/* Collection Rate */}
               <tr className="border-b border-[#d1dce9]/50 bg-[#f8fafc]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">Coll Rate</td>
                 {orgTrend.map((m, i) => (
@@ -472,7 +423,6 @@ export default function YtdClient({
                 ))}
                 <td className={`px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 font-bold ${pctColor(ytdCollRate, 95, 85)}`}>{formatPct(ytdCollRate, 1)}</td>
               </tr>
-              {/* New Patients */}
               <tr className="border-b border-[#d1dce9]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">New Patients</td>
                 {orgTrend.map((m, i) => {
@@ -486,7 +436,6 @@ export default function YtdClient({
                 })}
                 <td className="px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 text-[#1d4ed8] font-bold">{ytdNewPatients.toLocaleString()}</td>
               </tr>
-              {/* Phone Rate */}
               <tr className="border-b border-[#d1dce9]/50 bg-[#f8fafc]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">Phone Rate</td>
                 {orgTrend.map((m, i) => (
@@ -494,7 +443,6 @@ export default function YtdClient({
                 ))}
                 <td className={`px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 font-bold ${pctColor(avgPhoneRate, 80, 70)}`}>{formatPct(avgPhoneRate, 1)} avg</td>
               </tr>
-              {/* Business Days */}
               <tr className="border-b border-[#d1dce9]/50">
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">Biz Days</td>
                 {orgTrend.map((m, i) => (
@@ -502,7 +450,6 @@ export default function YtdClient({
                 ))}
                 <td className="px-4 py-3 text-center bg-[#eff6ff] border-l border-[#2563eb]/10 text-[#64748b]">{orgTrend.reduce((s, m) => s + m.bizDays, 0)}</td>
               </tr>
-              {/* AR Score */}
               <tr>
                 <td className="px-4 py-3 text-[#64748b] text-xs font-semibold">AR Score</td>
                 {orgTrend.map((m, i) => (
@@ -510,7 +457,9 @@ export default function YtdClient({
                     {m.arHealthScore}
                     {i > 0 && (
                       <span className={`ml-1 text-[10px] font-normal ${m.arHealthScore < orgTrend[i-1].arHealthScore ? 'text-red-500' : 'text-green-600'}`}>
-                        {m.arHealthScore < orgTrend[i-1].arHealthScore ? `▼${orgTrend[i-1].arHealthScore - m.arHealthScore}` : `▲${m.arHealthScore - orgTrend[i-1].arHealthScore}`}
+                        {m.arHealthScore < orgTrend[i-1].arHealthScore
+                          ? `▼${orgTrend[i-1].arHealthScore - m.arHealthScore}`
+                          : `▲${m.arHealthScore - orgTrend[i-1].arHealthScore}`}
                       </span>
                     )}
                   </td>
@@ -526,9 +475,9 @@ export default function YtdClient({
         </div>
       </div>
 
-      {/* ── Doctor YTD Leaderboard ──────────────────────────────────────── */}
-      <h2 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-3">Doctor YTD Production</h2>
-      <div className="bg-white border border-[#d1dce9] rounded-xl overflow-hidden mb-8">
+      {/* ── Doctor YTD Collections Leaderboard ─────────────────────────── */}
+      <h2 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-3">Doctor YTD Collections</h2>
+      <div className="bg-white border border-[#d1dce9] rounded-xl overflow-hidden mb-6">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -538,15 +487,16 @@ export default function YtdClient({
                 {completed.map(m => (
                   <th key={m.key} className="text-right text-[#64748b] text-xs font-semibold uppercase tracking-wider px-3 py-3">{shortLabel(m)}</th>
                 ))}
-                <th className="text-right text-[#0f172a] text-xs font-semibold uppercase tracking-wider px-4 py-3 bg-[#eff6ff] border-l border-[#2563eb]/10">YTD</th>
+                <th className="text-right text-[#0f172a] text-xs font-semibold uppercase tracking-wider px-4 py-3 bg-[#eff6ff] border-l border-[#2563eb]/10">YTD Coll</th>
               </tr>
             </thead>
             <tbody>
               {doctorRows.map((doc, i) => {
-                const barW = doctorRows[0].ytd > 0 ? (doc.ytd / doctorRows[0].ytd) * 100 : 0
-                const lastTwo = doc.monthly.slice(-2)
-                const trend   = lastTwo[1] > lastTwo[0] ? '▲' : lastTwo[1] < lastTwo[0] ? '▼' : '—'
-                const trendColor = lastTwo[1] > lastTwo[0] ? 'text-green-600' : lastTwo[1] < lastTwo[0] ? 'text-red-500' : 'text-[#94a3b8]'
+                const barW = doctorRows[0].ytdColl > 0 ? (doc.ytdColl / doctorRows[0].ytdColl) * 100 : 0
+                const lastTwo   = doc.monthlyColl.slice(-2)
+                const trendUp   = lastTwo[1] > lastTwo[0]
+                const trendDown = lastTwo[1] < lastTwo[0]
+                const trendColor = trendUp ? 'text-green-600' : trendDown ? 'text-red-500' : 'text-[#94a3b8]'
                 return (
                   <tr key={doc.name} className="border-b border-[#d1dce9]/50 hover:bg-[#f1f5fb] transition-colors">
                     <td className="px-4 py-3 text-[#64748b] font-bold text-xs">#{i + 1}</td>
@@ -555,16 +505,18 @@ export default function YtdClient({
                         <span className="bg-[#2563eb]/10 text-[#2563eb] text-[10px] px-1.5 py-0.5 rounded border border-[#2563eb]/20 font-medium">{doc.loc}</span>
                         <span className="text-[#0f172a] font-medium text-xs">{doc.name}</span>
                         {doc.isOSB && <OSBBadge />}
-                        <span className={`text-[10px] font-bold ${trendColor}`}>{trend}</span>
+                        <span className={`text-[10px] font-bold ${trendColor}`}>
+                          {trendUp ? '▲' : trendDown ? '▼' : '—'}
+                        </span>
                       </div>
                     </td>
-                    {doc.monthly.map((v, mi) => (
+                    {doc.monthlyColl.map((v, mi) => (
                       <td key={mi} className="px-3 py-3 text-right text-[#64748b] text-xs font-medium">
                         {v > 0 ? formatCurrency(v, true) : '—'}
                       </td>
                     ))}
                     <td className="px-4 py-3 text-right bg-[#eff6ff] border-l border-[#2563eb]/10">
-                      <div className="text-[#1d4ed8] font-bold text-sm">{formatCurrency(doc.ytd, true)}</div>
+                      <div className="text-[#1d4ed8] font-bold text-sm">{formatCurrency(doc.ytdColl, true)}</div>
                       <div className="h-1 bg-[#dbeafe] rounded-full mt-1 overflow-hidden">
                         <div className="h-full bg-[#2563eb] rounded-full" style={{ width: `${barW}%` }} />
                       </div>
@@ -576,16 +528,91 @@ export default function YtdClient({
               <tr className="bg-[#f8fafc] border-t border-[#d1dce9]">
                 <td colSpan={2} className="px-4 py-3 text-[#0f172a] font-semibold text-xs">All Doctors</td>
                 {completed.map((m, mi) => {
-                  const total = m.data.doctors.reduce((s, d) => s + d.grossProd, 0)
+                  const total = m.data.doctors.reduce((s, d) => s + d.collections, 0)
                   return <td key={mi} className="px-3 py-3 text-right text-[#0f172a] font-bold text-xs">{formatCurrency(total, true)}</td>
                 })}
                 <td className="px-4 py-3 text-right bg-[#eff6ff] border-l border-[#2563eb]/10 text-[#1d4ed8] font-bold">
-                  {formatCurrency(doctorRows.reduce((s, d) => s + d.ytd, 0), true)}
+                  {formatCurrency(doctorRows.reduce((s, d) => s + d.ytdColl, 0), true)}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* ── Provider Trend Explorer ─────────────────────────────────────── */}
+      <div className="bg-white border border-[#d1dce9] rounded-xl p-5 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-[#0f172a] font-semibold text-sm">Provider Trend Explorer</h2>
+            <p className="text-[#64748b] text-xs mt-0.5">Select a provider and metric to see their month-over-month trend</p>
+          </div>
+          <div className="text-right shrink-0">
+            <div className="text-[#0f172a] font-bold text-lg">
+              {provChartSum !== null ? formatCurrency(provChartSum, true) : provFormatVal(provChartLast)}
+            </div>
+            <div className="text-[#64748b] text-xs">
+              {provChartSum !== null ? 'YTD total' : 'Latest (Apr)'}
+              {provChartMoM !== null && (
+                <span className={`ml-1.5 font-semibold ${provChartMoM >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  {provChartMoM >= 0 ? '▲' : '▼'} {Math.abs(provChartMoM).toFixed(1)}% MoM
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Metric pills */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {PROV_METRICS.map(m => (
+            <button key={m.key} onClick={() => setSelectedProvMetric(m.key)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${selectedProvMetric === m.key ? 'text-white border-transparent' : 'bg-white text-[#64748b] border-[#d1dce9] hover:text-[#0f172a]'}`}
+              style={selectedProvMetric === m.key ? { backgroundColor: m.color, borderColor: m.color } : {}}>
+              {m.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Provider pills — sorted by YTD collections */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {doctorRows.map(doc => {
+            const isActive  = selectedProvider === doc.name
+            const pillColor = LOC_COLORS[doc.loc] ?? '#2563eb'
+            return (
+              <button key={doc.name} onClick={() => setSelectedProvider(doc.name)}
+                className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${isActive ? 'text-white border-transparent' : 'bg-white text-[#64748b] border-[#d1dce9] hover:text-[#0f172a]'}`}
+                style={isActive ? { backgroundColor: pillColor, borderColor: pillColor } : {}}>
+                {fmtDoc(doc.name)}
+                {doc.isOSB && <span className="ml-1 opacity-70">●</span>}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Active provider context */}
+        <div className="flex items-center gap-3 mb-4 px-3 py-2 bg-[#f8fafc] rounded-lg border border-[#e2e8f0]">
+          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: provColor }} />
+          <div className="text-xs text-[#64748b]">
+            <span className="font-semibold text-[#0f172a]">{provRow.name}</span>
+            <span className="mx-1.5">·</span>
+            <span className="bg-[#2563eb]/10 text-[#2563eb] px-1.5 py-0.5 rounded border border-[#2563eb]/20 font-medium">{provRow.loc}</span>
+            {provRow.isOSB && <span className="ml-1.5"><OSBBadge /></span>}
+            <span className="mx-1.5">·</span>
+            YTD prod {formatCurrency(provRow.ytdProd, true)} · YTD coll {formatCurrency(provRow.ytdColl, true)}
+          </div>
+        </div>
+
+        <div className="pt-2">
+          <LineChart data={provChartData} color={provColor} height={120} formatVal={provFormatVal} />
+        </div>
+
+        {/* Coll rate warning if below target */}
+        {selectedProvMetric === 'collRate' && provChartLast < 95 && (
+          <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">
+            ⚠ {fmtDoc(provRow.name)}&apos;s Apr collection rate is <strong>{provChartLast.toFixed(1)}%</strong> — below the 95% target.
+            {provChartLast < 50 && ' This is significantly below target and warrants review of insurance aging and claim status.'}
+          </div>
+        )}
       </div>
 
       {/* ── Location Monthly Production ─────────────────────────────────── */}
@@ -635,7 +662,6 @@ export default function YtdClient({
                   </tr>
                 )
               })}
-              {/* Org total row */}
               <tr className="bg-[#f8fafc] border-t border-[#d1dce9]">
                 <td className="px-4 py-3 text-[#0f172a] font-semibold text-xs">Org Total</td>
                 {completed.map((m, mi) => (
@@ -653,9 +679,8 @@ export default function YtdClient({
       </div>
 
       <p className="text-[#94a3b8] text-xs mt-3">
-        Production = gross procedure charges. OSB = Dental Intel (manual source). Jan–Mar location data aggregated from ProviderTotals.
-        Collection rate = collections ÷ gross production for the month (not adjusted collections rate).
-        Green/red in location table = vs that location&apos;s own 4-month avg (±12% threshold).
+        Production = gross procedure charges. OSB = Dental Intel (manual source). Collection rate = collections ÷ gross production (timing-affected — insurance claims often collected in later months).
+        Doctor table sorted by YTD collections. Provider pills colored by location. Location table: green/red = ±12% vs location&apos;s own 4-month avg.
       </p>
     </div>
   )
