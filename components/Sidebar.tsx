@@ -7,6 +7,7 @@ import MonthToggle from '@/components/MonthToggle'
 
 const NAV_ITEMS = [
   { href: '/',          label: 'Overview',    icon: '◈' },
+  { href: '/ytd',       label: 'YTD Trends',  icon: '◑' },
   { href: '/locations', label: 'Locations',   icon: '⊞' },
   { href: '/doctors',   label: 'Doctors',     icon: '⊙' },
   { href: '/hygiene',   label: 'Hygiene',     icon: '✦' },
