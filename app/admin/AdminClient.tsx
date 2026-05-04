@@ -20,7 +20,7 @@ function SaveButton({ onClick, saving, saved }: { onClick: () => void; saving: b
       onClick={onClick}
       disabled={saving}
       className={`px-5 py-2 rounded-lg font-semibold text-sm transition-all ${
-        saved ? 'bg-green-500 text-white' : 'bg-[#0A9E8A] hover:bg-[#08866f] text-white'
+        saved ? 'bg-green-500 text-white' : 'bg-[#2563eb] hover:bg-[#1d4ed8] text-white'
       } disabled:opacity-50`}
     >
       {saving ? 'Saving…' : saved ? '✓ Saved' : 'Save'}
@@ -58,11 +58,11 @@ function PeriodTab({ initial }: { initial: { label: string; totalBizDays: number
 
   return (
     <div className="max-w-md space-y-4">
-      <p className="text-[#64748B] text-sm">Set the current reporting period shown across all dashboard pages.</p>
+      <p className="text-[#64748b] text-sm">Set the current reporting period shown across all dashboard pages.</p>
       <div>
-        <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">Period Label</label>
+        <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">Period Label</label>
         <input
-          className="w-full bg-[#111827] border border-[#1E2A3A] rounded-lg px-3 py-2 text-[#F1F5F9] text-sm focus:outline-none focus:border-[#0A9E8A]"
+          className="w-full bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-3 py-2 text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb]"
           value={form.label}
           onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
           placeholder="e.g. April 2026"
@@ -70,25 +70,25 @@ function PeriodTab({ initial }: { initial: { label: string; totalBizDays: number
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">Total Business Days</label>
+          <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">Total Business Days</label>
           <input
             type="number"
-            className="w-full bg-[#111827] border border-[#1E2A3A] rounded-lg px-3 py-2 text-[#F1F5F9] text-sm focus:outline-none focus:border-[#0A9E8A]"
+            className="w-full bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-3 py-2 text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb]"
             value={form.totalBizDays}
             onChange={e => setForm(f => ({ ...f, totalBizDays: Number(e.target.value) }))}
           />
         </div>
         <div>
-          <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">Days Completed</label>
+          <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">Days Completed</label>
           <input
             type="number"
-            className="w-full bg-[#111827] border border-[#1E2A3A] rounded-lg px-3 py-2 text-[#F1F5F9] text-sm focus:outline-none focus:border-[#0A9E8A]"
+            className="w-full bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-3 py-2 text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb]"
             value={form.daysComplete}
             onChange={e => setForm(f => ({ ...f, daysComplete: Number(e.target.value) }))}
           />
         </div>
       </div>
-      <div className="text-[#64748B] text-sm">Days Remaining: <span className="text-amber-400 font-bold">{remaining}</span></div>
+      <div className="text-[#64748b] text-sm">Days Remaining: <span className="text-amber-400 font-bold">{remaining}</span></div>
       <SaveButton onClick={handleSave} saving={saving} saved={saved} />
     </div>
   )
@@ -211,10 +211,10 @@ function LocationTab({ initial }: { initial: LocRow[] }) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-[#64748B] text-sm">Upload a Dentrix location/practice summary CSV, or enter numbers manually.</p>
+          <p className="text-[#64748b] text-sm">Upload a Dentrix location/practice summary CSV, or enter numbers manually.</p>
           {csvError && <p className="text-red-400 text-xs mt-1">⚠ {csvError}</p>}
         </div>
-        <label className="cursor-pointer bg-[#1E2A3A] hover:bg-[#243040] border border-[#1E2A3A] text-[#94A3B8] text-sm px-4 py-2 rounded-lg transition-colors">
+        <label className="cursor-pointer bg-[#f1f5fb] hover:bg-[#e8eff8] border border-[#d1dce9] text-[#64748b] text-sm px-4 py-2 rounded-lg transition-colors">
           Upload Dentrix CSV
           <input type="file" accept=".csv,.txt" className="hidden" onChange={handleCSV} />
         </label>
@@ -223,37 +223,37 @@ function LocationTab({ initial }: { initial: LocRow[] }) {
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#1E2A3A]">
+            <tr className="border-b border-[#d1dce9]">
               {['Location', 'Gross Prod ($)', 'Collections ($)', 'New Pts', 'Active Pts', 'Coll Rate %', 'Supplies %', 'Recare %', 'Phone %', 'Status'].map(h => (
-                <th key={h} className="text-left text-[#64748B] font-semibold uppercase tracking-wider px-2 py-2">{h}</th>
+                <th key={h} className="text-left text-[#64748b] font-semibold uppercase tracking-wider px-2 py-2">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {rows.filter(r => !r.isOSB).map(row => (
-              <tr key={row.code} className="border-b border-[#1E2A3A]/50">
-                <td className="px-2 py-2 font-bold text-[#0A9E8A]">{row.code}</td>
+              <tr key={row.code} className="border-b border-[#d1dce9]/50">
+                <td className="px-2 py-2 font-bold text-[#2563eb]">{row.code}</td>
                 {(['production', 'collections'] as const).map(f => (
                   <td key={f} className="px-2 py-1">
-                    <input type="number" className="w-28 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                    <input type="number" className="w-28 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                       value={row[f]} onChange={e => updateMoney(row.code, f, e.target.value)} />
                   </td>
                 ))}
                 {(['newPatients', 'activePatients'] as const).map(f => (
                   <td key={f} className="px-2 py-1">
-                    <input type="number" className="w-20 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                    <input type="number" className="w-20 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                       value={row[f]} onChange={e => update(row.code, f, e.target.value)} />
                   </td>
                 ))}
-                <td className="px-2 py-1 text-[#64748B]">{row.collectionRate.toFixed(1)}%</td>
+                <td className="px-2 py-1 text-[#64748b]">{row.collectionRate.toFixed(1)}%</td>
                 {(['suppliesPct', 'recareRate', 'phoneAnswerRate'] as const).map(f => (
                   <td key={f} className="px-2 py-1">
-                    <input type="number" step="0.1" className="w-16 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                    <input type="number" step="0.1" className="w-16 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                       value={row[f]} onChange={e => update(row.code, f, e.target.value)} />
                   </td>
                 ))}
                 <td className="px-2 py-1">
-                  <select className="bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A] text-xs"
+                  <select className="bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb] text-xs"
                     value={row.status} onChange={e => update(row.code, 'status', e.target.value)}>
                     {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
@@ -396,71 +396,71 @@ function ProvidersTab({ initialDoctors, initialHygienists }: { initialDoctors: D
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-[#64748B] text-sm">Upload Dentrix Provider Totals CSV, or edit manually. Recare % for hygienists must be entered manually.</p>
+          <p className="text-[#64748b] text-sm">Upload Dentrix Provider Totals CSV, or edit manually. Recare % for hygienists must be entered manually.</p>
           {csvError && <p className="text-red-400 text-xs mt-1">⚠ {csvError}</p>}
         </div>
-        <label className="cursor-pointer bg-[#1E2A3A] hover:bg-[#243040] border border-[#1E2A3A] text-[#94A3B8] text-sm px-4 py-2 rounded-lg transition-colors">
+        <label className="cursor-pointer bg-[#f1f5fb] hover:bg-[#e8eff8] border border-[#d1dce9] text-[#64748b] text-sm px-4 py-2 rounded-lg transition-colors">
           Upload Provider CSV
           <input type="file" accept=".csv,.txt" className="hidden" onChange={handleCSV} />
         </label>
       </div>
 
-      <h3 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-3">Doctors</h3>
+      <h3 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-3">Doctors</h3>
       <div className="overflow-x-auto mb-6">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#1E2A3A]">
+            <tr className="border-b border-[#d1dce9]">
               {['Name', 'Location', 'Gross Prod', 'Collections', 'Coll %', 'Days', 'Prod/Day', 'YTD Prod'].map(h => (
-                <th key={h} className="text-left text-[#64748B] font-semibold px-2 py-2">{h}</th>
+                <th key={h} className="text-left text-[#64748b] font-semibold px-2 py-2">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {doctors.map((doc, i) => (
-              <tr key={i} className="border-b border-[#1E2A3A]/50">
-                <td className="px-2 py-1"><input className="w-44 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.name} onChange={e => updateDoc(i, 'name', e.target.value)} /></td>
+              <tr key={i} className="border-b border-[#d1dce9]/50">
+                <td className="px-2 py-1"><input className="w-44 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.name} onChange={e => updateDoc(i, 'name', e.target.value)} /></td>
                 <td className="px-2 py-1">
-                  <select className="bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.locationCode} onChange={e => updateDoc(i, 'locationCode', e.target.value)}>
+                  <select className="bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.locationCode} onChange={e => updateDoc(i, 'locationCode', e.target.value)}>
                     {locCodes.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </td>
-                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.grossProd} onChange={e => updateDoc(i, 'grossProd', e.target.value)} /></td>
-                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.collections} onChange={e => updateDoc(i, 'collections', e.target.value)} /></td>
-                <td className="px-2 py-1 text-[#64748B]">{doc.collRate.toFixed(1)}%</td>
-                <td className="px-2 py-1"><input type="number" className="w-16 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.daysWorked} onChange={e => updateDoc(i, 'daysWorked', e.target.value)} /></td>
-                <td className="px-2 py-1 text-[#64748B]">${doc.prodPerDay.toLocaleString()}</td>
-                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={doc.ytdProd} onChange={e => updateDoc(i, 'ytdProd', e.target.value)} /></td>
+                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.grossProd} onChange={e => updateDoc(i, 'grossProd', e.target.value)} /></td>
+                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.collections} onChange={e => updateDoc(i, 'collections', e.target.value)} /></td>
+                <td className="px-2 py-1 text-[#64748b]">{doc.collRate.toFixed(1)}%</td>
+                <td className="px-2 py-1"><input type="number" className="w-16 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.daysWorked} onChange={e => updateDoc(i, 'daysWorked', e.target.value)} /></td>
+                <td className="px-2 py-1 text-[#64748b]">${doc.prodPerDay.toLocaleString()}</td>
+                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={doc.ytdProd} onChange={e => updateDoc(i, 'ytdProd', e.target.value)} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <h3 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-3">Hygienists</h3>
+      <h3 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-3">Hygienists</h3>
       <div className="overflow-x-auto mb-4">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#1E2A3A]">
+            <tr className="border-b border-[#d1dce9]">
               {['Name', 'Location', 'Gross Prod', 'Collections', 'Coll %', 'Hours', 'Prod/Hr', 'Recare %'].map(h => (
-                <th key={h} className="text-left text-[#64748B] font-semibold px-2 py-2">{h}</th>
+                <th key={h} className="text-left text-[#64748b] font-semibold px-2 py-2">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {hygienists.map((hyg, i) => (
-              <tr key={i} className="border-b border-[#1E2A3A]/50">
-                <td className="px-2 py-1"><input className="w-44 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.name} onChange={e => updateHyg(i, 'name', e.target.value)} /></td>
+              <tr key={i} className="border-b border-[#d1dce9]/50">
+                <td className="px-2 py-1"><input className="w-44 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.name} onChange={e => updateHyg(i, 'name', e.target.value)} /></td>
                 <td className="px-2 py-1">
-                  <select className="bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.locationCode} onChange={e => updateHyg(i, 'locationCode', e.target.value)}>
+                  <select className="bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.locationCode} onChange={e => updateHyg(i, 'locationCode', e.target.value)}>
                     {locCodes.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </td>
-                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.grossProd} onChange={e => updateHyg(i, 'grossProd', e.target.value)} /></td>
-                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.collections} onChange={e => updateHyg(i, 'collections', e.target.value)} /></td>
-                <td className="px-2 py-1 text-[#64748B]">{hyg.collRate.toFixed(1)}%</td>
-                <td className="px-2 py-1"><input type="number" step="0.5" className="w-20 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.hoursWorked} onChange={e => updateHyg(i, 'hoursWorked', e.target.value)} /></td>
-                <td className="px-2 py-1 text-[#64748B]">${hyg.prodPerHr}</td>
-                <td className="px-2 py-1"><input type="number" step="0.1" className="w-20 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]" value={hyg.recareRate} onChange={e => updateHyg(i, 'recareRate', e.target.value)} /></td>
+                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.grossProd} onChange={e => updateHyg(i, 'grossProd', e.target.value)} /></td>
+                <td className="px-2 py-1"><input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.collections} onChange={e => updateHyg(i, 'collections', e.target.value)} /></td>
+                <td className="px-2 py-1 text-[#64748b]">{hyg.collRate.toFixed(1)}%</td>
+                <td className="px-2 py-1"><input type="number" step="0.5" className="w-20 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.hoursWorked} onChange={e => updateHyg(i, 'hoursWorked', e.target.value)} /></td>
+                <td className="px-2 py-1 text-[#64748b]">${hyg.prodPerHr}</td>
+                <td className="px-2 py-1"><input type="number" step="0.1" className="w-20 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]" value={hyg.recareRate} onChange={e => updateHyg(i, 'recareRate', e.target.value)} /></td>
               </tr>
             ))}
           </tbody>
@@ -503,26 +503,26 @@ function PhonesTab({ initial }: { initial: PhoneRow[] }) {
 
   return (
     <div>
-      <p className="text-[#64748B] text-sm mb-4">Enter call data from Mango Voice. Missed calls and answer rate are auto-calculated. Est. revenue = missed × $80.</p>
+      <p className="text-[#64748b] text-sm mb-4">Enter call data from Mango Voice. Missed calls and answer rate are auto-calculated. Est. revenue = missed × $80.</p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1E2A3A]">
+            <tr className="border-b border-[#d1dce9]">
               {['Location', 'Total Calls', 'Answered', 'Missed', 'Answer Rate', 'Rev at Risk'].map(h => (
-                <th key={h} className="text-left text-[#64748B] text-xs font-semibold uppercase tracking-wider px-3 py-2">{h}</th>
+                <th key={h} className="text-left text-[#64748b] text-xs font-semibold uppercase tracking-wider px-3 py-2">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {rows.map(row => (
-              <tr key={row.code} className="border-b border-[#1E2A3A]/50">
-                <td className="px-3 py-2 font-bold text-[#0A9E8A]">{row.code}</td>
+              <tr key={row.code} className="border-b border-[#d1dce9]/50">
+                <td className="px-3 py-2 font-bold text-[#2563eb]">{row.code}</td>
                 <td className="px-3 py-2">
-                  <input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                  <input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                     value={row.totalCalls} onChange={e => update(row.code, 'totalCalls', e.target.value)} />
                 </td>
                 <td className="px-3 py-2">
-                  <input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                  <input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                     value={row.answered} onChange={e => update(row.code, 'answered', e.target.value)} />
                 </td>
                 <td className="px-3 py-2 text-red-400 font-bold">{row.missed.toLocaleString()}</td>
@@ -595,19 +595,19 @@ function OSBTab({ initialLocations }: { initialLocations: LocRow[] }) {
           { label: 'Phone Answer Rate %', field: 'phoneAnswerRate' },
         ].map(({ label, field }) => (
           <div key={field}>
-            <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">{label}</label>
+            <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">{label}</label>
             <input
               type="number"
               step={field.includes('Pct') || field.includes('Rate') ? '0.1' : '1'}
-              className="w-full bg-[#111827] border border-[#1E2A3A] rounded-lg px-3 py-2 text-[#F1F5F9] text-sm focus:outline-none focus:border-[#0A9E8A]"
+              className="w-full bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-3 py-2 text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb]"
               value={form[field as keyof LocRow] as number}
               onChange={e => set(field as keyof LocRow, e.target.value)}
             />
           </div>
         ))}
         <div>
-          <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">Collection Rate %</label>
-          <div className="text-[#F1F5F9] font-bold text-sm py-2">{form.collectionRate.toFixed(1)}%</div>
+          <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">Collection Rate %</label>
+          <div className="text-[#0f172a] font-bold text-sm py-2">{form.collectionRate.toFixed(1)}%</div>
         </div>
       </div>
       <SaveButton onClick={handleSave} saving={saving} saved={saved} />
@@ -678,41 +678,41 @@ function ARTab({ initialAR }: { initialAR: { asOf: string; healthScore: number; 
     <div>
       <div className="flex items-center gap-4 mb-4">
         <div>
-          <label className="text-[#94A3B8] text-xs uppercase tracking-wider block mb-1">AR As-Of Date</label>
+          <label className="text-[#64748b] text-xs uppercase tracking-wider block mb-1">AR As-Of Date</label>
           <input
-            className="bg-[#111827] border border-[#1E2A3A] rounded-lg px-3 py-2 text-[#F1F5F9] text-sm focus:outline-none focus:border-[#0A9E8A]"
+            className="bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-3 py-2 text-[#0f172a] text-sm focus:outline-none focus:border-[#2563eb]"
             value={asOf}
             onChange={e => setAsOf(e.target.value)}
             placeholder="MM/DD/YYYY"
           />
         </div>
-        <p className="text-[#64748B] text-sm self-end pb-2">Totals, pcts, health score, and AR:Prod ratio are auto-calculated when you save.</p>
+        <p className="text-[#64748b] text-sm self-end pb-2">Totals, pcts, health score, and AR:Prod ratio are auto-calculated when you save.</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-[#1E2A3A]">
+            <tr className="border-b border-[#d1dce9]">
               {['Loc', '0-30 ($)', '31-60 ($)', '61-90 ($)', '90+ ($)', 'Ins AR ($)', 'Pt AR ($)', 'AR:Prod', 'Status'].map(h => (
-                <th key={h} className="text-left text-[#64748B] font-semibold px-2 py-2">{h}</th>
+                <th key={h} className="text-left text-[#64748b] font-semibold px-2 py-2">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {locs.map(loc => (
-              <tr key={loc.code} className="border-b border-[#1E2A3A]/50">
-                <td className="px-2 py-1 font-bold text-[#0A9E8A]">{loc.code}{loc.isOSB && <span className="ml-1 text-amber-400 text-[10px]">ALT</span>}</td>
+              <tr key={loc.code} className="border-b border-[#d1dce9]/50">
+                <td className="px-2 py-1 font-bold text-[#2563eb]">{loc.code}{loc.isOSB && <span className="ml-1 text-amber-400 text-[10px]">ALT</span>}</td>
                 {(['d0_30', 'd31_60', 'd61_90', 'd90plus', 'insuranceAR', 'patientAR'] as const).map(f => (
                   <td key={f} className="px-2 py-1">
-                    <input type="number" className="w-24 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                    <input type="number" className="w-24 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                       value={loc[f]} onChange={e => update(loc.code, f, e.target.value)} />
                   </td>
                 ))}
                 <td className="px-2 py-1">
-                  <input type="number" step="0.01" className="w-16 bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A]"
+                  <input type="number" step="0.01" className="w-16 bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb]"
                     value={loc.arToProd} onChange={e => update(loc.code, 'arToProd', e.target.value)} />
                 </td>
                 <td className="px-2 py-1">
-                  <select className="bg-[#111827] border border-[#1E2A3A] rounded px-2 py-1 text-[#F1F5F9] focus:outline-none focus:border-[#0A9E8A] text-xs"
+                  <select className="bg-[#f1f5fb] border border-[#d1dce9] rounded px-2 py-1 text-[#0f172a] focus:outline-none focus:border-[#2563eb] text-xs"
                     value={loc.status} onChange={e => update(loc.code, 'status', e.target.value)}>
                     {['good', 'watch', 'needs_work'].map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
@@ -762,15 +762,15 @@ export default function AdminClient({ initialData, initialPeriod }: {
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-[#0D1629] border border-[#1E2A3A] rounded-xl p-8 w-full max-w-sm">
+        <div className="bg-white border border-[#d1dce9] rounded-xl p-8 w-full max-w-sm">
           <div className="text-center mb-6">
             <div className="text-3xl mb-2">🔒</div>
-            <div className="text-[#F1F5F9] font-bold text-lg">Admin Access</div>
-            <div className="text-[#64748B] text-sm mt-1">GreenSky Dashboard Data Manager</div>
+            <div className="text-[#0f172a] font-bold text-lg">Admin Access</div>
+            <div className="text-[#64748b] text-sm mt-1">GreenSky Dashboard Data Manager</div>
           </div>
           <input
             type="password"
-            className="w-full bg-[#111827] border border-[#1E2A3A] rounded-lg px-4 py-3 text-[#F1F5F9] mb-3 focus:outline-none focus:border-[#0A9E8A]"
+            className="w-full bg-[#f1f5fb] border border-[#d1dce9] rounded-lg px-4 py-3 text-[#0f172a] mb-3 focus:outline-none focus:border-[#2563eb]"
             placeholder="Admin password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -780,7 +780,7 @@ export default function AdminClient({ initialData, initialPeriod }: {
           <button
             onClick={handleLogin}
             disabled={logging}
-            className="w-full bg-[#0A9E8A] hover:bg-[#08866f] text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50"
+            className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50"
           >
             {logging ? 'Checking…' : 'Enter'}
           </button>
@@ -793,22 +793,25 @@ export default function AdminClient({ initialData, initialPeriod }: {
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[#F1F5F9] text-2xl font-bold">Data Manager</h1>
-          <p className="text-[#64748B] text-sm mt-1">Update dashboard data — changes go live immediately</p>
+          <h1 className="text-[#0f172a] text-2xl font-bold">Data Manager</h1>
+          <p className="text-[#64748b] text-sm mt-1">Update dashboard data — changes go live immediately</p>
         </div>
-        <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1 rounded-full font-semibold">Admin</div>
+        <div className="flex items-center gap-3">
+          <a href="/admin/sync" className="text-xs text-[#2563eb] hover:underline">🔗 Sync Setup</a>
+          <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-1 rounded-full font-semibold">Admin</div>
+        </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-[#0D1629] p-1 rounded-xl border border-[#1E2A3A] overflow-x-auto">
+      <div className="flex gap-1 mb-6 bg-white p-1 rounded-xl border border-[#d1dce9] overflow-x-auto">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
               tab === t.id
-                ? 'bg-[#0A9E8A]/15 text-[#0A9E8A] border border-[#0A9E8A]/20'
-                : 'text-[#64748B] hover:text-[#94A3B8]'
+                ? 'bg-[#2563eb]/15 text-[#2563eb] border border-[#2563eb]/20'
+                : 'text-[#64748b] hover:text-[#64748b]'
             }`}
           >
             {t.label}
@@ -816,7 +819,7 @@ export default function AdminClient({ initialData, initialPeriod }: {
         ))}
       </div>
 
-      <div className="bg-[#0D1629] border border-[#1E2A3A] rounded-xl p-6">
+      <div className="bg-white border border-[#d1dce9] rounded-xl p-6">
         {tab === 'period'    && <PeriodTab    initial={initialPeriod} />}
         {tab === 'locations' && <LocationTab  initial={initialData.locations as LocRow[]} />}
         {tab === 'providers' && <ProvidersTab initialDoctors={initialData.doctors as DoctorRow[]} initialHygienists={initialData.hygienists as HygRow[]} />}

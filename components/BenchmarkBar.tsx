@@ -20,12 +20,12 @@ export default function BenchmarkBar({ value, target, flagThreshold, direction, 
   return (
     <div>
       {label && (
-        <div className="flex justify-between text-xs text-[#64748B] mb-1">
+        <div className="flex justify-between text-xs text-[#64748b] mb-1">
           <span>{label}</span>
-          <span className="text-[#94A3B8] font-medium">{value}{unit} <span className="text-[#64748B]">/ {target}{unit} target</span></span>
+          <span className="text-[#64748b] font-medium">{value}{unit} <span className="text-[#64748b]">/ {target}{unit} target</span></span>
         </div>
       )}
-      <div className="relative h-2 bg-[#1E2A3A] rounded-full overflow-visible">
+      <div className="relative h-2 bg-[#f1f5fb] rounded-full overflow-visible">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: barColor }}

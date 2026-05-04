@@ -1,26 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import { LOCATIONS, MONTHLY_GOALS, BENCHMARKS, PERIOD_INFO } from '@/lib/data'
+import { LOCATIONS, MONTHLY_GOALS, BENCHMARKS } from '@/lib/data'
+import { useMonth } from '@/lib/contexts/MonthContext'
 import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
 import StatusBadge from '@/components/StatusBadge'
 import DaysLeft from '@/components/DaysLeft'
 import GoalBar from '@/components/GoalBar'
+import type { DashboardData, PeriodData } from '@/lib/types'
 
 const TABS = ['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'PB', 'PR', 'OSB']
 
-type LocRow = {
-  code: string; production: number; collections: number; collectionRate: number;
-  newPatients: number; recareRate: number; phoneAnswerRate: number; activePatients: number;
-  suppliesPct: number; status: string; isOSB?: boolean;
-}
-
-export default function LocationsClient({ locations, periodLabel, daysRemaining }: {
-  locations: LocRow[]
-  periodLabel: string
-  daysRemaining: number
+export default function LocationsClient({
+  currentData,
+  currentPeriod,
+}: {
+  currentData:   DashboardData
+  currentPeriod: PeriodData
 }) {
+  const { snapshot } = useMonth()
+  const data   = snapshot?.data       ?? currentData
+  const period = snapshot?.periodInfo ?? currentPeriod
+
+  const { locations } = data
+  const { daysComplete, totalBizDays, daysRemaining } = period
+
   const [activeTab, setActiveTab] = useState('ALL')
   const filtered = activeTab === 'ALL' ? locations : locations.filter(l => l.code === activeTab)
 
@@ -29,9 +34,12 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-[#0f172a] text-2xl font-bold">Location Detail</h1>
-          <p className="text-[#64748b] text-sm mt-1">Full scorecard per location · {periodLabel}</p>
+          <p className="text-[#64748b] text-sm mt-1">
+            Full scorecard per location ·{' '}
+            {snapshot ? <span className="text-amber-600 font-semibold">▸ {period.label} — Historical</span> : period.label}
+          </p>
         </div>
-        <DaysLeft />
+        <DaysLeft period={period} />
       </div>
 
       {/* Filter Tabs */}
@@ -57,7 +65,7 @@ export default function LocationsClient({ locations, periodLabel, daysRemaining 
           const meta         = LOCATIONS.find(l => l.code === loc.code)
           const goal         = MONTHLY_GOALS[loc.code] ?? 100000
           const pct          = pctToGoal(loc.collections, goal)
-          const status       = collectionsVsPaceStatus(loc.collections, goal, PERIOD_INFO.daysComplete, PERIOD_INFO.totalBizDays)
+          const status       = collectionsVsPaceStatus(loc.collections, goal, daysComplete, totalBizDays)
           const dollarToGoal = Math.max(0, goal - loc.collections)
           const perDay       = daysRemaining > 0 ? dollarToGoal / daysRemaining : 0
 
