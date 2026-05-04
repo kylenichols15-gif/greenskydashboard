@@ -13,6 +13,24 @@ export const MONTHLY_GOALS: Record<string, number> = {
   LKW: 335000, LT: 210000, HNR: 90000, HNS: 60000, PB: 275000, PR: 140000, OSB: 210000,
 }
 
+// Individual doctor monthly gross production goals
+// PLACEHOLDER — update with confirmed targets from Kyle
+// Key must match DEMO_DATA.doctors[].name exactly
+export const PROVIDER_GOALS: Record<string, number> = {
+  'Nichols, Christopher':    360000,
+  "Weathers, L'Cris":       330000,
+  'Proctor, Sarah':          330000,
+  'Ballard, Erin':           250000,
+  'Connolly, Noah':          235000,
+  'Nichols, Patrick':        165000,
+  'Walters, Carrie':         160000,
+  'Skaggs, Ernest':          110000,
+  'Osbourne, Brian':         100000,
+  'Gleason, Robert':          90000,
+  'Chadwick, Evan':           80000,
+  'Decker Haycraft, Kara':    75000,
+}
+
 export const BENCHMARKS = {
   NOI:               { target: 22.5, flagBelow: 18 },
   supplies_pct:      { target: 5.5,  flagAbove: 6.5 },

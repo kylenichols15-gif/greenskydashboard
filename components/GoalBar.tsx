@@ -8,6 +8,7 @@ interface GoalBarProps {
   color?: string        // override fill color (hex) — skips pace-relative logic
   showMarker?: boolean  // default true
   className?: string
+  periodInfo?: { daysComplete: number; totalBizDays: number }  // override for month toggle
 }
 
 const heightClass = { thin: 'h-1.5', medium: 'h-2.5', thick: 'h-4' }
@@ -30,8 +31,9 @@ export default function GoalBar({
   color,
   showMarker = true,
   className = '',
+  periodInfo,
 }: GoalBarProps) {
-  const { daysComplete, totalBizDays } = PERIOD_INFO
+  const { daysComplete, totalBizDays } = periodInfo ?? PERIOD_INFO
   const pacePct    = (daysComplete / totalBizDays) * 100    // % through the period
   const fillWidth  = Math.min((pct    / barMax) * 100, 100) // fill % of bar width
   const markerLeft = Math.min((pacePct / barMax) * 100, 99) // pace line % of bar width

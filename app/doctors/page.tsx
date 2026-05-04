@@ -1,9 +1,10 @@
-import { LOCATIONS } from '@/lib/data'
+import { LOCATIONS, PROVIDER_GOALS } from '@/lib/data'
 import { getData } from '@/lib/getData'
-import { formatCurrency, formatPct } from '@/lib/utils'
+import { formatCurrency, formatPct, pctToGoal } from '@/lib/utils'
 import Podium from '@/components/Podium'
 import DaysLeft from '@/components/DaysLeft'
 import OSBBadge from '@/components/OSBBadge'
+import GoalBar from '@/components/GoalBar'
 
 export default async function DoctorsPage() {
   const data = await getData()
@@ -22,26 +23,26 @@ export default async function DoctorsPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="flex items-start justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-[#F1F5F9] text-2xl font-bold">Doctor Leaderboard</h1>
-          <p className="text-[#64748B] text-sm mt-1">Production · Efficiency · Collections · April 2026</p>
+          <h1 className="text-[#0f172a] text-2xl font-bold">Doctor Leaderboard</h1>
+          <p className="text-[#64748b] text-sm mt-1">Production · Efficiency · Collections · April 2026</p>
         </div>
         <DaysLeft />
       </div>
 
       {/* Hero banner */}
-      <div className="bg-[#0D2B45] border border-[#0A9E8A]/20 rounded-xl p-4 mb-8 flex items-center justify-between">
+      <div className="bg-[#eff6ff] border border-[#2563eb]/20 rounded-xl p-4 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-2xl">🏆</span>
           <div>
-            <div className="text-[#F1F5F9] font-bold">The Race Is On — Who's Taking the Crown?</div>
-            <div className="text-[#64748B] text-sm">Ranked by MTD Production · {sorted.length} doctors competing</div>
+            <div className="text-[#0f172a] font-bold">The Race Is On — Who's Taking the Crown?</div>
+            <div className="text-[#64748b] text-sm">Ranked by MTD Production · {sorted.length} doctors competing</div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-[#F1F5F9] text-2xl font-bold">{sorted.length}</div>
-          <div className="text-[#64748B] text-xs uppercase tracking-wider">Doctors</div>
+          <div className="text-[#0f172a] text-2xl font-bold">{sorted.length}</div>
+          <div className="text-[#64748b] text-xs uppercase tracking-wider">Doctors</div>
         </div>
       </div>
 
@@ -49,63 +50,91 @@ export default async function DoctorsPage() {
       <Podium entries={podiumEntries} />
 
       {/* Full Leaderboard */}
-      <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-wider mb-4">Full Leaderboard</h2>
+      <h2 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-4">Full Leaderboard</h2>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
         {sorted.map((doc, i) => {
           const loc = LOCATIONS.find(l => l.code === doc.locationCode)
-          const isElite  = doc.grossProd > avgProd * 1.10
-          const isWatch  = doc.grossProd < avgProd * 0.85
-          const badge = isElite
-            ? { label: '🔥 Elite', cls: 'bg-green-500/10 text-green-400 border-green-500/20' }
-            : isWatch
-            ? { label: '📋 Needs Work', cls: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
-            : { label: '✓ On Track', cls: 'bg-[#1E2A3A] text-[#64748B] border-[#1E2A3A]' }
 
-          const borderColor = i === 0 ? 'border-[#F59E0B]/30' : i === 1 ? 'border-[#94A3B8]/20' : i === 2 ? 'border-[#CD7F32]/30' : 'border-[#1E2A3A]'
+          // Peer comparison badge
+          const isElite = doc.grossProd > avgProd * 1.10
+          const isWatch = doc.grossProd < avgProd * 0.85
+          const badge = isElite
+            ? { label: '🔥 Elite',       cls: 'bg-green-500/10 text-green-400 border-green-500/20' }
+            : isWatch
+            ? { label: '📋 Needs Work',  cls: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
+            : { label: '✓ On Track',     cls: 'bg-[#f1f5fb] text-[#64748b] border-[#d1dce9]' }
+
+          // Goal data
+          const goal       = PROVIDER_GOALS[doc.name] ?? 0
+          const goalPct    = goal > 0 ? pctToGoal(doc.grossProd, goal) : null
+          const goalColor  = goalPct === null ? '' : goalPct >= 100 ? 'text-green-400' : goalPct >= 90 ? 'text-amber-400' : 'text-red-400'
+          const dollarGap  = goal > 0 ? Math.max(0, goal - doc.grossProd) : 0
+
+          const borderColor = i === 0 ? 'border-[#F59E0B]/30' : i === 1 ? 'border-[#94A3B8]/20' : i === 2 ? 'border-[#CD7F32]/30' : 'border-[#d1dce9]'
 
           return (
-            <div key={doc.name} className={`bg-[#0D1629] border rounded-xl p-4 ${borderColor}`}>
+            <div key={doc.name} className={`bg-white border rounded-xl p-4 ${borderColor}`}>
+              {/* Header */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#111827] flex items-center justify-center text-[#64748B] font-bold text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-[#f1f5fb] flex items-center justify-center text-[#64748b] font-bold text-sm">
                     #{i + 1}
                   </div>
                   <div>
-                    <div className="text-[#F1F5F9] font-semibold">{doc.name}</div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-[#0f172a] font-semibold">{doc.name}</div>
+                      {doc.isOSB && <OSBBadge />}
+                    </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="bg-[#0A9E8A]/10 text-[#0A9E8A] text-xs px-1.5 py-0.5 rounded border border-[#0A9E8A]/20 font-medium">{doc.locationCode}</span>
-                      <span className="text-[#64748B] text-xs">{loc?.name}</span>
+                      <span className="bg-[#2563eb]/10 text-[#2563eb] text-xs px-1.5 py-0.5 rounded border border-[#2563eb]/20 font-medium">{doc.locationCode}</span>
+                      <span className="text-[#64748b] text-xs">{loc?.name}</span>
                     </div>
                   </div>
                 </div>
                 <span className={`text-xs px-2 py-0.5 rounded border font-medium ${badge.cls}`}>{badge.label}</span>
               </div>
-              <div className="grid grid-cols-4 gap-3">
+
+              {/* Stats row */}
+              <div className="grid grid-cols-4 gap-3 mb-3">
                 <div>
-                  <div className="text-[#64748B] text-xs">MTD Production</div>
-                  <div className="text-[#F1F5F9] font-bold">{formatCurrency(doc.grossProd, true)}</div>
-                  <div className="text-[#64748B] text-xs">{doc.daysWorked}d worked</div>
+                  <div className="text-[#64748b] text-xs">MTD Production</div>
+                  <div className="text-[#0f172a] font-bold">{formatCurrency(doc.grossProd, true)}</div>
+                  <div className="text-[#64748b] text-xs">{doc.daysWorked}d worked</div>
                 </div>
                 <div>
-                  <div className="text-[#64748B] text-xs">Prod / Day</div>
-                  <div className="text-[#F1F5F9] font-bold">{formatCurrency(doc.prodPerDay, true)}</div>
-                  <div className="text-[#64748B] text-xs">Target $8K+</div>
+                  <div className="text-[#64748b] text-xs">Prod / Day</div>
+                  <div className="text-[#0f172a] font-bold">{formatCurrency(doc.prodPerDay, true)}</div>
+                  <div className="text-[#64748b] text-xs">Target $8K+</div>
                 </div>
                 <div>
-                  <div className="text-[#64748B] text-xs">Collections</div>
-                  <div className="text-[#F1F5F9] font-bold">{formatCurrency(doc.collections, true)}</div>
-                  <div className="text-[#64748B] text-xs">{formatPct(doc.collRate)} rate</div>
+                  <div className="text-[#64748b] text-xs">Collections</div>
+                  <div className="text-[#0f172a] font-bold">{formatCurrency(doc.collections, true)}</div>
+                  <div className="text-[#64748b] text-xs">{formatPct(doc.collRate)} rate</div>
                 </div>
                 <div>
-                  <div className="text-[#64748B] text-xs">YTD Production</div>
-                  <div className="text-[#F1F5F9] font-bold">{formatCurrency(doc.ytdProd, true)}</div>
+                  <div className="text-[#64748b] text-xs">YTD Production</div>
+                  <div className="text-[#0f172a] font-bold">{formatCurrency(doc.ytdProd, true)}</div>
                 </div>
               </div>
+
+              {/* Goal progress */}
+              {goal > 0 && goalPct !== null && (
+                <div className="border-t border-[#f1f5fb] pt-3">
+                  <GoalBar pct={goalPct} height="thin" />
+                  <div className="flex justify-between items-center mt-1">
+                    <span className={`text-xs font-semibold ${goalColor}`}>{goalPct}% of goal</span>
+                    <span className="text-[#94a3b8] text-xs">
+                      Goal {formatCurrency(goal, true)}
+                      {dollarGap > 0 && <span className="text-[#94a3b8]"> · {formatCurrency(dollarGap, true)} short</span>}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )
         })}
       </div>
-      <p className="text-[#3A4A5A] text-xs mt-3">Compensation data not shown. Ranked by MTD production.</p>
+      <p className="text-[#94a3b8] text-xs mt-3">Compensation data not shown. Ranked by MTD production. Goals are placeholder estimates — confirm with Kyle.</p>
     </div>
   )
 }
