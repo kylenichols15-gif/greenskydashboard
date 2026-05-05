@@ -93,7 +93,7 @@ const fmtDoc = (name: string) => {
 
 const LOC_COLORS: Record<string, string> = {
   LKW: '#2563eb', LT: '#10b981', HNR: '#f59e0b',
-  HNS: '#8b5cf6', PB: '#ef4444', PR: '#06b6d4', OSB: '#f97316',
+  HNS: '#8b5cf6', HNK: '#ec4899', PB: '#ef4444', PR: '#06b6d4', OSB: '#f97316',
 }
 
 // ─── Metric configs ───────────────────────────────────────────────────────────

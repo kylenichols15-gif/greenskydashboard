@@ -1,6 +1,8 @@
 // April 2026 — FINAL (BD22, 22/22 business days) — INLINED (do not re-import from data.ts)
 // Sources: Dentrix Ascend ProviderTotals (14) + Prod/Coll Summary (12) + AgedReceivables (14)
 //          Mango Voice 04/01–04/30 · Dental Intel OSB (04/29 — DI not updated 04/30)
+// HNK (Harvey & Nichols King) — opened 04/29/2026; added to April per Prod/Coll Summary (13)
+//   Production $3,361 (King, Susan M — 2 days 04/29-30); $0 collections first days
 import type { MonthSnapshot } from '../types'
 
 const apr2026: MonthSnapshot = {
@@ -15,7 +17,7 @@ const apr2026: MonthSnapshot = {
   data: {
     period: 'April 2026',
     org: {
-      production:      2636181,
+      production:      2639542,    // Original 2,636,181 + HNK $3,361 (04/29-30 via Prod/Coll Summary)
       productionGoal:  2400000,
       collections:     1301971,
       collectionsGoal: 1320000,
@@ -32,6 +34,7 @@ const apr2026: MonthSnapshot = {
       { code:'HNS', production:97799,  collections:56685,  collectionRate:58.0,  newPatients:73,  recareRate:0,    phoneAnswerRate:65.2, activePatients:276, suppliesPct:3.62, status:'watch'    },
       { code:'PB',  production:288225, collections:277877, collectionRate:96.4,  newPatients:127, recareRate:0,    phoneAnswerRate:60.9, activePatients:389, suppliesPct:6.77, status:'on_pace'  },
       { code:'PR',  production:215143, collections:144356, collectionRate:67.1,  newPatients:102, recareRate:0,    phoneAnswerRate:68.4, activePatients:321, suppliesPct:10.58,status:'on_pace'  },
+      { code:'HNK', production:3361,   collections:0,      collectionRate:0,     newPatients:0,   recareRate:0,    phoneAnswerRate:0,    activePatients:0,   suppliesPct:0,    status:'on_pace'  },
       { code:'OSB', production:109100, collections:178883, collectionRate:163.9, newPatients:62,  recareRate:92.7, phoneAnswerRate:74.0, activePatients:292, suppliesPct:2.09, status:'watch',   isOSB:true },
     ],
 
@@ -92,21 +95,23 @@ const apr2026: MonthSnapshot = {
       { code:'HNS', totalCalls:575,  answered:375,  missed:200, answerRate:65.2, estMissedRevenue:35400  },
       { code:'PB',  totalCalls:1555, answered:947,  missed:608, answerRate:60.9, estMissedRevenue:107616 },
       { code:'PR',  totalCalls:1226, answered:839,  missed:387, answerRate:68.4, estMissedRevenue:68499  },
+      { code:'HNK', totalCalls:0,    answered:0,    missed:0,   answerRate:0,    estMissedRevenue:0       },
       { code:'OSB', totalCalls:1183, answered:875,  missed:308, answerRate:74.0, estMissedRevenue:54516  },
     ],
 
     ar: {
       asOf: '04/30/2026',
       healthScore: 49,
-      total: 2228008,
-      buckets: { d0_30: 1394299, d31_60: 429999, d61_90: 180886, d90plus: 222826 },
-      pcts:    { d0_30: 62.6,    d31_60: 19.3,   d61_90: 8.1,    d90plus: 10.0  },
+      total: 2231369,   // Original 2,228,008 + HNK $3,361 (first billings 04/29-30)
+      buckets: { d0_30: 1397660, d31_60: 429999, d61_90: 180886, d90plus: 222824 },
+      pcts:    { d0_30: 62.7,    d31_60: 19.3,   d61_90: 8.1,    d90plus: 10.0  },
       arToProdRatio: 0.89,
       locations: [
         { code:'LKW', total:709056,  d0_30:305448, d31_60:194628, d61_90:98003,  d90plus:110977, pct0_30:43.1, pct31_60:27.5, pct61_90:13.8, pct90plus:15.6, insuranceAR:214289, patientAR:353120, patientPct:50, arToProd:1.74, status:'needs_work' },
         { code:'LT',  total:234439,  d0_30:153478, d31_60:31609,  d61_90:24601,  d90plus:24751,  pct0_30:65.5, pct31_60:13.5, pct61_90:10.5, pct90plus:10.6, insuranceAR:93361,  patientAR:43415,  patientPct:19, arToProd:1.43, status:'needs_work' },
         { code:'HNR', total:218003,  d0_30:150073, d31_60:28485,  d61_90:11126,  d90plus:28318,  pct0_30:68.8, pct31_60:13.1, pct61_90:5.1,  pct90plus:13.0, insuranceAR:89977,  patientAR:67831,  patientPct:31, arToProd:2.00, status:'needs_work' },
         { code:'HNS', total:89814,   d0_30:77702,  d31_60:8083,   d61_90:861,    d90plus:3168,   pct0_30:86.5, pct31_60:9.0,  pct61_90:1.0,  pct90plus:3.5,  insuranceAR:38243,  patientAR:13627,  patientPct:15, arToProd:0.92, status:'good'      },
+        { code:'HNK', total:3361,    d0_30:3361,   d31_60:0,      d61_90:0,      d90plus:0,      pct0_30:100,  pct31_60:0,    pct61_90:0,    pct90plus:0,    insuranceAR:2689,   patientAR:672,    patientPct:20, arToProd:0.07, status:'good'      },
         { code:'PB',  total:342932,  d0_30:289707, d31_60:32367,  d61_90:11589,  d90plus:9270,   pct0_30:84.5, pct31_60:9.4,  pct61_90:3.4,  pct90plus:2.7,  insuranceAR:142891, patientAR:54142,  patientPct:16, arToProd:1.19, status:'good'      },
         { code:'PR',  total:440348,  d0_30:267582, d31_60:115763, d61_90:24661,  d90plus:32341,  pct0_30:60.8, pct31_60:26.3, pct61_90:5.6,  pct90plus:7.3,  insuranceAR:157997, patientAR:238361, patientPct:54, arToProd:2.05, status:'watch'     },
         { code:'OSB', total:193416,  d0_30:150308, d31_60:19063,  d61_90:10045,  d90plus:14001,  pct0_30:77.7, pct31_60:9.9,  pct61_90:5.2,  pct90plus:7.2,  insuranceAR:119833, patientAR:73584,  patientPct:38, arToProd:1.77, status:'watch',    isOSB:true },
