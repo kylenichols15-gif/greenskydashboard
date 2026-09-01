@@ -82,8 +82,8 @@ export const PERIOD_INFO = {
 // July 2026 FINAL frozen at lib/months/2026-07.ts (prod $2,597,555 · coll $1,362,082 · 701 NP).
 // Location production = ProviderTotals (08/01–08/31 MTD) gross Procedure Charges $2,413,445, split to the 6 Ascend
 //   locations by each location's share of August P/C-Summary (68) net production. Ties exactly to PT grand.
-//   HNK + OSB = P/C Summary (68) net proxy (HNK $39,146 · OSB $129,124) — ⚠ HELD at 8/18: NO fresh P/C in the close
-//   batch, so HNK/OSB production is a stale proxy (frozen --partial). ORG production = $2,413,445 + $39,146 + $129,124 = $2,581,715.
+//   HNK + OSB = P/C Summary (69) full month (HNK $67,154 · OSB $158,401) — refreshed 09/01 from fresh 08/01–08/31 pull
+//   (superseded the stale 8/18 proxy of HNK $39,146 / OSB $129,124). ORG production = $2,413,445 + $67,154 + $158,401 = $2,639,000.
 // COLLECTIONS = ORG-WIDE Deposit Slip (21) full month 08/01–08/31 (source of truth per Tiffany) — all 8 locations, actual cash.
 //   Org = $1,450,143 = 99.7% of the $1,455,000 goal. Per-provider collections = ProviderTotals Payments.
 // activeHygienePatients (per Chris 8/28) = Active Patients in Recare — CARRIED from BD19 (no recare export in close batch).
@@ -94,7 +94,7 @@ export const PERIOD_INFO = {
 export const DEMO_DATA = {
   period: 'August 2026',
   org: {
-    production:      2581715,  // GROSS PT (08/01–08/31) 6-Ascend split $2,413,445 + HNK $39,146 + OSB $129,124 (HNK/OSB held 8/18)
+    production:      2639000,  // 6-Ascend GROSS $2,413,445 + HNK $67,154 + OSB $158,401 (HNK/OSB from P/C Summary 69, full month 08/01–08/31)
     productionGoal:  2910000,  // = sum of MONTHLY_PROD_GOALS (location sums)
     collections:     1450143,  // ORG-WIDE Deposit Slip (21) full month — all 8 locations actual cash (99.7% of goal)
     collectionsGoal: 1455000,  // = sum of MONTHLY_GOALS (matches bonus board)
@@ -113,10 +113,10 @@ export const DEMO_DATA = {
     { code:'LT',  production:327820, collections:141278, collectionRate:43.1,  newPatients:57, recareRate:0, phoneAnswerRate: 72, activePatients:421, activeHygienePatients:3202, suppliesPct:4.39, status:'on_pace' },
     { code:'HNR', production:187508, collections:126057, collectionRate:67.2,  newPatients:64, recareRate:0, phoneAnswerRate: 71, activePatients:298, activeHygienePatients:1589, suppliesPct:7.37, status:'watch'   },
     { code:'HNS', production:209588, collections:108339, collectionRate:51.7,  newPatients:89, recareRate:0, phoneAnswerRate: 75, activePatients:276, activeHygienePatients:541,  suppliesPct:6.90, status:'on_pace' },
-    { code:'HNK', production:39146,  collections:53978,  collectionRate:137.9, newPatients:29, recareRate:0, phoneAnswerRate: 49, activePatients:0,   activeHygienePatients:427,  suppliesPct:7.46, status:'watch'   },
+    { code:'HNK', production:67154,  collections:53978,  collectionRate:80.4,  newPatients:29, recareRate:0, phoneAnswerRate: 49, activePatients:0,   activeHygienePatients:427,  suppliesPct:7.46, status:'watch'   },
     { code:'PB',  production:600253, collections:275206, collectionRate:45.8,  newPatients:112,recareRate:0, phoneAnswerRate: 66, activePatients:389, activeHygienePatients:942,  suppliesPct:4.08, status:'on_pace' },
     { code:'PR',  production:328967, collections:154474, collectionRate:47.0,  newPatients:145,recareRate:0, phoneAnswerRate: 61, activePatients:321, activeHygienePatients:495,  suppliesPct:8.84, status:'on_pace' },
-    { code:'OSB', production:129124, collections:216488, collectionRate:167.7, newPatients:81, recareRate:0, phoneAnswerRate: 69, activePatients:292, activeHygienePatients:1744, suppliesPct:6.11, status:'watch', isOSB:true },
+    { code:'OSB', production:158401, collections:216488, collectionRate:136.7, newPatients:81, recareRate:0, phoneAnswerRate: 69, activePatients:292, activeHygienePatients:1744, suppliesPct:6.11, status:'watch', isOSB:true },
   ],
 
   // AUGUST FINAL — gross production (Procedure Charges) + collections from ProviderTotals (08/01–08/31 MTD).
@@ -136,7 +136,7 @@ export const DEMO_DATA = {
     { name:'Werner, Andrew',        locationCode:'OSB', grossProd:49706,collections:9235, collRate:18.6, prodPerDay:2367,  daysWorked:21, ytdProd:49706,   patientCount:355, prodPerPatient:140, isOSB:true },
     { name:'Walters, Carrie',       locationCode:'LKW', grossProd:47439,collections:36432,collRate:76.8, prodPerDay:2259,  daysWorked:21, ytdProd:777439,  patientCount:478, prodPerPatient:99 },
     { name:'Osbourne, Brian',       locationCode:'OSB', grossProd:35629,collections:67950,collRate:190.7,prodPerDay:1697,  daysWorked:21, ytdProd:843629,  patientCount:1070,prodPerPatient:33, isOSB:true },
-    { name:'King, Susan',           locationCode:'HNK', grossProd:12396,collections:19880,collRate:160.4,prodPerDay:590,   daysWorked:21, ytdProd:157396,  patientCount:211, prodPerPatient:59, isOSB:true },
+    { name:'King, Susan',           locationCode:'HNK', grossProd:24112,collections:27726,collRate:115.0,prodPerDay:1148,  daysWorked:21, ytdProd:169112,  patientCount:211, prodPerPatient:114, isOSB:false },
     { name:'Harvey, Mark',          locationCode:'LKW', grossProd:10568,collections:6843, collRate:64.8, prodPerDay:503,   daysWorked:21, ytdProd:34568,   patientCount:270, prodPerPatient:39 },
   ],
 
@@ -167,8 +167,8 @@ export const DEMO_DATA = {
     // ── HNS ──
     { name:'Logsdon, Megan',   locationCode:'HNS', grossProd:24116,collections:11111,collRate:46.1,  hoursWorked:155.54,prodPerHr:155, recareRate:0, patientCount:143,prodPerPatient:169 },
     // ── HNK (P/C Summary 68 net proxy, held 8/18) ──
-    { name:'Miller, Taylor',   locationCode:'HNK', grossProd:8756, collections:5198,collRate:59.4,  hoursWorked:131.67,prodPerHr:66,  recareRate:0, patientCount:157,prodPerPatient:56, isOSB:true },
-    { name:'Decker, Heather',  locationCode:'HNK', grossProd:0,    collections:1344,collRate:0,     hoursWorked:13.98,prodPerHr:0,   recareRate:0, patientCount:37,prodPerPatient:0, isOSB:true },
+    { name:'Miller, Taylor',   locationCode:'HNK', grossProd:16959,collections:8087,collRate:47.7,  hoursWorked:131.67,prodPerHr:129, recareRate:0, patientCount:157,prodPerPatient:108, isOSB:false },
+    { name:'Decker, Heather',  locationCode:'HNK', grossProd:951,  collections:1880,collRate:197.7, hoursWorked:13.98,prodPerHr:68,  recareRate:0, patientCount:37,prodPerPatient:26, isOSB:false },
     // ── PB ──
     { name:'Keehan, Joshua',   locationCode:'PB',  grossProd:59594,collections:36542,collRate:61.3, hoursWorked:136.30,prodPerHr:437, recareRate:0, patientCount:268,prodPerPatient:222 },
     // ── PR ──
@@ -229,7 +229,7 @@ export const SCHEDULE_DATA = {
   remainingThisMonth: {
     daysRemaining:  0,
     scheduledTotal: 0,
-    mtdGross:       2581715,    // August FINAL gross production (21 working days)
+    mtdGross:       2639000,    // August FINAL gross production (21 working days); HNK/OSB from P/C Summary 69 full month
     monthlyGoal:    2910000,
     locations: [
       { code:'LKW', name:'H&N Lakewood',       dentist:0, hygiene:0, total:0, mtdGross:759309, isOSB:false },
@@ -238,8 +238,8 @@ export const SCHEDULE_DATA = {
       { code:'LT',  name:'H&N Lincoln Trail',  dentist:0, hygiene:0, total:0, mtdGross:327820, isOSB:false },
       { code:'HNS', name:'H&N Shepherdsville', dentist:0, hygiene:0, total:0, mtdGross:209588, isOSB:false },
       { code:'HNR', name:'H&N Radcliff',       dentist:0, hygiene:0, total:0, mtdGross:187508, isOSB:false },
-      { code:'OSB', name:'Osbourne Family',    dentist:0, hygiene:0, total:0, mtdGross:129124, isOSB:true  },
-      { code:'HNK', name:'H&N King',           dentist:0, hygiene:0, total:0, mtdGross:39146,  isOSB:false },
+      { code:'OSB', name:'Osbourne Family',    dentist:0, hygiene:0, total:0, mtdGross:158401, isOSB:true  },
+      { code:'HNK', name:'H&N King',           dentist:0, hygiene:0, total:0, mtdGross:67154,  isOSB:false },
     ],
   },
 
@@ -315,7 +315,7 @@ export const SCHEDULE_DATA = {
     { name:'Gleason, Robert',       specialty:'Dentist',    locationCode:'HNR', isOSB:false, months:{ Jun:19737,  Jul:4406,   Aug:1414   } },
     { name:'Chadwick, Evan',        specialty:'Dentist',    locationCode:'LKW', isOSB:false, months:{ Jun:15703,  Jul:6627,   Aug:4850   } },
     { name:'Decker Haycraft, Kara', specialty:'Dentist',    locationCode:'LT',  isOSB:false, months:{ Jun:19977,  Jul:3685,   Aug:1119   } },
-    { name:'King, Susan',           specialty:'Dentist',    locationCode:'HNK', isOSB:false, months:{ Jun:77908,  Jul:5544,   Aug:1498   } },
+    { name:'King, Susan',           specialty:'Dentist',    locationCode:'HNK', isOSB:false, months:{ Jun:77908,  Jul:5544,   Aug:24112  } },
     { name:'Harvey, Mark',          specialty:'Dentist',    locationCode:'LKW', isOSB:false, months:{ Jun:0,      Jul:190,    Aug:0      } },
     { name:'Berry, Tasha',          specialty:'Hygienist',  locationCode:'LKW', isOSB:false, months:{ Jun:18384,  Jul:15541,  Aug:19941  } },
     { name:'Bewley, Emma',          specialty:'Hygienist',  locationCode:'LKW', isOSB:false, months:{ Jun:13669,  Jul:9505,   Aug:2383   } },
