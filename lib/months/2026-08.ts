@@ -14,7 +14,7 @@ const aug2026: MonthSnapshot = {
     data: {
       period: "August 2026",
       org: {
-        production: 2581715,
+        production: 2639000,
         productionGoal: 2910000,
         collections: 1450143,
         collectionsGoal: 1455000,
@@ -29,10 +29,10 @@ const aug2026: MonthSnapshot = {
         { code:"LT", production:327820, collections:141278, collectionRate:43.1, newPatients:57, recareRate:0, phoneAnswerRate: 72, activePatients:421, activeHygienePatients:3202, suppliesPct:4.39, status:"on_pace" },
         { code:"HNR", production:187508, collections:126057, collectionRate:67.2, newPatients:64, recareRate:0, phoneAnswerRate: 71, activePatients:298, activeHygienePatients:1589, suppliesPct:7.37, status:"watch" },
         { code:"HNS", production:209588, collections:108339, collectionRate:51.7, newPatients:89, recareRate:0, phoneAnswerRate: 75, activePatients:276, activeHygienePatients:541, suppliesPct:6.9, status:"on_pace" },
-        { code:"HNK", production:39146, collections:53978, collectionRate:137.9, newPatients:29, recareRate:0, phoneAnswerRate: 49, activePatients:0, activeHygienePatients:427, suppliesPct:7.46, status:"watch" },
+        { code:"HNK", production:67154, collections:53978, collectionRate:80.4, newPatients:29, recareRate:0, phoneAnswerRate: 49, activePatients:0, activeHygienePatients:427, suppliesPct:7.46, status:"watch" },
         { code:"PB", production:600253, collections:275206, collectionRate:45.8, newPatients:112, recareRate:0, phoneAnswerRate: 66, activePatients:389, activeHygienePatients:942, suppliesPct:4.08, status:"on_pace" },
         { code:"PR", production:328967, collections:154474, collectionRate:47, newPatients:145, recareRate:0, phoneAnswerRate: 61, activePatients:321, activeHygienePatients:495, suppliesPct:8.84, status:"on_pace" },
-        { code:"OSB", production:129124, collections:216488, collectionRate:167.7, newPatients:81, recareRate:0, phoneAnswerRate: 69, activePatients:292, activeHygienePatients:1744, suppliesPct:6.11, status:"watch", isOSB:true }
+        { code:"OSB", production:158401, collections:216488, collectionRate:136.7, newPatients:81, recareRate:0, phoneAnswerRate: 69, activePatients:292, activeHygienePatients:1744, suppliesPct:6.11, status:"watch", isOSB:true }
       ],
       doctors: [
         { name:"Nichols, Christopher", locationCode:"LKW", grossProd:429248, collections:168907, collRate:39.3, prodPerDay:20440, daysWorked:21, ytdProd:2666248, patientCount:371, prodPerPatient:1157 },
@@ -48,7 +48,7 @@ const aug2026: MonthSnapshot = {
         { name:"Werner, Andrew", locationCode:"OSB", grossProd:49706, collections:9235, collRate:18.6, prodPerDay:2367, daysWorked:21, ytdProd:49706, patientCount:355, prodPerPatient:140, isOSB:true },
         { name:"Walters, Carrie", locationCode:"LKW", grossProd:47439, collections:36432, collRate:76.8, prodPerDay:2259, daysWorked:21, ytdProd:777439, patientCount:478, prodPerPatient:99 },
         { name:"Osbourne, Brian", locationCode:"OSB", grossProd:35629, collections:67950, collRate:190.7, prodPerDay:1697, daysWorked:21, ytdProd:843629, patientCount:1070, prodPerPatient:33, isOSB:true },
-        { name:"King, Susan", locationCode:"HNK", grossProd:12396, collections:19880, collRate:160.4, prodPerDay:590, daysWorked:21, ytdProd:157396, patientCount:211, prodPerPatient:59, isOSB:true },
+        { name:"King, Susan", locationCode:"HNK", grossProd:24112, collections:27726, collRate:115.0, prodPerDay:1148, daysWorked:21, ytdProd:169112, patientCount:211, prodPerPatient:114, isOSB:false },
         { name:"Harvey, Mark", locationCode:"LKW", grossProd:10568, collections:6843, collRate:64.8, prodPerDay:503, daysWorked:21, ytdProd:34568, patientCount:270, prodPerPatient:39 }
       ],
       hygienists: [
@@ -71,8 +71,8 @@ const aug2026: MonthSnapshot = {
         { name:"Morris, Amber", locationCode:"HNR", grossProd:24088, collections:8184, collRate:34, hoursWorked:151.23, prodPerHr:159, recareRate:0, patientCount:179, prodPerPatient:135 },
         { name:"Lynch, Cassie", locationCode:"HNR", grossProd:20408, collections:12235, collRate:60, hoursWorked:120.68, prodPerHr:169, recareRate:0, patientCount:174, prodPerPatient:117 },
         { name:"Logsdon, Megan", locationCode:"HNS", grossProd:24116, collections:11111, collRate:46.1, hoursWorked:155.54, prodPerHr:155, recareRate:0, patientCount:143, prodPerPatient:169 },
-        { name:"Miller, Taylor", locationCode:"HNK", grossProd:8756, collections:5198, collRate:59.4, hoursWorked:131.67, prodPerHr:66, recareRate:0, patientCount:157, prodPerPatient:56, isOSB:true },
-        { name:"Decker, Heather", locationCode:"HNK", grossProd:0, collections:1344, collRate:0, hoursWorked:13.98, prodPerHr:0, recareRate:0, patientCount:37, prodPerPatient:0, isOSB:true },
+        { name:"Miller, Taylor", locationCode:"HNK", grossProd:16959, collections:8087, collRate:47.7, hoursWorked:131.67, prodPerHr:129, recareRate:0, patientCount:157, prodPerPatient:108, isOSB:false },
+        { name:"Decker, Heather", locationCode:"HNK", grossProd:951, collections:1880, collRate:197.7, hoursWorked:13.98, prodPerHr:68, recareRate:0, patientCount:37, prodPerPatient:26, isOSB:false },
         { name:"Keehan, Joshua", locationCode:"PB", grossProd:59594, collections:36542, collRate:61.3, hoursWorked:136.3, prodPerHr:437, recareRate:0, patientCount:268, prodPerPatient:222 },
         { name:"Jones, Chad", locationCode:"PR", grossProd:44370, collections:18476, collRate:41.6, hoursWorked:136.69, prodPerHr:325, recareRate:0, patientCount:222, prodPerPatient:200 },
         { name:"Ulrich, Leigh", locationCode:"OSB", grossProd:8316, collections:3805, collRate:45.8, hoursWorked:137.18, prodPerHr:61, recareRate:0, patientCount:178, prodPerPatient:47, isOSB:true },
