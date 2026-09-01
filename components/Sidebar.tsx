@@ -6,24 +6,26 @@ import { useState } from 'react'
 import MonthToggle from '@/components/MonthToggle'
 
 const NAV_ITEMS = [
-  { href: '/',          label: 'Overview',    icon: '◈' },
-  { href: '/ytd',       label: 'YTD Trends',  icon: '◑' },
-  { href: '/locations', label: 'Locations',   icon: '⊞' },
-  { href: '/doctors',   label: 'Doctors',     icon: '⊙' },
-  { href: '/hygiene',   label: 'Hygiene',     icon: '✦' },
+  { href: '/',           label: 'Overview',    icon: '◈' },
+  { href: '/leaderboard',label: 'Leaderboard', icon: '🏆' },
+  { href: '/ytd',        label: 'YTD Trends',  icon: '◑' },
+  { href: '/locations',  label: 'Locations',   icon: '⊞' },
+  { href: '/doctors',    label: 'Doctors',     icon: '⊙' },
+  { href: '/hygiene',    label: 'Hygiene',     icon: '✦' },
   { href: '/phones',    label: 'Phones',      icon: '⌘' },
   { href: '/bonus',     label: 'Bonus',       icon: '◎' },
   { href: '/ar',        label: 'AR',          icon: '◷' },
+  { href: '/schedule',  label: 'Schedule',    icon: '◫' },
   { href: '/chat',      label: 'Ask AI',      icon: '❋' },
 ]
 
 // Bottom nav: 5 primary items for mobile
 const BOTTOM_NAV = [
-  { href: '/',          label: 'Home',     icon: '◈' },
-  { href: '/bonus',     label: 'Bonus',    icon: '◎' },
-  { href: '/doctors',   label: 'Doctors',  icon: '⊙' },
-  { href: '/hygiene',   label: 'Hygiene',  icon: '✦' },
-  { href: '/locations', label: 'Locations',icon: '⊞' },
+  { href: '/',            label: 'Home',        icon: '◈' },
+  { href: '/leaderboard', label: 'Leaders',     icon: '🏆' },
+  { href: '/doctors',     label: 'Doctors',     icon: '⊙' },
+  { href: '/hygiene',     label: 'Hygiene',     icon: '✦' },
+  { href: '/bonus',       label: 'Bonus',       icon: '◎' },
 ]
 
 export default function Sidebar() {

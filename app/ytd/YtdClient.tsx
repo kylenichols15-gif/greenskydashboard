@@ -201,7 +201,6 @@ export default function YtdClient({
   const orgChartLast   = orgChartVals[orgChartVals.length - 1]
   const orgChartPrev   = orgChartVals[orgChartVals.length - 2]
   const orgChartMoM    = mom(orgChartLast, orgChartPrev)
-  const hasNpGap       = selectedMetric === 'newPatients' && effectiveLoc !== 'ALL' && effectiveLoc !== 'OSB'
 
   // ── Doctor rows — sorted by YTD collections ───────────────────────────────
   const aprDoctors = completed[completed.length - 1].data.doctors
@@ -344,12 +343,6 @@ export default function YtdClient({
             )
           })}
         </div>
-
-        {hasNpGap && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700 mb-4">
-            ⚠ Per-location new patient data not available for Jan–Mar (non-OSB). Use <strong>All Org</strong> for complete trends.
-          </div>
-        )}
 
         <div className="pt-2">
           <LineChart data={orgChartData} color={orgChartColor} danger={orgIsDanger} height={120} formatVal={orgFormatVal} goal={orgChartGoal} goalLabel={orgChartGoal ? '$2.4M' : undefined} />

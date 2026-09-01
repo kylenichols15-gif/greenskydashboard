@@ -33,8 +33,6 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
   )
 
   const phoneStatus    = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-  const hasRecare      = loc.recareRate > 0
-  const recareStatus   = hasRecare ? getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : 'amber'
   const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
 
   const metricDot = (s: 'green' | 'amber' | 'red') => ({
@@ -84,16 +82,10 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
             <div className="text-[#64748b] text-xs mb-0.5">New Pts</div>
             <div className="text-[#0f172a] font-semibold text-sm">{loc.newPatients}</div>
-          </div>
-          <div>
-            <div className="text-[#64748b] text-xs mb-0.5">Recare %</div>
-            <div className={`font-semibold text-sm ${hasRecare ? metricDot(recareStatus) : 'text-[#94a3b8]'}`}>
-              {hasRecare ? formatPct(loc.recareRate) : '—'}
-            </div>
           </div>
           <div>
             <div className="text-[#64748b] text-xs mb-0.5">Phone Ans.</div>
@@ -110,15 +102,17 @@ export default function LocationCard({ loc }: { loc: LocationData }) {
           <GoalBar pct={pct} height="thin" />
         </div>
 
-        {/* Supplies */}
-        <BenchmarkBar
-          value={loc.suppliesPct}
-          target={BENCHMARKS.supplies_pct.target}
-          flagThreshold={BENCHMARKS.supplies_pct.flagAbove}
-          direction="low"
-          label="Supplies %"
-          status={suppliesStatus}
-        />
+        {/* Supplies — only shown when per-location data available */}
+        {loc.suppliesPct > 0 && (
+          <BenchmarkBar
+            value={loc.suppliesPct}
+            target={BENCHMARKS.supplies_pct.target}
+            flagThreshold={BENCHMARKS.supplies_pct.flagAbove}
+            direction="low"
+            label="Supplies %"
+            status={suppliesStatus}
+          />
+        )}
       </div>
     </div>
   )

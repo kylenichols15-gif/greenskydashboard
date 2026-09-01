@@ -19,16 +19,18 @@ export default function HygieneClient({
   const period = snapshot?.periodInfo ?? currentPeriod
 
   const { hygienists } = data
-  const sorted    = [...hygienists].sort((a, b) => b.grossProd - a.grossProd)
-  const avgProdHr = sorted.reduce((s, h) => s + h.prodPerHr, 0) / (sorted.length || 1)
+  // Ranked by $/hr (efficiency). Zero-hour providers (no time-clock data) sort to the bottom.
+  const sorted    = [...hygienists].sort((a, b) => b.prodPerHr - a.prodPerHr)
+  const ranked    = sorted.filter(h => h.prodPerHr > 0)
+  const avgProdHr = ranked.reduce((s, h) => s + h.prodPerHr, 0) / (ranked.length || 1)
 
   const podiumEntries = sorted.slice(0, 3).map(h => ({
     name: h.name,
     locationCode: h.locationCode,
-    primaryValue: formatCurrency(h.grossProd, true),
-    primaryLabel: 'MTD Production',
-    secondaryValue: `$${h.prodPerHr}/hr`,
-    secondaryLabel: 'Prod / Hr',
+    primaryValue: `$${h.prodPerHr}/hr`,
+    primaryLabel: 'Prod / Hr',
+    secondaryValue: formatCurrency(h.grossProd, true),
+    secondaryLabel: 'MTD Production',
   }))
 
   return (
@@ -37,7 +39,7 @@ export default function HygieneClient({
         <div>
           <h1 className="text-[#0f172a] text-2xl font-bold">Hygiene Performance</h1>
           <p className="text-[#64748b] text-sm mt-1">
-            Production · Efficiency · Recare ·{' '}
+            Production · Efficiency ·{' '}
             {snapshot ? <span className="text-amber-600 font-semibold">▸ {period.label}</span> : period.label}
           </p>
         </div>
@@ -50,7 +52,7 @@ export default function HygieneClient({
           <span className="text-2xl">✦</span>
           <div>
             <div className="text-[#0f172a] font-bold">Hygiene Leaderboard — Production &amp; Efficiency</div>
-            <div className="text-[#64748b] text-sm">Ranked by MTD Production · {sorted.length} hygienists</div>
+            <div className="text-[#64748b] text-sm">Ranked by Production / Hour · {sorted.length} hygienists</div>
           </div>
         </div>
         <div className="text-right">
@@ -69,7 +71,7 @@ export default function HygieneClient({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#d1dce9]">
-                {['#', 'Name', 'Location', 'MTD Prod', 'Collections', 'Coll %', 'Hrs', '$/Hr', 'Recare'].map(h => (
+                {['#', 'Name', 'Location', 'MTD Prod', 'Collections', 'Coll %', 'Hrs', '$/Hr', '$/Pt'].map(h => (
                   <th key={h} className="text-left text-[#64748b] text-xs font-semibold uppercase tracking-wider px-3 py-3">{h}</th>
                 ))}
               </tr>
@@ -79,14 +81,11 @@ export default function HygieneClient({
                 const loc          = LOCATIONS.find(l => l.code === h.locationCode)
                 const isElite      = h.prodPerHr > avgProdHr * 1.1
                 const isWatch      = h.prodPerHr < avgProdHr * 0.85 && h.prodPerHr > 0
-                const recareStatus = h.recareRate > 0 ? getStatusHigh(h.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : null
-                const recareColor  = recareStatus ? { green: 'text-green-600', amber: 'text-amber-600', red: 'text-red-600' }[recareStatus] : 'text-[#94a3b8]'
-
                 return (
                   <tr key={`${h.name}-${h.locationCode}`} className="border-b border-[#d1dce9]/50 hover:bg-[#f1f5fb] transition-colors">
                     <td className="px-3 py-3 text-[#64748b] font-bold text-xs">#{i + 1}</td>
                     <td className="px-3 py-3">
-                      <div className="text-[#0f172a] font-medium text-sm">{h.name}</div>
+                      <div className="text-[#0f172a] font-medium text-sm">{h.name}{i === 0 && ' 🐐'}</div>
                       {isElite && <span className="text-[10px] text-green-600 font-semibold">🔥 Elite</span>}
                       {isWatch  && <span className="text-[10px] text-amber-600 font-semibold">📋 Watch</span>}
                     </td>
@@ -98,8 +97,10 @@ export default function HygieneClient({
                     <td className="px-3 py-3 text-[#64748b]">{formatPct(h.collRate)}</td>
                     <td className="px-3 py-3 text-[#64748b]">{h.hoursWorked > 0 ? h.hoursWorked.toFixed(1) : '—'}</td>
                     <td className="px-3 py-3 text-[#0f172a] font-medium">{h.prodPerHr > 0 ? `$${h.prodPerHr}` : '—'}</td>
-                    <td className={`px-3 py-3 font-medium ${recareColor}`}>
-                      {h.recareRate > 0 ? formatPct(h.recareRate) : '—'}
+                    <td className="px-3 py-3 text-[#64748b]">
+                      {h.prodPerPatient !== undefined
+                        ? <span>{formatCurrency(h.prodPerPatient, true)}<span className="text-[#94a3b8] text-[10px]"> · {h.patientCount}pt</span></span>
+                        : '—'}
                     </td>
                   </tr>
                 )
@@ -109,7 +110,9 @@ export default function HygieneClient({
         </div>
       </div>
       <p className="text-[#94a3b8] text-xs mt-3">
-        $/Hr and hours worked available from Apr 2026 onward. Recare = OSB only (Dental Intel). Ranked by MTD production.
+        Ranked by production per hour worked ($/hr). Providers without time-clock hours rank last.
+        Low-hours providers can show inflated $/hr early in the month. $/Hr available from Apr 2026 onward.
+        $/Pt = gross production ÷ patients seen (June 2026 onward).
       </p>
     </div>
   )

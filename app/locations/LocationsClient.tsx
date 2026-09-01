@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { LOCATIONS, MONTHLY_GOALS, BENCHMARKS } from '@/lib/data'
+import { LOCATIONS, MONTHLY_GOALS, MONTHLY_PROD_GOALS, BENCHMARKS } from '@/lib/data'
 import { useMonth } from '@/lib/contexts/MonthContext'
 import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
 import OSBBadge from '@/components/OSBBadge'
@@ -27,7 +27,7 @@ export default function LocationsClient({
   const { daysComplete, totalBizDays, daysRemaining } = period
 
   const [activeTab, setActiveTab] = useState('ALL')
-  const filtered = activeTab === 'ALL' ? locations : locations.filter(l => l.code === activeTab)
+  const filtered = (activeTab === 'ALL' ? [...locations].sort((a, b) => b.collections - a.collections) : locations.filter(l => l.code === activeTab))
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
@@ -61,22 +61,20 @@ export default function LocationsClient({
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {filtered.map(loc => {
+        {filtered.map((loc, i) => {
           const meta         = LOCATIONS.find(l => l.code === loc.code)
           const goal         = MONTHLY_GOALS[loc.code] ?? 100000
+          const prodGoal     = MONTHLY_PROD_GOALS[loc.code] ?? 100000
           const pct          = pctToGoal(loc.collections, goal)
           const status       = collectionsVsPaceStatus(loc.collections, goal, daysComplete, totalBizDays)
           const dollarToGoal = Math.max(0, goal - loc.collections)
           const perDay       = daysRemaining > 0 ? dollarToGoal / daysRemaining : 0
 
           const phoneStatus    = getStatusHigh(loc.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow)
-          const hasRecare      = loc.recareRate > 0
-          const recareStatus   = hasRecare ? getStatusHigh(loc.recareRate, BENCHMARKS.hygiene_recare.target, BENCHMARKS.hygiene_recare.flagBelow) : 'amber'
           const suppliesStatus = getStatusLow(loc.suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove)
           const collStatus     = getStatusHigh(Math.min(loc.collectionRate, 99), BENCHMARKS.collections_rate.target, BENCHMARKS.collections_rate.flagBelow)
 
           const phoneC    = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[phoneStatus]
-          const recareC   = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[recareStatus]
           const suppliesC = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[suppliesStatus]
           const collC     = { green:'text-green-400', amber:'text-amber-400', red:'text-red-400' }[collStatus]
 
@@ -95,7 +93,7 @@ export default function LocationsClient({
                       <span className="bg-[#2563eb]/15 text-[#2563eb] text-xs font-bold px-2 py-0.5 rounded border border-[#2563eb]/20">{loc.code}</span>
                       <StatusBadge status={status} dot />
                     </div>
-                    <div className="text-[#0f172a] font-semibold">{meta?.name}</div>
+                    <div className="text-[#0f172a] font-semibold">{meta?.name}{i === 0 && activeTab === 'ALL' && ' 🐐'}</div>
                     <div className="text-[#64748b] text-xs">{meta?.brand}</div>
                   </div>
                   <StatusBadge status={status} />
@@ -106,6 +104,7 @@ export default function LocationsClient({
                   <div>
                     <div className="text-[#64748b] text-xs">Production MTD</div>
                     <div className="text-[#0f172a] font-bold">{formatCurrency(loc.production, true)}</div>
+                    <div className="text-[#64748b] text-xs">Goal {formatCurrency(prodGoal, true)}</div>
                   </div>
                   <div>
                     <div className="text-[#64748b] text-xs">Collections MTD</div>
@@ -129,7 +128,7 @@ export default function LocationsClient({
                 </div>
 
                 <div className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-2">Patients</div>
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-3 gap-3 mb-4">
                   <div>
                     <div className="text-[#64748b] text-xs">New Patients MTD</div>
                     <div className="text-[#0f172a] font-bold text-lg">{loc.newPatients}</div>
@@ -138,30 +137,25 @@ export default function LocationsClient({
                     <div className="text-[#64748b] text-xs">Active Patients</div>
                     <div className="text-[#0f172a] font-bold text-lg">{loc.activePatients.toLocaleString()}</div>
                   </div>
+                  <div>
+                    <div className="text-[#64748b] text-xs">Active Hygiene Pts</div>
+                    <div className="text-[#0f172a] font-bold text-lg">{(loc.activeHygienePatients ?? 0).toLocaleString()}</div>
+                  </div>
                 </div>
 
                 <div className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-2">Operations</div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className={`rounded-lg border p-3 ${suppliesStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : suppliesStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
-                    <div className="text-[#64748b] text-xs">Supplies %</div>
-                    <div className={`font-bold text-lg ${suppliesC}`}>{loc.suppliesPct}%</div>
-                    <div className="text-[#64748b] text-xs">Target &lt;6%</div>
-                  </div>
-                  <div className={`rounded-lg border p-3 ${phoneStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : phoneStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
+                  {loc.suppliesPct > 0 && (
+                    <div className={`rounded-lg border p-3 ${suppliesStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : suppliesStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
+                      <div className="text-[#64748b] text-xs">Supplies %</div>
+                      <div className={`font-bold text-lg ${suppliesC}`}>{loc.suppliesPct}%</div>
+                      <div className="text-[#64748b] text-xs">Target &lt;5.5%</div>
+                    </div>
+                  )}
+                  <div className={`rounded-lg border p-3 ${loc.suppliesPct > 0 ? '' : 'col-span-2'} ${phoneStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : phoneStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
                     <div className="text-[#64748b] text-xs">Phone Answer</div>
                     <div className={`font-bold text-lg ${phoneC}`}>{formatPct(loc.phoneAnswerRate)}</div>
                     <div className="text-[#64748b] text-xs">Target &gt;80%</div>
-                  </div>
-                  <div className={`rounded-lg border p-3 col-span-2 ${hasRecare ? (recareStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : recareStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20') : 'bg-slate-500/5 border-slate-300/30'}`}>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-[#64748b] text-xs">Hygiene Recare</div>
-                        <div className={`font-bold text-lg ${hasRecare ? recareC : 'text-[#94a3b8]'}`}>
-                          {hasRecare ? formatPct(loc.recareRate) : '—'}
-                        </div>
-                      </div>
-                      <div className="text-[#64748b] text-xs">{hasRecare ? 'Target 85%' : 'No report'}</div>
-                    </div>
                   </div>
                 </div>
               </div>

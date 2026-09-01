@@ -25,16 +25,18 @@ const feb2026: MonthSnapshot = {
       activePatients:    2450,
       phoneAnswerRate:   59.3,   // LKW 51% + LT 72.8% + HNR 68.1% + HNS 60% + PB 59.3% (ED7B) + PR 33.1% (18CB) + OSB 79% — weighted avg all 7
       hygieneRecare:    92.5,    // OSB from DI; Ascend not available
+      suppliesPct:       0,
     },
 
     locations: [
-      { code:'LKW', production:656532, collections:424212, collectionRate:64.6,  newPatients:0,  recareRate:0,    phoneAnswerRate:51.0, activePatients:0, suppliesPct:0, status:'watch'     },
-      { code:'LT',  production:316488, collections:181750, collectionRate:57.4,  newPatients:0,  recareRate:0,    phoneAnswerRate:72.8, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'HNR', production:85005,  collections:77861,  collectionRate:91.6,  newPatients:0,  recareRate:0,    phoneAnswerRate:68.1, activePatients:0, suppliesPct:0, status:'needs_work' },
-      { code:'HNS', production:144656, collections:63036,  collectionRate:43.6,  newPatients:0,  recareRate:0,    phoneAnswerRate:60.0, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'PB',  production:504595, collections:204613, collectionRate:40.6,  newPatients:0,  recareRate:0,    phoneAnswerRate:59.3, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'PR',  production:410963, collections:184798, collectionRate:44.9,  newPatients:0,  recareRate:0,    phoneAnswerRate:33.1, activePatients:0, suppliesPct:0, status:'watch'     },
-      { code:'OSB', production:231817, collections:192494, collectionRate:83.0,  newPatients:75, recareRate:92.5, phoneAnswerRate:79.0, activePatients:0, suppliesPct:0, status:'on_pace', isOSB:true },
+      // newPatients: backfilled from New Patients all offices (17) — 2026-05-07 pull includes Feb history
+      { code:'LKW', production:656532, collections:424212, collectionRate:64.6,  newPatients:141, recareRate:0,    phoneAnswerRate:51.0, activePatients:0, suppliesPct:0, status:'watch'     },
+      { code:'LT',  production:316488, collections:181750, collectionRate:57.4,  newPatients:63,  recareRate:0,    phoneAnswerRate:72.8, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'HNR', production:85005,  collections:77861,  collectionRate:91.6,  newPatients:84,  recareRate:0,    phoneAnswerRate:68.1, activePatients:0, suppliesPct:0, status:'needs_work' },
+      { code:'HNS', production:144656, collections:63036,  collectionRate:43.6,  newPatients:51,  recareRate:0,    phoneAnswerRate:60.0, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'PB',  production:504595, collections:204613, collectionRate:40.6,  newPatients:85,  recareRate:0,    phoneAnswerRate:59.3, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'PR',  production:410963, collections:184798, collectionRate:44.9,  newPatients:102, recareRate:0,    phoneAnswerRate:33.1, activePatients:0, suppliesPct:0, status:'watch'     },
+      { code:'OSB', production:231817, collections:192494, collectionRate:83.0,  newPatients:75,  recareRate:92.5, phoneAnswerRate:79.0, activePatients:0, suppliesPct:0, status:'on_pace', isOSB:true },
     ],
 
     // ytdProd = Jan + Feb

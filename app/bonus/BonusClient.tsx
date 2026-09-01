@@ -18,6 +18,16 @@ const TIERS = [
 
 const BAR_MAX = 120
 
+// Card emphasis for locations that have HIT goal (T2 Bonus = 100%+). Keyed to the tier reached so a
+// goal-met card is unmistakable vs a plain "behind pace" card — color alone (amber) was ambiguous.
+const TIER_CARD: Record<string, { border: string; bg: string; ring: string; text: string }> = {
+  T1: { border: 'border-slate-300',  bg: 'bg-slate-50',  ring: 'ring-slate-200',  text: 'text-slate-600'  },
+  T2: { border: 'border-amber-400',  bg: 'bg-amber-50',  ring: 'ring-amber-200',  text: 'text-amber-600'  },
+  T3: { border: 'border-yellow-400', bg: 'bg-yellow-50', ring: 'ring-yellow-200', text: 'text-yellow-700' },
+  T4: { border: 'border-cyan-400',   bg: 'bg-cyan-50',   ring: 'ring-cyan-200',   text: 'text-cyan-700'   },
+  T5: { border: 'border-violet-400', bg: 'bg-violet-50', ring: 'ring-violet-200', text: 'text-violet-700' },
+}
+
 function getCurrentTier(pct: number) {
   for (let i = TIERS.length - 1; i >= 0; i--) {
     if (pct >= TIERS[i].pct) return TIERS[i]
@@ -225,11 +235,26 @@ export default function BonusClient({
           const ratio       = pct / pacePct
           const aheadOfPace = pct >= pacePct
 
+          const goalMet = pct >= 100              // T2 Bonus = the goal
+          const emph    = goalMet && tier ? TIER_CARD[tier.tag] : null
+
           return (
-            <div key={loc.code} className="bg-white border border-[#d1dce9] rounded-xl p-5">
+            <div
+              key={loc.code}
+              className={`rounded-xl p-5 transition-all ${
+                emph
+                  ? `border-2 ${emph.border} ${emph.bg} shadow-md ring-1 ${emph.ring}`
+                  : 'bg-white border border-[#d1dce9]'
+              }`}
+            >
+              {emph && (
+                <div className={`inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wide mb-3 ${emph.text}`}>
+                  🎉 {tier!.tag === 'T2' ? 'Goal met — bonus earned' : `Goal beat — ${tier!.label} tier`}
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-[#64748b] text-sm font-bold">#{i + 1}</span>
+                  <span className="text-[#64748b] text-sm font-bold">{goalMet ? '🏆' : `#${i + 1}`}</span>
                   <span className="bg-[#2563eb]/10 text-[#2563eb] text-sm font-bold px-3 py-1 rounded border border-[#2563eb]/20">{loc.code}</span>
                   <div>
                     <div className="flex items-center gap-2">

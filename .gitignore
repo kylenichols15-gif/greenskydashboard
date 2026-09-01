@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw data exports (sensitive — never publish)
+/_inbox/
+
+# local Claude tooling
+/.claude/

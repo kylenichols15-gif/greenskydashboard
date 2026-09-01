@@ -10,12 +10,11 @@ CURRENT PERIOD: ${period}
 ORG PRODUCTION: $${org.production.toLocaleString()} vs $${org.productionGoal.toLocaleString()} goal (${Math.round(org.production / org.productionGoal * 100)}% to goal)
 ORG COLLECTIONS: $${org.collections.toLocaleString()} (${Math.round(org.collections / org.production * 100)}% collection rate)
 PHONE ANSWER RATE: ${org.phoneAnswerRate}% (target: 80%)
-HYGIENE RECARE: ${org.hygieneRecare}% (target: 85%)
 
 LOCATION SUMMARY:
-${locations.map(l => `${l.code}: $${l.production.toLocaleString()} production, ${l.phoneAnswerRate}% phones, ${l.recareRate}% recare, status: ${l.status}${l.isOSB ? ' [ALT DATA — manual source]' : ''}`).join('\n')}
+${locations.map(l => `${l.code}: $${l.production.toLocaleString()} production, ${l.phoneAnswerRate}% phones, status: ${l.status}${l.isOSB ? ' [ALT DATA — manual source]' : ''}`).join('\n')}
 
-DEO BENCHMARKS: NOI 20-25%, Supplies <6%, Lab <8%, Payroll <28%, Recare 85%, Phone Answer >80%, Collections Rate >98%
+DEO BENCHMARKS: NOI 20-25%, Supplies <6%, Lab <8%, Payroll <28%, Phone Answer >80%, Collections Rate >98%
 
 RULES:
 - Lead with the answer, then support it with data

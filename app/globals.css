@@ -26,3 +26,35 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: #bfdbfe;
 }
+
+/* ── Leaderboard flair ── */
+@keyframes lb-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes lb-shine {
+  0%   { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+@keyframes lb-pop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes lb-glow {
+  0%, 100% { box-shadow: 0 0 24px 2px rgba(245,158,11,0.35); }
+  50%      { box-shadow: 0 0 40px 8px rgba(245,158,11,0.55); }
+}
+.lb-float { animation: lb-float 3s ease-in-out infinite; }
+.lb-pop   { animation: lb-pop 0.45s cubic-bezier(.2,.9,.3,1.2) both; }
+.lb-glow  { animation: lb-glow 2.4s ease-in-out infinite; }
+.lb-shine {
+  background-image: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: lb-shine 2.6s linear infinite;
+}
+@keyframes lb-glow-cool {
+  0%, 100% { box-shadow: 0 0 24px 2px rgba(99,102,241,0.32); }
+  50%      { box-shadow: 0 0 40px 8px rgba(99,102,241,0.52); }
+}
+.lb-glow-cool { animation: lb-glow-cool 2.4s ease-in-out infinite; }

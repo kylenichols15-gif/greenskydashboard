@@ -178,7 +178,7 @@ export default function PhonesClient({
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="bg-[#2563eb]/10 text-[#2563eb] text-xs px-2 py-0.5 rounded border border-[#2563eb]/20 font-bold">{p.code}</span>
-                        <span className="text-[#64748b] text-xs">{meta?.name}</span>
+                        <span className="text-[#64748b] text-xs">{meta?.name}{i === 0 && ' 🐐'}</span>
                         {meta?.isOSB && <OSBBadge />}
                       </div>
                     </td>

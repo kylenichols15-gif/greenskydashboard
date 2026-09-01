@@ -143,7 +143,7 @@ export default function ArClient({
       {/* Per-location cards */}
       <h2 className="text-[#64748b] text-xs font-semibold uppercase tracking-wider mb-4">Location Detail</h2>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {ar.locations.map(loc => {
+        {[...ar.locations].sort((a, b) => a.pct90plus - b.pct90plus).map((loc, i) => {
           const meta   = LOCATIONS.find(l => l.code === loc.code)
           const status = statusLabel(loc.status)
           const ratio  = arRatioColor(loc.arToProd)
@@ -157,7 +157,7 @@ export default function ArClient({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="bg-[#2563eb]/10 text-[#2563eb] text-xs font-bold px-2 py-0.5 rounded border border-[#2563eb]/20">{loc.code}</span>
-                      <span className="text-[#0f172a] font-semibold">{meta?.name}</span>
+                      <span className="text-[#0f172a] font-semibold">{meta?.name}{i === 0 && ' 🐐'}</span>
                       {meta?.isOSB && <OSBBadge />}
                     </div>
                     <div className="text-[#64748b] text-xs mt-0.5">Total AR: {formatCurrency(loc.total, true)} · AR:Prod <span className={ratio}>{loc.arToProd}x</span></div>

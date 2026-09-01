@@ -25,20 +25,21 @@ const jan2026: MonthSnapshot = {
       activePatients:    2400,   // estimated (trend back from Apr 2531)
       phoneAnswerRate:   53.3,   // LKW 48.2% + LT 74.2% + HNR 66% + HNS 52.4% + PB 43.6% (ED7B) + PR 40.2% (18CB) + OSB 57.9% — weighted avg all 7
       hygieneRecare:    87.9,    // OSB from DI; Ascend not available
+      suppliesPct:       0,
     },
 
     // Production/collections: aggregated from ProviderTotals (15) by provider-location mapping
-    // newPatients: Ascend NP not available for Jan by location (set to 0); OSB from DI
+    // newPatients: backfilled from New Patients all offices (17) — 2026-05-07 pull includes Jan history
     // phoneAnswerRate: LKW + LT from Mango Voice; other locations unavailable (0 = no data)
     // recareRate: OSB from DI; Ascend not available (0 = no data)
     locations: [
-      { code:'LKW', production:566511, collections:271889, collectionRate:48.0,  newPatients:0,  recareRate:0,    phoneAnswerRate:48.2, activePatients:0, suppliesPct:0, status:'watch'     },
-      { code:'LT',  production:287417, collections:171929, collectionRate:59.8,  newPatients:0,  recareRate:0,    phoneAnswerRate:74.2, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'HNR', production:70912,  collections:18185,  collectionRate:25.6,  newPatients:0,  recareRate:0,    phoneAnswerRate:66.0, activePatients:0, suppliesPct:0, status:'needs_work' },
-      { code:'HNS', production:104207, collections:53646,  collectionRate:51.5,  newPatients:0,  recareRate:0,    phoneAnswerRate:52.4, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'PB',  production:315643, collections:56495,  collectionRate:17.9,  newPatients:0,  recareRate:0,    phoneAnswerRate:43.6, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'PR',  production:322767, collections:80331,  collectionRate:24.9,  newPatients:0,  recareRate:0,    phoneAnswerRate:40.2, activePatients:0, suppliesPct:0, status:'good'      },
-      { code:'OSB', production:173034, collections:162585, collectionRate:93.9,  newPatients:60, recareRate:87.9, phoneAnswerRate:57.9, activePatients:0, suppliesPct:0, status:'good', isOSB:true },
+      { code:'LKW', production:566511, collections:271889, collectionRate:48.0,  newPatients:104, recareRate:0,    phoneAnswerRate:48.2, activePatients:0, suppliesPct:0, status:'watch'     },
+      { code:'LT',  production:287417, collections:171929, collectionRate:59.8,  newPatients:78,  recareRate:0,    phoneAnswerRate:74.2, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'HNR', production:70912,  collections:18185,  collectionRate:25.6,  newPatients:83,  recareRate:0,    phoneAnswerRate:66.0, activePatients:0, suppliesPct:0, status:'needs_work' },
+      { code:'HNS', production:104207, collections:53646,  collectionRate:51.5,  newPatients:35,  recareRate:0,    phoneAnswerRate:52.4, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'PB',  production:315643, collections:56495,  collectionRate:17.9,  newPatients:32,  recareRate:0,    phoneAnswerRate:43.6, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'PR',  production:322767, collections:80331,  collectionRate:24.9,  newPatients:92,  recareRate:0,    phoneAnswerRate:40.2, activePatients:0, suppliesPct:0, status:'good'      },
+      { code:'OSB', production:173034, collections:162585, collectionRate:93.9,  newPatients:60,  recareRate:87.9, phoneAnswerRate:57.9, activePatients:0, suppliesPct:0, status:'good', isOSB:true },
     ],
 
     // Source: ProviderTotals (15) Procedure Charges · OSB from providers-performance (DI)

@@ -25,6 +25,7 @@ const apr2026: MonthSnapshot = {
       activePatients:    2531,
       phoneAnswerRate:   69.3,
       hygieneRecare:      0,
+      suppliesPct:        0,
     },
 
     locations: [
@@ -51,6 +52,7 @@ const apr2026: MonthSnapshot = {
       { name:'Gleason, Robert',       locationCode:'LKW', grossProd:78325,  collections:39778,  collRate:50.8, prodPerDay:3560,  daysWorked:22, ytdProd:268000  },
       { name:'Chadwick, Evan',        locationCode:'PR',  grossProd:69876,  collections:32721,  collRate:46.8, prodPerDay:3176,  daysWorked:22, ytdProd:349000  },
       { name:'Decker Haycraft, Kara', locationCode:'LT',  grossProd:67428,  collections:35695,  collRate:52.9, prodPerDay:3065,  daysWorked:22, ytdProd:287000  },
+      { name:'King, Susan',           locationCode:'HNK', grossProd:3361,   collections:0,      collRate:0,    prodPerDay:1681,  daysWorked:2,  ytdProd:3361   },
     ],
 
     hygienists: [
