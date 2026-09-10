@@ -126,6 +126,7 @@ export const DEMO_DATA = {
     { name:'Gleason, Robert', locationCode:'HNR', grossProd:22057,collections:13398,collRate:60.7, prodPerDay:3676, daysWorked:6, ytdProd:530940, patientCount:108, prodPerPatient:204 },
     { name:'Skaggs, Ernest', locationCode:'HNR', grossProd:17943,collections:12865,collRate:71.7, prodPerDay:2990, daysWorked:6, ytdProd:612560, patientCount:85, prodPerPatient:211 },
     { name:'Werner, Andrew', locationCode:'OSB', grossProd:16843,collections:10276,collRate:61.0, prodPerDay:2807, daysWorked:6, ytdProd:66549, patientCount:199, prodPerPatient:85, isOSB:true },
+    { name:'Morgan, Kennedy', locationCode:'PB', grossProd:14876,collections:5174,collRate:34.8, prodPerDay:2479, daysWorked:6, ytdProd:128297, patientCount:73, prodPerPatient:204 },
     { name:'Harvey, Mark', locationCode:'LKW', grossProd:1160,collections:438,collRate:37.8, prodPerDay:193, daysWorked:6, ytdProd:35728, patientCount:34, prodPerPatient:34 },
   ],
 
@@ -135,6 +136,7 @@ export const DEMO_DATA = {
     { name:'Lynch, Cassie', locationCode:'HNR', grossProd:8667,collections:1460,collRate:16.8, hoursWorked:49.42,prodPerHr:175, recareRate:0, patientCount:59, prodPerPatient:147 },
     { name:'Logsdon, Megan', locationCode:'HNS', grossProd:6935,collections:2848,collRate:41.1, hoursWorked:42.61,prodPerHr:163, recareRate:0, patientCount:47, prodPerPatient:148 },
     { name:'Howell, Dana', locationCode:'LT', grossProd:6874,collections:3780,collRate:55.0, hoursWorked:42.56,prodPerHr:162, recareRate:0, patientCount:82, prodPerPatient:84 },
+    { name:'Ferguson, Amie', locationCode:'LKW', grossProd:6678,collections:242,collRate:3.6, hoursWorked:39.22,prodPerHr:170, recareRate:0, patientCount:31, prodPerPatient:215 },
     { name:'Woosley, Emily', locationCode:'LKW', grossProd:6480,collections:1688,collRate:26.0, hoursWorked:44.4,prodPerHr:146, recareRate:0, patientCount:52, prodPerPatient:125 },
     { name:'Payne, McKay', locationCode:'LKW', grossProd:6369,collections:1348,collRate:21.2, hoursWorked:44.6,prodPerHr:143, recareRate:0, patientCount:47, prodPerPatient:136 },
     { name:'Morris, Amber', locationCode:'HNR', grossProd:6033,collections:1571,collRate:26.0, hoursWorked:44.76,prodPerHr:135, recareRate:0, patientCount:57, prodPerPatient:106 },
@@ -155,6 +157,7 @@ export const DEMO_DATA = {
     { name:'Smith, Jessica', locationCode:'OSB', grossProd:1352,collections:1883,collRate:139.3, hoursWorked:33.41,prodPerHr:40, recareRate:0, patientCount:48, prodPerPatient:28, isOSB:true },
     { name:'Greenwell, Denise', locationCode:'OSB', grossProd:1319,collections:847,collRate:64.2, hoursWorked:16.55,prodPerHr:80, recareRate:0, patientCount:30, prodPerPatient:44, isOSB:true },
     { name:'Decker, Heather', locationCode:'HNK', grossProd:1280,collections:242,collRate:18.9, hoursWorked:7.27,prodPerHr:176, recareRate:0, patientCount:9, prodPerPatient:142 },
+    { name:'Spencer, Rachel', locationCode:'HNR', grossProd:1120,collections:841,collRate:75.1, hoursWorked:8.36,prodPerHr:134, recareRate:0, patientCount:14, prodPerPatient:80 },
     { name:'Wright, Chelsea', locationCode:'LKW', grossProd:480,collections:144,collRate:30.0, hoursWorked:35.75,prodPerHr:13, recareRate:0, patientCount:7, prodPerPatient:69 },
     { name:'Murphy, Sherry', locationCode:'LKW', grossProd:0,collections:308,collRate:0, hoursWorked:0.0,prodPerHr:0, recareRate:0, patientCount:5, prodPerPatient:0 },
     { name:'Bewley, Emma', locationCode:'LKW', grossProd:0,collections:32,collRate:0, hoursWorked:0.0,prodPerHr:0, recareRate:0, patientCount:4, prodPerPatient:0 },
@@ -337,6 +340,7 @@ export const DAILY_LEADERBOARD = {
     { name:'Gleason, Robert', locationCode:'HNR', dailyProd:22057 },
     { name:'Skaggs, Ernest', locationCode:'HNR', dailyProd:17943 },
     { name:'Werner, Andrew', locationCode:'OSB', dailyProd:16843 },
+    { name:'Morgan, Kennedy', locationCode:'PB', dailyProd:14876 },
     { name:'Harvey, Mark', locationCode:'LKW', dailyProd:1160 },
   ],
   hygienists: [
@@ -345,6 +349,7 @@ export const DAILY_LEADERBOARD = {
     { name:'Lynch, Cassie', locationCode:'HNR', dailyProd:8667 },
     { name:'Logsdon, Megan', locationCode:'HNS', dailyProd:6935 },
     { name:'Howell, Dana', locationCode:'LT', dailyProd:6874 },
+    { name:'Ferguson, Amie', locationCode:'LKW', dailyProd:6678 },
     { name:'Woosley, Emily', locationCode:'LKW', dailyProd:6480 },
     { name:'Payne, McKay', locationCode:'LKW', dailyProd:6369 },
     { name:'Morris, Amber', locationCode:'HNR', dailyProd:6033 },
@@ -365,6 +370,7 @@ export const DAILY_LEADERBOARD = {
     { name:'Smith, Jessica', locationCode:'OSB', dailyProd:1352 },
     { name:'Greenwell, Denise', locationCode:'OSB', dailyProd:1319 },
     { name:'Decker, Heather', locationCode:'HNK', dailyProd:1280 },
+    { name:'Spencer, Rachel', locationCode:'HNR', dailyProd:1120 },
     { name:'Wright, Chelsea', locationCode:'LKW', dailyProd:480 },
   ],
 }

@@ -136,7 +136,10 @@ ps_block=src[src.index('providerSchedule: ['):src.index('  ],\n}\n\n// ───
 # Confirmed real providers NOT in the frozen-Aug roster (new hires; often P/C-only, absent from ProviderTotals).
 # Sourced from P/C Summary. ytd0 = production before the current month (0 if brand new).
 SUPPLEMENTAL=[
-    {'k':('bone','victoria'), 'name':'Bone, Victoria', 'loc':'PR', 'spec':'Dentist', 'osb':False, 'ytd0':0},  # Tori Bone, new PR dentist (Kyle 9/10)
+    {'k':('bone','victoria'),  'name':'Bone, Victoria',  'loc':'PR',  'spec':'Dentist',   'osb':False, 'ytd0':0},       # Tori Bone, new PR dentist (Kyle 9/10)
+    {'k':('morgan','kennedy'), 'name':'Morgan, Kennedy', 'loc':'PB',  'spec':'Dentist',   'osb':False, 'ytd0':113421},  # PB dentist, P/C-only (confirmed via DH schedule)
+    {'k':('ferguson','amie'),  'name':'Ferguson, Amie',  'loc':'LKW', 'spec':'Hygienist', 'osb':False, 'ytd0':25834},   # LKW hygienist, P/C-only
+    {'k':('spencer','rachel'), 'name':'Spencer, Rachel', 'loc':'HNR', 'spec':'Hygienist', 'osb':False, 'ytd0':11490},   # HNR hygienist, P/C-only
 ]
 
 # ---------- build providers ----------
