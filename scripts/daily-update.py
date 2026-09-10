@@ -1,10 +1,8 @@
 # Daily MTD update generator — regenerates lib/data.ts for the current live month from Downloads CSVs.
-# EDIT PER RUN (top of file): the 7 input filenames (ProviderTotals, P/C Summary, PPP, NP, DepositSlip [full-month range],
-#   AgedReceivables, Time Clock), BD (business days elapsed), PH{} phones, and the header date strings.
-# Sources: 6-Ascend production = ProviderTotals gross split by P/C-Summary location weights; HNK/OSB = P/C Summary.
-#   Collections = DepositSlip (full-month range file). ytd base + provider roster + location stock come from the
-#   FROZEN prior month (lib/months/2026-08.ts) so re-runs never double-count. Roster = curated real providers only.
-# Run: python3 scripts/daily-update.py  (writes lib/data.ts, prints validation). Then npm run build && git push (auto-deploys).
+# EDIT PER RUN (top of file): the 7 input filenames, BD (biz days elapsed), PH{} phones, header date strings.
+# Add confirmed NEW providers (not in frozen-Aug roster) to SUPPLEMENTAL[] so they appear on the board.
+# ytd base + roster + location stock come from the FROZEN prior month so re-runs never double-count.
+# Run: python3 scripts/daily-update.py  (writes lib/data.ts, prints validation). Then npm run build && git push.
 
 import csv,re,sys
 D="/Users/kylenichols/Downloads"
@@ -135,6 +133,12 @@ for m in re.finditer(r"\{\s*name:(['\"])(.*?)\1,\s*locationCode:['\"](\w+)['\"],
 fm=src[src.index('  // ── Future Months'):src.index('  providerSchedule:')]
 ps_block=src[src.index('providerSchedule: ['):src.index('  ],\n}\n\n// ─── DAILY')]
 
+# Confirmed real providers NOT in the frozen-Aug roster (new hires; often P/C-only, absent from ProviderTotals).
+# Sourced from P/C Summary. ytd0 = production before the current month (0 if brand new).
+SUPPLEMENTAL=[
+    {'k':('bone','victoria'), 'name':'Bone, Victoria', 'loc':'PR', 'spec':'Dentist', 'osb':False, 'ytd0':0},  # Tori Bone, new PR dentist (Kyle 9/10)
+]
+
 # ---------- build providers ----------
 def loc6(k):
     w={a:b for a,b in ploc.get(k,{}).items() if a in A6 and b>0}
@@ -157,6 +161,13 @@ for k,ar in augrows.items():
     row=dict(name=ar['name'],loc=ar['loc'],g=round(g),c=round(c),ytd=ar['ytd']+round(g),
              pat=patients.get(k,0),hrs=round(hours.get(k,0),2),osb=ar['osb'])
     (docs if ar['spec']=='Dentist' else hygs).append(row)
+for sp in SUPPLEMENTAL:                       # confirmed new providers (P/C-sourced)
+    k=sp['k']
+    g=sum(ploc.get(k,{}).values()); c=sum(plocc.get(k,{}).values())
+    if abs(g)<0.5 and c<0.5: continue
+    row=dict(name=sp['name'],loc=sp['loc'],g=round(g),c=round(c),ytd=sp['ytd0']+round(g),
+             pat=patients.get(k,0),hrs=round(hours.get(k,0),2),osb=sp['osb'])
+    (docs if sp['spec']=='Dentist' else hygs).append(row)
 docs.sort(key=lambda r:-r['g']);hygs.sort(key=lambda r:-r['g'])
 
 def esc(n):
