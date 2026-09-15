@@ -9,14 +9,14 @@ export const LOCATIONS = [
   { code: 'OSB', name: 'Osbourne Family',     brand: 'Osbourne',         isOSB: true  },
 ]
 
-// Bonus race collection goals (100% = $1,000 bonus tier). LT: $210K → $195K effective June 2026 (per Kyle 6/9/2026)
+// Bonus race collection goals (100% = $1,000 bonus tier). LT: $210K → $195K effective June 2026 (per Kyle 6/9/2026). PR: $140K → $180K (per Kyle 9/15/2026)
 export const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 335000, LT: 195000, HNR: 130000, HNS: 90000, HNK: 80000, PB: 275000, PR: 140000, OSB: 210000,
+  LKW: 335000, LT: 195000, HNR: 130000, HNS: 90000, HNK: 80000, PB: 275000, PR: 180000, OSB: 210000,
 }
 
-// Production goals (used for location production tracking) — set to 2× each location's collection goal (MONTHLY_GOALS), per Kyle 8/12/2026
+// Production goals (location production tracking). Base = 2× collection goal; PR $450K and PB $687.5K set to a 40% collection-rate target (PR $180K, PB $275K bonus) — per Kyle 9/15/2026
 export const MONTHLY_PROD_GOALS: Record<string, number> = {
-  LKW: 670000, LT: 390000, HNR: 260000, HNS: 180000, HNK: 160000, PB: 550000, PR: 280000, OSB: 420000,
+  LKW: 670000, LT: 390000, HNR: 260000, HNS: 180000, HNK: 160000, PB: 687500, PR: 450000, OSB: 420000,
 }
 
 // Individual doctor monthly gross production goals — 130% of DOCTOR_COLL_GOALS (per Kyle 5/21/2026)
@@ -89,9 +89,9 @@ export const DEMO_DATA = {
   period: 'September 2026',
   org: {
     production:      1157603,
-    productionGoal:  2910000,
+    productionGoal:  3217500,
     collections:     620315,
-    collectionsGoal: 1455000,
+    collectionsGoal: 1495000,
     newPatients:     321,
     activePatients:  2531,
     phoneAnswerRate: 65.3,
@@ -202,7 +202,7 @@ export const SCHEDULE_DATA = {
     daysRemaining:  12,
     scheduledTotal: 1162437,
     mtdGross:       1157603,
-    monthlyGoal:    2910000,
+    monthlyGoal:    3217500,
     locations: [
       { code:'LKW', name:'H&N Lakewood', dentist:0, hygiene:0, total:0, mtdGross:278055, isOSB:false },
       { code:'PB', name:'Proctor Bardstown', dentist:0, hygiene:0, total:0, mtdGross:267140, isOSB:false },
@@ -220,7 +220,7 @@ export const SCHEDULE_DATA = {
     {
       month: 'Sep 2026',
       key: 'sep-2026',
-      monthlyGoal:    2910000,
+      monthlyGoal:    3217500,
       approxBizDays:  21,
       scheduledTotal: 902843,
       earlySchedulingNote: 'Next month — bookings filling; open chair time remains',
@@ -238,7 +238,7 @@ export const SCHEDULE_DATA = {
     {
       month: 'Oct 2026',
       key: 'oct-2026',
-      monthlyGoal:    2910000,
+      monthlyGoal:    3217500,
       approxBizDays:  22,
       scheduledTotal: 550964,
       earlySchedulingNote: 'T-30 days — earliest bookings only',
@@ -256,7 +256,7 @@ export const SCHEDULE_DATA = {
     {
       month: 'Nov 2026',
       key: 'nov-2026',
-      monthlyGoal:    2910000,
+      monthlyGoal:    3217500,
       approxBizDays:  20,
       scheduledTotal: 389957,
       earlySchedulingNote: 'T-61 days — earliest bookings only',
