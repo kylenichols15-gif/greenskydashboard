@@ -94,8 +94,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (85).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(154,73,81,47),'HNR':(203,145,58,71),'PR':(307,164,143,53),'LKW':(305,232,73,76),
-    'LT':(160,124,36,78),'PB':(216,150,66,69),'OSB':(203,145,58,71),'HNS':(124,94,30,76)}
+PH={'HNK':(369,188,181,51),'HNR':(474,340,134,72),'PR':(761,366,395,48),'LKW':(939,689,250,73),
+    'LT':(447,331,116,74),'PB':(712,437,275,61),'OSB':(556,400,156,72),'HNS':(324,242,82,75)}
 
 # ---------- location GROSS split (PT gross 9/8 allocated by P/C loc weights) ----------
 import collections as C
@@ -274,7 +274,7 @@ header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 14; Labo
 // COLLECTIONS = DepositSlip (32) MTD 09/01–09/14 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (85) Sep MTD = {ORG_NP}. PPP (41) patient counts. Hours = Time Clock 09/01–09/14. daysWorked={BD}; prodPerDay=gross/{BD}.
 // Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(70). DAILY_LEADERBOARD = Sept MTD (no single-day baseline yet).
-// Phones = Mango Sept MTD (~9/5, Kyle). AR = AgedReceivables (90) as of 09/14. Goals carried. suppliesPct/activePatients carried from Aug.
+// Phones = Mango Sept MTD (9/14 pull, Kyle). AR = AgedReceivables (90) as of 09/14. Goals carried. suppliesPct/activePatients carried from Aug.
 """
 
 out=[]
