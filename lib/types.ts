@@ -15,7 +15,10 @@ type WithOptionalHygiene<T> = T extends unknown
   ? Omit<T, 'activeHygienePatients'> & { activeHygienePatients?: number }
   : never
 
-export type DashboardData = Omit<RawData, 'doctors' | 'hygienists' | 'locations'> & {
+// asOf (added BD10) = "as of" dates for metrics not refreshed daily (phones, supplies, active hygiene);
+// present on the live month, absent on frozen historical snapshots — optional so both conform.
+export type DashboardData = Omit<RawData, 'doctors' | 'hygienists' | 'locations' | 'asOf'> & {
+  asOf?:      { phones: string; supplies: string; activeHygiene: string }
   doctors:    WithOptionalPerPatient<RawData['doctors'][number]>[]
   hygienists: WithOptionalPerPatient<RawData['hygienists'][number]>[]
   locations:  WithOptionalHygiene<RawData['locations'][number]>[]

@@ -91,6 +91,7 @@ export default function PhonesClient({
             <div>
               <div className={`text-2xl font-bold ${answerRateColor(org.phoneAnswerRate)}`}>{org.phoneAnswerRate}%</div>
               <div className="text-[#64748b] text-xs">Org Answer Rate</div>
+              {data.asOf?.phones && <div className="text-[#94a3b8] text-[10px] mt-0.5">as of {data.asOf.phones}</div>}
             </div>
             <div>
               <div className="text-2xl font-bold text-[#64748b]">{BENCHMARKS.phone_answer_rate.target}%</div>

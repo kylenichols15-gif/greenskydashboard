@@ -140,6 +140,7 @@ export default function LocationsClient({
                   <div>
                     <div className="text-[#64748b] text-xs">Active Hygiene Pts</div>
                     <div className="text-[#0f172a] font-bold text-lg">{(loc.activeHygienePatients ?? 0).toLocaleString()}</div>
+                    {data.asOf?.activeHygiene && <div className="text-[#94a3b8] text-[10px] mt-0.5">as of {data.asOf.activeHygiene}</div>}
                   </div>
                 </div>
 
@@ -149,7 +150,7 @@ export default function LocationsClient({
                     <div className={`rounded-lg border p-3 ${suppliesStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : suppliesStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
                       <div className="text-[#64748b] text-xs">Supplies %</div>
                       <div className={`font-bold text-lg ${suppliesC}`}>{loc.suppliesPct}%</div>
-                      <div className="text-[#64748b] text-xs">Target &lt;5.5%</div>
+                      <div className="text-[#64748b] text-xs">Target &lt;5.5%{data.asOf?.supplies ? ` · as of ${data.asOf.supplies}` : ''}</div>
                     </div>
                   )}
                   <div className={`rounded-lg border p-3 ${loc.suppliesPct > 0 ? '' : 'col-span-2'} ${phoneStatus === 'red' ? 'bg-red-500/8 border-red-500/20' : phoneStatus === 'amber' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-green-500/8 border-green-500/20'}`}>
