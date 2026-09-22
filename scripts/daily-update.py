@@ -27,7 +27,7 @@ LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','
 A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=14  # biz days elapsed thru 9/21
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Sep 16'   # Mango answer rate
+ASOF_PHONES='Sep 21'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
 ASOF_HYGIENE='Aug 28'   # active hygiene (recare) patients
 
@@ -98,8 +98,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (88).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(410,217,193,53),'HNR':(539,393,146,73),'PR':(910,412,498,45),'LKW':(1071,793,278,74),
-    'LT':(524,387,137,74),'PB':(824,514,310,62),'OSB':(641,463,178,72),'HNS':(369,281,88,76)}
+PH={'HNK':(491,281,210,57),'HNR':(698,519,179,74),'PR':(1160,534,626,46),'LKW':(1337,994,343,74),
+    'LT':(658,491,167,75),'PB':(1054,655,399,62),'OSB':(827,585,242,71),'HNS':(466,349,117,75)}
 
 # ---------- location GROSS split (PT gross 9/8 allocated by P/C loc weights) ----------
 import collections as C
@@ -278,7 +278,7 @@ header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 21; Labo
 // COLLECTIONS = DepositSlip (38) MTD 09/01–09/21 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (88) Sep MTD = {ORG_NP}. PPP (44) patient counts. Hours = Time Clock 09/01–09/21. daysWorked={BD}; prodPerDay=gross/{BD}.
 // Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(70). DAILY_LEADERBOARD = Sept MTD (no single-day baseline yet).
-// Phones = Mango Sept MTD (9/16 pull, Kyle). AR = AgedReceivables (93) as of 09/21. Goals carried. suppliesPct/activePatients carried from Aug.
+// Phones = Mango Sept MTD (9/21 pull, Kyle). AR = AgedReceivables (93) as of 09/21. Goals carried. suppliesPct/activePatients carried from Aug.
 """
 
 out=[]
