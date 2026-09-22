@@ -672,7 +672,7 @@ export default function YtdClient({
       </div>
 
       <p className="text-[#94a3b8] text-xs mt-3">
-        Production = gross procedure charges. OSB = Dental Intel (manual source). Collection rate = collections ÷ gross production (timing-affected — insurance claims often collected in later months).
+        Production = gross procedure charges. Collection rate = collections ÷ gross production (timing-affected — insurance claims often collected in later months).
         Doctor table sorted by YTD collections. Provider pills colored by location. Location table: green/red = ±12% vs location&apos;s own 4-month avg.
       </p>
     </div>

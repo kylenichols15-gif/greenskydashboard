@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { LOCATIONS, MONTHLY_GOALS, MONTHLY_PROD_GOALS, BENCHMARKS } from '@/lib/data'
 import { useMonth } from '@/lib/contexts/MonthContext'
 import { formatCurrency, formatPct, getStatusHigh, getStatusLow, collectionsVsPaceStatus, pctToGoal } from '@/lib/utils'
-import OSBBadge from '@/components/OSBBadge'
 import StatusBadge from '@/components/StatusBadge'
 import DaysLeft from '@/components/DaysLeft'
 import GoalBar from '@/components/GoalBar'
@@ -80,12 +79,6 @@ export default function LocationsClient({
 
           return (
             <div key={loc.code} className="bg-white border border-[#d1dce9] rounded-xl overflow-hidden">
-              {loc.isOSB && (
-                <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-1.5 flex items-center gap-2">
-                  <OSBBadge />
-                  <span className="text-amber-400/70 text-xs">Manual source — Dental Intel, not Dentrix Ascend</span>
-                </div>
-              )}
               <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div>

@@ -12,7 +12,7 @@ ORG COLLECTIONS: $${org.collections.toLocaleString()} (${Math.round(org.collecti
 PHONE ANSWER RATE: ${org.phoneAnswerRate}% (target: 80%)
 
 LOCATION SUMMARY:
-${locations.map(l => `${l.code}: $${l.production.toLocaleString()} production, ${l.phoneAnswerRate}% phones, status: ${l.status}${l.isOSB ? ' [ALT DATA — manual source]' : ''}`).join('\n')}
+${locations.map(l => `${l.code}: $${l.production.toLocaleString()} production, ${l.phoneAnswerRate}% phones, status: ${l.status}`).join('\n')}
 
 DEO BENCHMARKS: NOI 20-25%, Supplies <6%, Lab <8%, Payroll <28%, Phone Answer >80%, Collections Rate >98%
 

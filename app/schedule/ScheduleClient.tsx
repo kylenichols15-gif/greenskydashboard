@@ -551,13 +551,6 @@ function ProviderScheduleSection({
             </span>
           </div>
 
-          {/* OSB ALT DATA note */}
-          {selected.isOSB && (
-            <div className="mb-4 flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">
-              <span className="font-bold shrink-0">⚠ ALT DATA — MANUAL SOURCE</span>
-              <span>OSB schedule data is from Dental Intel and may not reflect real-time Ascend scheduling.</span>
-            </div>
-          )}
 
           {/* Month bars */}
           <div className="space-y-5">

@@ -10,7 +10,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'locations', label: '📍 Location Data' },
   { id: 'providers', label: '👨‍⚕️ Providers' },
   { id: 'phones',    label: '📞 Phone Data' },
-  { id: 'osb',       label: '🦷 OSB (Dental Intel)' },
+  { id: 'osb',       label: '🦷 OSB' },
   { id: 'ar',        label: '💰 AR Aging' },
 ]
 
@@ -581,9 +581,6 @@ function OSBTab({ initialLocations }: { initialLocations: LocRow[] }) {
 
   return (
     <div className="max-w-lg space-y-4">
-      <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-2 text-amber-400 text-xs mb-2">
-        ALT DATA — MANUAL SOURCE (Dental Intel)
-      </div>
       <div className="grid grid-cols-2 gap-4">
         {[
           { label: 'Gross Production ($)', field: 'production' },
