@@ -25,14 +25,14 @@ LNAME={'Harvey and Nichols Family Dentistry':'LKW','Harvey and Nichols King':'HN
 LORDER=['LKW','LT','HNR','HNS','HNK','PB','PR','OSB']
 LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','HNS':'H&N Shepherdsville','HNK':'H&N King','PB':'Proctor Bardstown','PR':'Proctor Radcliff','OSB':'Osbourne Family'}
 A6={'LKW','LT','HNR','HNS','PB','PR'}
-BD=15  # biz days elapsed thru 9/22
+BD=16  # biz days elapsed thru 9/23
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Sep 21'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
 ASOF_HYGIENE='Aug 28'   # active hygiene (recare) patients
 
 # ---------- ProviderTotals 9/8 ----------
-pt=list(csv.reader(open(f"{D}/ProviderTotals - 2026-09-22T190827.288.csv",encoding="utf-8-sig")))
+pt=list(csv.reader(open(f"{D}/ProviderTotals - 2026-09-24T074912.520.csv",encoding="utf-8-sig")))
 ptg={};ptc={}
 for r in pt[12:]:
     if not r or not r[0].strip() or r[0].strip()=='Provider Totals':continue
@@ -40,7 +40,7 @@ for r in pt[12:]:
 PT_GRAND=sum(ptg.values())
 
 # ---------- P/C Summary 70 (Sept) ----------
-pc=list(csv.reader(open(f"{D}/Production , Collection Summary (77).csv",encoding="utf-8-sig")))
+pc=list(csv.reader(open(f"{D}/Production , Collection Summary (78).csv",encoding="utf-8-sig")))
 hdr=pc[0];pcols=[(i,h) for i,h in enumerate(hdr) if h.endswith('~Production')]
 sep=[r for r in pc[1:] if len(r)>2 and r[0].strip()=='2026' and r[1].strip()=='Sep']
 ploc={};plocc={};gtP=[i for i,h in enumerate(hdr) if h=='Grand Total~Production'][0];gtC=gtP+1
@@ -57,7 +57,7 @@ for r in sep:
             plocc.setdefault(k,{});plocc[k][code]=plocc[k].get(code,0)+c
 
 # ---------- PPP 38 (patient counts) ----------
-ppp=list(csv.reader(open(f"{D}/Production per Patient (45).csv",encoding="utf-8-sig")))
+ppp=list(csv.reader(open(f"{D}/Production per Patient (46).csv",encoding="utf-8-sig")))
 ph=ppp[0];pccols=[(i,ph[i]) for i in range(len(ph)) if ph[i].endswith('~Patient Count')]
 sepp=[r for r in ppp[1:] if len(r)>2 and r[0].strip()=='2026' and r[1].strip()=='Sep']
 patients={}
@@ -70,7 +70,7 @@ for r in sepp:
             except:pass
 
 # ---------- Timeclock 9/8 ----------
-tc=list(csv.reader(open(f"{D}/Time clock summary 09-01-2026 - 09-22-2026.csv")))
+tc=list(csv.reader(open(f"{D}/Time clock summary 09-01-2026 - 09-23-2026.csv")))
 hours={}
 for r in tc[1:]:
     if len(r)<5:continue
@@ -80,7 +80,7 @@ for r in tc[1:]:
 
 # ---------- DepositSlip 26 (MTD collections by location) ----------
 coll={}
-dr=csv.reader(open(f"{D}/DepositSlip (40).csv",encoding="utf-8-sig"));seen=False
+dr=csv.reader(open(f"{D}/DepositSlip (42).csv",encoding="utf-8-sig"));seen=False
 for row in dr:
     if not row or len(row)<12:continue
     if row[0].strip().startswith("Transaction Date"):seen=True;continue
@@ -206,7 +206,7 @@ def locrow(c):
 
 # ---------- AR from AgedReceivables 87 ----------
 arloc={};cur=None
-for l in open(f"{D}/AgedReceivables (94).csv",encoding='utf-8'):
+for l in open(f"{D}/AgedReceivables (95).csv",encoding='utf-8'):
     m=re.match(r'^(.*?) - Location Aged Totals',l)
     if m:cur=LNAME.get(m.group(1).strip());arloc[cur]={} if cur else None;continue
     if l.startswith('HNDShep - Summary'):cur='ORG';arloc['ORG']={};continue
@@ -270,22 +270,22 @@ def ps_with_sep(block):
 
 REMAIN=sum(sched.values())
 
-header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 22; Labor Day 9/7 excluded).
+header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 23; Labor Day 9/7 excluded).
 // August 2026 FINAL frozen at lib/months/2026-08.ts (prod $2,639,000 · coll $1,450,143 · 708 NP).
-// Production: 6-Ascend = ProviderTotals (09/01–09/22) gross Procedure Charges ${PT_GRAND:,.0f}, split to location by
+// Production: 6-Ascend = ProviderTotals (09/01–09/23) gross Procedure Charges ${PT_GRAND:,.0f}, split to location by
 //   P/C-Summary(70) location weights (ties to PT grand). HNK ${locprod['HNK']:,} + OSB ${locprod['OSB']:,} = P/C Summary(70) Sep
-//   HNK ${locprod['HNK']:,} + OSB ${locprod['OSB']:,} = P/C Summary(77) Sep (current). ORG production ${ORG_PROD:,}.
-// COLLECTIONS = DepositSlip (40) MTD 09/01–09/22 by location (source of truth). Org ${ORG_COLL:,}.
-// NP (89) Sep MTD = {ORG_NP}. PPP (45) patient counts. Hours = Time Clock 09/01–09/22. daysWorked={BD}; prodPerDay=gross/{BD}.
+//   HNK ${locprod['HNK']:,} + OSB ${locprod['OSB']:,} = P/C Summary(78) Sep (current). ORG production ${ORG_PROD:,}.
+// COLLECTIONS = DepositSlip (42) MTD 09/01–09/23 by location (source of truth). Org ${ORG_COLL:,}.
+// NP (89) Sep MTD = {ORG_NP}. PPP (46) patient counts. Hours = Time Clock 09/01–09/23. daysWorked={BD}; prodPerDay=gross/{BD}.
 // Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(70). DAILY_LEADERBOARD = Sept MTD (no single-day baseline yet).
-// Phones = Mango Sept MTD (9/21 pull, Kyle). AR = AgedReceivables (94) as of 09/22. Goals carried. suppliesPct/activePatients carried from Aug.
+// Phones = Mango Sept MTD (9/21 pull, Kyle). AR = AgedReceivables (95) as of 09/23. Goals carried. suppliesPct/activePatients carried from Aug.
 """
 
 out=[]
 out.append(carry_head.rstrip()+"\n\n")
 out.append(header)
 out.append("export const PERIOD_INFO = {\n")
-out.append("  label:          'September 2026',\n  dataAsOf:       'Sep 22',\n  totalBizDays:   21,\n  daysComplete:   %d,\n  daysRemaining:  %d,\n}\n\n"%(BD,21-BD))
+out.append("  label:          'September 2026',\n  dataAsOf:       'Sep 23',\n  totalBizDays:   21,\n  daysComplete:   %d,\n  daysRemaining:  %d,\n}\n\n"%(BD,21-BD))
 out.append("export const DEMO_DATA = {\n  period: 'September 2026',\n  org: {\n")
 out.append(f"    production:      {ORG_PROD},\n    productionGoal:  3217500,\n    collections:     {ORG_COLL},\n    collectionsGoal: 1495000,\n")
 out.append(f"    newPatients:     {ORG_NP},\n    activePatients:  2531,\n    phoneAnswerRate: {ORG_PHONE},\n    hygieneRecare:   95.3,\n    suppliesPct:     5.7,\n  }},\n\n")
@@ -294,20 +294,20 @@ out.append("  locations: [\n"+"\n".join(locrow(c) for c in LORDER)+"\n  ],\n\n")
 out.append("  doctors: [\n"+"\n".join(drow(r) for r in docs)+"\n  ],\n\n")
 out.append("  hygienists: [\n"+"\n".join(hrow(r) for r in hygs)+"\n  ],\n\n")
 out.append("  phones: [\n"+"\n".join(phrow(c) for c in LORDER)+"\n  ],\n\n")
-out.append("  ar: {\n    asOf: '09/22/2026',\n")
+out.append("  ar: {\n    asOf: '09/23/2026',\n")
 out.append(f"    healthScore: {round(org_b['d0_30']/org_net*100) if org_net else 0},\n    total: {org_net},\n")
 out.append(f"    buckets: {{ d0_30: {org_b['d0_30']}, d31_60: {org_b['d31_60']}, d61_90: {org_b['d61_90']}, d90plus: {org_b['d90plus']} }},\n")
 out.append(f"    pcts:    {{ d0_30: {opct(org.get('g0',0))}, d31_60: {opct(org.get('g31',0))}, d61_90: {opct(org.get('g61',0))}, d90plus: {opct(org.get('g90',0))} }},\n")
 out.append(f"    arToProdRatio: {round(org_net/2639000,2)},\n    locations: [\n"+"\n".join(arrow(c) for c in LORDER if c in arloc)+"\n    ],\n  },\n}\n\n")
 # SCHEDULE_DATA
-out.append("export const SCHEDULE_DATA = {\n  asOf: 'September 22, 2026',\n\n  remainingThisMonth: {\n")
+out.append("export const SCHEDULE_DATA = {\n  asOf: 'September 23, 2026',\n\n  remainingThisMonth: {\n")
 out.append(f"    daysRemaining:  {21-BD},\n    scheduledTotal: {REMAIN},\n    mtdGross:       {ORG_PROD},\n    monthlyGoal:    3217500,\n    locations: [\n")
 out.append("\n".join(remrow(c) for c in ['LKW','PB','PR','LT','HNS','HNR','OSB','HNK'])+"\n    ],\n  },\n\n")
 out.append(fm.rstrip()+"\n\n")
 out.append("  "+ps_with_sep(ps_block).strip()+"\n  ],\n}\n\n")
 # leaderboard = MTD
 out.append("// ─── DAILY LEADERBOARD — September MTD gross (no single-day baseline yet at BD%d) ──\n"%BD)
-out.append("export const DAILY_LEADERBOARD = {\n  date:      'September MTD (thru 9/22)',\n  dateShort: 'MTD 9/22',\n  doctors: [\n")
+out.append("export const DAILY_LEADERBOARD = {\n  date:      'September MTD (thru 9/23)',\n  dateShort: 'MTD 9/23',\n  doctors: [\n")
 out.append("\n".join(f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', dailyProd:{r['g']} }}," for r in docs if r['g']>0)+"\n  ],\n")
 out.append("  hygienists: [\n"+"\n".join(f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', dailyProd:{r['g']} }}," for r in hygs if r['g']>0)+"\n  ],\n}\n\n")
 out.append("export const REMAINING_SCHEDULE_BY_PROVIDER: Record<string, number> = {\n")
