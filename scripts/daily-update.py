@@ -41,8 +41,8 @@ for r in pt[12:]:
     k=key(r[0]);ptg[k]=ptg.get(k,0)+num(r[2]);ptc[k]=ptc.get(k,0)+abs(num(r[6]))
 PT_GRAND=sum(ptg.values())
 
-# ---------- P/C Summary (80) — CARRIED from 9/25 (no fresh P/C pull in 9/28 batch): HNK/OSB prod + 6-loc split weights ----------
-pc=list(csv.reader(open(f"{D}/Production , Collection Summary (80).csv",encoding="utf-8-sig")))
+# ---------- P/C Summary (81) — fresh 9/29 pull: HNK/OSB prod (NET basis) + 6-loc split weights ----------
+pc=list(csv.reader(open(f"{D}/Production , Collection Summary (81).csv",encoding="utf-8-sig")))
 hdr=pc[0];pcols=[(i,h) for i,h in enumerate(hdr) if h.endswith('~Production')]
 sep=[r for r in pc[1:] if len(r)>2 and r[0].strip()=='2026' and r[1].strip()=='Sep']
 ploc={};plocc={};gtP=[i for i,h in enumerate(hdr) if h=='Grand Total~Production'][0];gtC=gtP+1
@@ -276,10 +276,12 @@ header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 28; Labo
 // August 2026 FINAL frozen at lib/months/2026-08.ts (prod $2,639,000 · coll $1,450,143 · 708 NP).
 // Production: 6-Ascend = ProviderTotals (09/01–09/28) gross Procedure Charges ${PT_GRAND:,.0f}, split to location by
 //   P/C-Summary(80) location weights (ties to PT grand).
-//   HNK ${locprod['HNK']:,} + OSB ${locprod['OSB']:,} = P/C Summary(80) — CARRIED from 9/25 (no fresh P/C pull in 9/28 batch). ORG production ${ORG_PROD:,}.
+//   HNK ${locprod['HNK']:,} + OSB ${locprod['OSB']:,} = P/C Summary(81) fresh 9/29 pull (NET basis — see note). ORG production ${ORG_PROD:,}.
 // COLLECTIONS = DepositSlip (48) MTD 09/01–09/28 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (92) Sep MTD = {ORG_NP}. PPP (49) patient counts. Hours = Time Clock 09/01–09/28. daysWorked={BD}; prodPerDay=gross/{BD}.
-// Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(80) carried. DAILY_LEADERBOARD = Sept MTD (no single-day baseline yet).
+// NOTE: 6-Ascend = GROSS Procedure Charges; HNK/OSB = P/C NET Production (~half of gross). King/OSB are a separate Ascend
+//   billing entity, absent from this org's ProviderTotals A/R report (select-all can't reach them). Unify once ProviderTotals
+//   is pulled from the King + Osbourne orgs. Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(81).
 // Phones = Mango Sept MTD (9/21 pull, Kyle). AR = AgedReceivables (98) as of 09/28. Goals carried. suppliesPct/activePatients carried from Aug.
 """
 
