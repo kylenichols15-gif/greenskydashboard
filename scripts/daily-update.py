@@ -29,9 +29,10 @@ BD=20  # biz days elapsed thru 9/29
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Sep 30'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
-ASOF_HYGIENE='Sep 24'   # active hygiene (recare) patients
-# Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report (refresh when re-pulled):
-RECARE={'LKW':5026,'HNK':497,'LT':2910,'HNR':1470,'HNS':566,'OSB':2132,'PB':913,'PR':552}
+ASOF_HYGIENE='Sep 30'   # active hygiene (recare) patients
+# Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
+# the by-provider version overcounts). 9/30 pull grand total 14,165 (matches report). Refresh when re-pulled:
+RECARE={'LKW':5040,'HNK':513,'LT':2916,'HNR':1476,'HNS':568,'OSB':2197,'PB':921,'PR':566}
 
 # ---------- ProviderTotals 9/8 ----------
 pt=list(csv.reader(open(f"{D}/ProviderTotals.csv",encoding="utf-8-sig")))
