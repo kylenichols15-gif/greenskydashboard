@@ -27,7 +27,7 @@ LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','
 A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=20  # biz days elapsed thru 9/29
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Sep 21'   # Mango answer rate
+ASOF_PHONES='Sep 30'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
 ASOF_HYGIENE='Sep 24'   # active hygiene (recare) patients
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report (refresh when re-pulled):
@@ -100,8 +100,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (1).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(491,281,210,57),'HNR':(698,519,179,74),'PR':(1160,534,626,46),'LKW':(1337,994,343,74),
-    'LT':(658,491,167,75),'PB':(1054,655,399,62),'OSB':(827,585,242,71),'HNS':(466,349,117,75)}
+PH={'HNK':(699,446,253,64),'HNR':(965,737,228,76),'PR':(1628,794,834,49),'LKW':(1875,1409,466,75),
+    'LT':(979,712,267,73),'PB':(1452,921,531,63),'OSB':(1129,830,299,74),'HNS':(645,484,161,75)}
 
 # ---------- location GROSS split (PT gross 9/8 allocated by P/C loc weights) ----------
 import collections as C
@@ -282,7 +282,7 @@ header=f"""// September 2026 — daily update / BD{BD} of 21 (as of Sep 29; Labo
 // NOTE: 6-Ascend = GROSS Procedure Charges; HNK/OSB = P/C NET Production (~half of gross). King/OSB are a separate Ascend
 //   billing entity, absent from this org's ProviderTotals A/R report (select-all can't reach them). Unify once ProviderTotals
 //   is pulled from the King + Osbourne orgs. Providers: 6-Ascend roster = ProviderTotals; HNK/OSB = P/C Summary(1).
-// Phones = Mango Sept MTD (9/21 pull, Kyle). AR = AgedReceivables (98) as of 09/28. Goals carried. suppliesPct/activePatients carried from Aug.
+// Phones = Mango Sept MTD (9/30 pull, Kyle). AR = AgedReceivables (1) as of 09/29. Goals carried. suppliesPct/activePatients carried from Aug.
 """
 
 out=[]
