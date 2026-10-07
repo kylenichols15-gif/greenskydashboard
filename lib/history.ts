@@ -10,6 +10,7 @@ import may2026 from './months/2026-05'
 import jun2026 from './months/2026-06'
 import jul2026 from './months/2026-07'
 import aug2026 from './months/2026-08'
+import sep2026 from './months/2026-09'
 
 export const HISTORICAL_MONTHS: MonthSnapshot[] = [
   jan2026,
@@ -20,6 +21,7 @@ export const HISTORICAL_MONTHS: MonthSnapshot[] = [
   jun2026,
   jul2026,
   aug2026,
+  sep2026,
 ]
 
 export const LATEST_MONTH = HISTORICAL_MONTHS[HISTORICAL_MONTHS.length - 1]

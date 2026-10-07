@@ -12,7 +12,7 @@ type WithOptionalPerPatient<T> = T extends unknown
 // activeHygienePatients (added BD19, per Chris) is present on the live month but absent on
 // frozen historical snapshots — make it optional so both conform to DashboardData.
 type WithOptionalHygiene<T> = T extends unknown
-  ? Omit<T, 'activeHygienePatients'> & { activeHygienePatients?: number }
+  ? Omit<T, 'activeHygienePatients' | 'newPatientsGoal'> & { activeHygienePatients?: number; newPatientsGoal?: number }
   : never
 
 // asOf (added BD10) = "as of" dates for metrics not refreshed daily (phones, supplies, active hygiene);

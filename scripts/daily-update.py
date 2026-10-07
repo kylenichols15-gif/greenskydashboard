@@ -33,6 +33,8 @@ ASOF_HYGIENE='Sep 30'   # active hygiene (recare) patients
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
 # the by-provider version overcounts). 9/30 pull grand total 14,165 (matches report). Refresh when re-pulled:
 RECARE={'LKW':5040,'HNK':513,'LT':2916,'HNR':1476,'HNS':568,'OSB':2197,'PB':921,'PR':566}
+# Monthly new-patient goal per office (Kyle, 10/7). Carried every month until changed.
+NPGOAL={'LKW':120,'PB':120,'PR':80,'HNR':80,'HNS':40,'HNK':40,'LT':80,'OSB':80}
 
 # ---------- ProviderTotals 9/8 ----------
 pt=list(csv.reader(open(f"{D}/ProviderTotals (1).csv",encoding="utf-8-sig")))  # 09/01-09/30, All providers incl King+OSB
@@ -200,7 +202,7 @@ def locrow(c):
     ap=augloc_field(c,'activePatients');ahp=RECARE.get(c, augloc_field(c,'activeHygienePatients'));sp=augloc_field(c,'suppliesPct')
     ph=PH[c][3]
     st='watch' if (c in('HNK',) or cr<40) else 'on_pace'
-    return (f"    {{ code:'{c}', production:{p}, collections:{cl}, collectionRate:{cr}, newPatients:{npd.get(c,0)}, "
+    return (f"    {{ code:'{c}', production:{p}, collections:{cl}, collectionRate:{cr}, newPatients:{npd.get(c,0)}, newPatientsGoal:{NPGOAL.get(c,0)}, "
             f"recareRate:0, phoneAnswerRate: {ph}, activePatients:{ap}, activeHygienePatients:{ahp}, suppliesPct:{sp}, status:'{st}'{osb} }},")
 
 # ---------- AR from AgedReceivables 87 ----------

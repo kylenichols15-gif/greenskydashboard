@@ -124,7 +124,15 @@ export default function LocationsClient({
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div>
                     <div className="text-[#64748b] text-xs">New Patients MTD</div>
-                    <div className="text-[#0f172a] font-bold text-lg">{loc.newPatients}</div>
+                    <div className="text-[#0f172a] font-bold text-lg">
+                      {loc.newPatients}
+                      {loc.newPatientsGoal ? <span className="text-[#94a3b8] text-sm font-semibold"> / {loc.newPatientsGoal}</span> : null}
+                    </div>
+                    {loc.newPatientsGoal ? (
+                      <div className={`text-[10px] mt-0.5 ${loc.newPatients >= loc.newPatientsGoal ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
+                        {Math.round((loc.newPatients / loc.newPatientsGoal) * 100)}% of goal
+                      </div>
+                    ) : null}
                   </div>
                   <div>
                     <div className="text-[#64748b] text-xs">Active Patients</div>
