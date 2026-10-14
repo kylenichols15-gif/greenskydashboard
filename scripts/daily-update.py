@@ -27,7 +27,7 @@ LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','
 A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=9  # October BD thru 10/13 (Oct 1,2,5,6,7,8,9,12,13)
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Oct 12'   # Mango answer rate
+ASOF_PHONES='Oct 14'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
 ASOF_HYGIENE='Sep 30'   # active hygiene (recare) patients — carried (no fresh Oct recare pull yet)
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
@@ -103,8 +103,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (5).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(271,174,97,64),'HNR':(258,197,61,76),'PR':(471,231,240,49),'LKW':(495,362,133,73),
-    'LT':(324,244,80,75),'PB':(425,299,126,70),'OSB':(330,230,100,70),'HNS':(210,151,59,72)}
+PH={'HNK':(344,238,106,69),'HNR':(383,293,90,77),'PR':(643,309,334,48),'LKW':(706,550,156,78),
+    'LT':(417,324,93,78),'PB':(584,423,161,72),'OSB':(453,323,130,71),'HNS':(288,214,74,74)}
 
 # ---------- location GROSS split: PT gross allocated across ALL 8 locations by P/C loc weights ----------
 # ProviderTotals now includes King + Osbourne providers (Providers: All included), so all 8 unify on GROSS
@@ -283,7 +283,7 @@ header=f"""// October 2026 — daily update / BD{BD} of 22 (as of Oct 13; Oct 20
 // COLLECTIONS = DepositSlip (13) 10/01–10/13 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (5) Oct MTD = {ORG_NP} (fresh). PPP (5) patient counts (fresh). Hours = Time Clock 10/01–10/13.
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
-// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (10/12 pull, Kyle). Goals carried.
+// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (10/14 pull, Kyle). Goals carried.
 """
 
 out=[]
