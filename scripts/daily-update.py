@@ -27,7 +27,7 @@ LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','
 A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=9  # October BD thru 10/13 (Oct 1,2,5,6,7,8,9,12,13)
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Oct 14'   # Mango answer rate
+ASOF_PHONES='Oct 13'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
 ASOF_HYGIENE='Sep 30'   # active hygiene (recare) patients — carried (no fresh Oct recare pull yet)
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
@@ -283,7 +283,7 @@ header=f"""// October 2026 — daily update / BD{BD} of 22 (as of Oct 13; Oct 20
 // COLLECTIONS = DepositSlip (13) 10/01–10/13 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (5) Oct MTD = {ORG_NP} (fresh). PPP (5) patient counts (fresh). Hours = Time Clock 10/01–10/13.
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
-// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (10/14 pull, Kyle). Goals carried.
+// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (thru 10/13, Kyle). Goals carried.
 """
 
 out=[]

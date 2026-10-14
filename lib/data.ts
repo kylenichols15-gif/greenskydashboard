@@ -76,7 +76,7 @@ export const BENCHMARKS = {
 // COLLECTIONS = DepositSlip (13) 10/01–10/13 by location (source of truth). Org $491,254.
 // NP (5) Oct MTD = 265 (fresh). PPP (5) patient counts (fresh). Hours = Time Clock 10/01–10/13.
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
-// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (10/14 pull, Kyle). Goals carried.
+// AR = AgedReceivables (6) as of 10/13 (org = sum of 8 locs). Phones = Mango Oct MTD (thru 10/13, Kyle). Goals carried.
 export const PERIOD_INFO = {
   label:          'October 2026',
   dataAsOf:       'Oct 13',
@@ -99,7 +99,7 @@ export const DEMO_DATA = {
     suppliesPct:     5.7,
   },
 
-  asOf: { phones: 'Oct 14', supplies: 'Aug 14', activeHygiene: 'Sep 30' },
+  asOf: { phones: 'Oct 13', supplies: 'Aug 14', activeHygiene: 'Sep 30' },
 
   locations: [
     { code:'LKW', production:257989, collections:126720, collectionRate:49.1, newPatients:65, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 78, activePatients:534, activeHygienePatients:5040, suppliesPct:5.52, status:'on_pace' },
