@@ -75,14 +75,13 @@ for r in sepp:
             except:pass
 
 # ---------- Timeclock 9/8 ----------
-# MTD hours = two contiguous, non-overlapping weekly files summed (Kyle sent 10/10-16 wk; add 10/01-09 for full MTD).
+tc=list(csv.reader(open(f"{D}/Time clock summary 10-01-2026 - 10-16-2026.csv")))
 hours={}
-for tcf in ["Time clock summary 10-01-2026 - 10-09-2026.csv","Time clock summary 10-10-2026 - 10-16-2026.csv"]:
-    for r in list(csv.reader(open(f"{D}/{tcf}")))[1:]:
-        if len(r)<5:continue
-        k=(r[0].strip().lower(), r[1].strip().split()[0].lower() if r[1].strip() else '')
-        try:hours[k]=hours.get(k,0)+float(r[4])
-        except:pass
+for r in tc[1:]:
+    if len(r)<5:continue
+    k=(r[0].strip().lower(), r[1].strip().split()[0].lower() if r[1].strip() else '')
+    try:hours[k]=hours.get(k,0)+float(r[4])
+    except:pass
 
 # ---------- DepositSlip 26 (MTD collections by location) ----------
 coll={}
@@ -282,7 +281,7 @@ header=f"""// October 2026 — daily update / BD{BD} of 22 (as of Oct 16; Oct 20
 //   ${PT_GRAND:,.0f}, split to location by P/C-Summary(3) per-provider weights — CARRIED from 10/6 (no fresh per-provider P/C in batch).
 //   King + Osbourne unified on GROSS. ORG production ${ORG_PROD:,}.
 // COLLECTIONS = DepositSlip (15) 10/01–10/16 by location (source of truth). Org ${ORG_COLL:,}.
-// NP (6) Oct MTD = {ORG_NP} (fresh). PPP (6) patient counts (fresh). Hours = Time Clock 10/01-09 + 10/10-16 (MTD, summed).
+// NP (6) Oct MTD = {ORG_NP} (fresh). PPP (6) patient counts (fresh). Hours = Time Clock 10/01–10/16 (full MTD).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
 // AR = AgedReceivables (7) as of 10/16 (org = sum of 8 locs). Phones = Mango Oct MTD (thru 10/16, Kyle). Goals carried.
 """

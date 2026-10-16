@@ -74,7 +74,7 @@ export const BENCHMARKS = {
 //   $1,416,066, split to location by P/C-Summary(3) per-provider weights — CARRIED from 10/6 (no fresh per-provider P/C in batch).
 //   King + Osbourne unified on GROSS. ORG production $1,416,066.
 // COLLECTIONS = DepositSlip (15) 10/01–10/16 by location (source of truth). Org $637,904.
-// NP (6) Oct MTD = 348 (fresh). PPP (6) patient counts (fresh). Hours = Time Clock 10/01-09 + 10/10-16 (MTD, summed).
+// NP (6) Oct MTD = 348 (fresh). PPP (6) patient counts (fresh). Hours = Time Clock 10/01–10/16 (full MTD).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
 // AR = AgedReceivables (7) as of 10/16 (org = sum of 8 locs). Phones = Mango Oct MTD (thru 10/16, Kyle). Goals carried.
 export const PERIOD_INFO = {
