@@ -29,10 +29,10 @@ BD=12  # October BD thru 10/16 (Oct 1,2,5,6,7,8,9,12,13,14,15,16)
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Oct 16'   # Mango answer rate
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
-ASOF_HYGIENE='Sep 30'   # active hygiene (recare) patients — carried (no fresh Oct recare pull yet)
+ASOF_HYGIENE='Oct 16'   # active hygiene (recare) patients
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
-# the by-provider version overcounts). 9/30 pull grand total 14,165 (matches report). Refresh when re-pulled:
-RECARE={'LKW':5040,'HNK':513,'LT':2916,'HNR':1476,'HNS':568,'OSB':2197,'PB':921,'PR':566}
+# the by-provider version overcounts). 10/16 pull grand total 14,752 (matches report). Refresh when re-pulled:
+RECARE={'LKW':5127,'HNK':574,'LT':2969,'HNR':1509,'HNS':586,'OSB':2460,'PB':960,'PR':604}
 # Monthly new-patient goal per office (Kyle, 10/7). Carried every month until changed.
 NPGOAL={'LKW':120,'PB':120,'PR':80,'HNR':80,'HNS':40,'HNK':40,'LT':80,'OSB':80}
 
