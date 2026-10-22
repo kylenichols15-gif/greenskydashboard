@@ -134,7 +134,13 @@ export default function YtdClient({
   const [selectedProvider,   setSelectedProvider]   = useState<string>('Nichols, Christopher')
   const [selectedProvMetric, setSelectedProvMetric] = useState<ProvMetricKey>('collections')
 
-  const completed = HISTORICAL_MONTHS  // Jan–Apr
+  const completed = HISTORICAL_MONTHS  // all frozen months, oldest→newest
+  // Derived header labels (stay correct as months are added)
+  const firstMonthName = completed[0].periodInfo.label.split(' ')[0]
+  const lastFullLabel  = completed[completed.length - 1].periodInfo.label
+  const lastShort      = shortLabel(completed[completed.length - 1])
+  const nCompleteMonths = completed.length
+  const nLocations      = completed[completed.length - 1].data.locations.length
 
   // ── Org trend ────────────────────────────────────────────────────────────
   const orgTrend = completed.map(m => ({
@@ -246,7 +252,7 @@ export default function YtdClient({
   const provChartMoM   = mom(provChartLast, provChartPrev)
 
   // ── Location monthly production ───────────────────────────────────────────
-  const locationRows = ['LKW', 'LT', 'PB', 'PR', 'OSB', 'HNS', 'HNR'].map(code => {
+  const locationRows = ['LKW', 'LT', 'PB', 'PR', 'OSB', 'HNS', 'HNR', 'HNK'].map(code => {
     const monthly = completed.map(m => m.data.locations.find(l => l.code === code)?.production ?? 0)
     return { code, monthly, ytd: monthly.reduce((s, v) => s + v, 0), isOSB: code === 'OSB' }
   }).sort((a, b) => b.ytd - a.ytd)
@@ -262,7 +268,7 @@ export default function YtdClient({
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-[#0f172a] text-2xl font-bold">Year-to-Date Overview</h1>
-          <p className="text-[#64748b] text-sm mt-1">January – April 2026 · All 7 locations · 4 complete months</p>
+          <p className="text-[#64748b] text-sm mt-1">{firstMonthName} – {lastFullLabel} · All {nLocations} locations · {nCompleteMonths} complete months</p>
         </div>
         <DaysLeft period={currentPeriod} />
       </div>
@@ -287,7 +293,7 @@ export default function YtdClient({
         <div className="bg-white border border-[#d1dce9] rounded-xl p-4">
           <div className="text-[#64748b] text-xs">Avg Phone Rate</div>
           <div className={`font-bold text-xl ${pctColor(avgPhoneRate, 80, 70)}`}>{formatPct(avgPhoneRate, 1)}</div>
-          <div className="text-[#64748b] text-xs">Jan–Apr avg · Target 80%</div>
+          <div className="text-[#64748b] text-xs">{firstMonthName.slice(0,3)}–{lastShort} avg · Target 80%</div>
         </div>
       </div>
 
@@ -326,7 +332,7 @@ export default function YtdClient({
 
         {/* Location pills */}
         <div className="flex flex-wrap gap-1.5 mb-5">
-          {(['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'PB', 'PR', 'OSB'] as const).map(code => {
+          {(['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'HNK', 'PB', 'PR', 'OSB'] as const).map(code => {
             const isDisabled = orgMetricCfg.orgOnly && code !== 'ALL'
             const isActive   = effectiveLoc === code
             const locColor   = code === 'ALL' ? '#2563eb' : LOC_COLORS[code]
