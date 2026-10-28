@@ -9,7 +9,7 @@ import DaysLeft from '@/components/DaysLeft'
 import GoalBar from '@/components/GoalBar'
 import type { DashboardData, PeriodData } from '@/lib/types'
 
-const TABS = ['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'PB', 'PR', 'OSB']
+const TABS = ['ALL', 'LKW', 'LT', 'HNR', 'HNS', 'HNK', 'PB', 'PR', 'OSB']
 
 export default function LocationsClient({
   currentData,

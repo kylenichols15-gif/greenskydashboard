@@ -16,7 +16,7 @@ export const MONTHLY_GOALS: Record<string, number> = {
 
 // Production goals (location production tracking). Base = 2× collection goal; PR $450K and PB $687.5K set to a 40% collection-rate target (PR $180K, PB $275K bonus) — per Kyle 9/15/2026
 export const MONTHLY_PROD_GOALS: Record<string, number> = {
-  LKW: 670000, LT: 390000, HNR: 260000, HNS: 180000, HNK: 160000, PB: 687500, PR: 450000, OSB: 420000,
+  LKW: 670000, LT: 390000, HNR: 260000, HNS: 200000, HNK: 160000, PB: 687500, PR: 450000, OSB: 420000,
 }
 
 // Individual doctor monthly gross production goals — 130% of DOCTOR_COLL_GOALS (per Kyle 5/21/2026)
@@ -89,9 +89,9 @@ export const DEMO_DATA = {
   period: 'October 2026',
   org: {
     production:      2556657,
-    productionGoal:  3217500,
+    productionGoal:  3237500,
     collections:     1192226,
-    collectionsGoal: 1495000,
+    collectionsGoal: 1505000,
     newPatients:     566,
     activePatients:  2531,
     phoneAnswerRate: 67.1,
@@ -204,7 +204,7 @@ export const SCHEDULE_DATA = {
     daysRemaining:  3,
     scheduledTotal: 498051,
     mtdGross:       2556657,
-    monthlyGoal:    3217500,
+    monthlyGoal:    3237500,
     locations: [
       { code:'LKW', name:'H&N Lakewood', dentist:0, hygiene:0, total:0, mtdGross:697909, isOSB:false },
       { code:'PB', name:'Proctor Bardstown', dentist:0, hygiene:0, total:0, mtdGross:549883, isOSB:false },
