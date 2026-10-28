@@ -11,7 +11,7 @@ export const LOCATIONS = [
 
 // Bonus race collection goals (100% = $1,000 bonus tier). LT: $210K → $195K effective June 2026 (per Kyle 6/9/2026). PR: $140K → $180K (per Kyle 9/15/2026)
 export const MONTHLY_GOALS: Record<string, number> = {
-  LKW: 335000, LT: 195000, HNR: 130000, HNS: 90000, HNK: 80000, PB: 275000, PR: 180000, OSB: 210000,
+  LKW: 335000, LT: 195000, HNR: 130000, HNS: 100000, HNK: 80000, PB: 275000, PR: 180000, OSB: 210000,
 }
 
 // Production goals (location production tracking). Base = 2× collection goal; PR $450K and PB $687.5K set to a 40% collection-rate target (PR $180K, PB $275K bonus) — per Kyle 9/15/2026
