@@ -29,10 +29,10 @@ BD=22  # October BD thru 10/30 — FINAL biz day of month (Oct 1,2,5,6,7,8,9,12,
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Oct 28'   # Mango answer rate — FRESH MTD paste (Kyle, 10/28)
 ASOF_SUPPLIES='Aug 14'  # supply-cost %
-ASOF_HYGIENE='Oct 16'   # active hygiene (recare) patients — CARRIED (no fresh recare in 10/19 batch)
+ASOF_HYGIENE='Oct 30'   # active hygiene (recare) patients — FRESH location-grouped pull 10/30
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
-# the by-provider version overcounts). 10/16 pull grand total 14,752 (matches report). Refresh when re-pulled:
-RECARE={'LKW':5127,'HNK':574,'LT':2969,'HNR':1509,'HNS':586,'OSB':2460,'PB':960,'PR':604}
+# the by-provider version overcounts). 10/30 pull grand total 15,217 (matches report). Refresh when re-pulled:
+RECARE={'LKW':5198,'HNK':636,'LT':2983,'HNR':1540,'HNS':605,'OSB':2672,'PB':996,'PR':633}
 # Monthly new-patient goal per office (Kyle, 10/7). Carried every month until changed.
 NPGOAL={'LKW':120,'PB':120,'PR':80,'HNR':80,'HNS':40,'HNK':40,'LT':80,'OSB':80}
 
@@ -283,7 +283,7 @@ header=f"""// October 2026 — daily update / BD{BD} of 22 (as of Oct 30 — FIN
 // COLLECTIONS = DepositSlip (25) 10/01–10/26 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (11) Oct MTD = {ORG_NP} (fresh). PPP (12) patient counts (fresh). Hours = Time Clock 10/01–10/26 (full MTD).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
-// AR = AgedReceivables (17) as of 10/30 (org = sum of 8 locs). DH schedule CARRIED (9, 10/28). Phones = Mango (thru 10/28, CARRIED). Recare CARRIED 10/16 (by-provider file overcounts; need location-grouped). Goals carried.
+// AR = AgedReceivables (17) as of 10/30 (org = sum of 8 locs). DH schedule CARRIED (9, 10/28). Phones = Mango (thru 10/28, CARRIED). Recare FRESH 10/30 (location-grouped, deduped). Goals carried.
 """
 
 out=[]
