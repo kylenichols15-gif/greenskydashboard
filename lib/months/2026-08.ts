@@ -22,17 +22,17 @@ const aug2026: MonthSnapshot = {
         activePatients: 2531,
         phoneAnswerRate: 68.4,
         hygieneRecare: 95.3,
-        suppliesPct: 5.7
+        suppliesPct: 10.56
       },
       locations: [
-        { code:"LKW", production:759309, collections:374322, collectionRate:49.3, newPatients:131, recareRate:0, phoneAnswerRate:80, activePatients:534, activeHygienePatients:6098, suppliesPct:5.52, status:"on_pace" },
-        { code:"LT", production:327820, collections:141278, collectionRate:43.1, newPatients:57, recareRate:0, phoneAnswerRate:72, activePatients:421, activeHygienePatients:3202, suppliesPct:4.39, status:"on_pace" },
-        { code:"HNR", production:187508, collections:126057, collectionRate:67.2, newPatients:64, recareRate:0, phoneAnswerRate:71, activePatients:298, activeHygienePatients:1589, suppliesPct:7.37, status:"watch" },
-        { code:"HNS", production:209588, collections:108339, collectionRate:51.7, newPatients:89, recareRate:0, phoneAnswerRate:75, activePatients:276, activeHygienePatients:541, suppliesPct:6.9, status:"on_pace" },
-        { code:"HNK", production:67154, collections:53978, collectionRate:80.4, newPatients:29, recareRate:0, phoneAnswerRate:49, activePatients:0, activeHygienePatients:427, suppliesPct:7.46, status:"watch" },
-        { code:"PB", production:600253, collections:275206, collectionRate:45.8, newPatients:112, recareRate:0, phoneAnswerRate:66, activePatients:389, activeHygienePatients:942, suppliesPct:4.08, status:"on_pace" },
-        { code:"PR", production:328967, collections:154474, collectionRate:47, newPatients:145, recareRate:0, phoneAnswerRate:61, activePatients:321, activeHygienePatients:495, suppliesPct:8.84, status:"on_pace" },
-        { code:"OSB", production:158401, collections:216488, collectionRate:136.7, newPatients:81, recareRate:0, phoneAnswerRate:69, activePatients:292, activeHygienePatients:1744, suppliesPct:6.11, status:"watch", isOSB:true }
+        { code:"LKW", production:759309, collections:374322, collectionRate:49.3, newPatients:131, recareRate:0, phoneAnswerRate:80, activePatients:534, activeHygienePatients:6098, suppliesPct:6.68, status:"on_pace" },
+        { code:"LT", production:327820, collections:141278, collectionRate:43.1, newPatients:57, recareRate:0, phoneAnswerRate:72, activePatients:421, activeHygienePatients:3202, suppliesPct:11.6, status:"on_pace" },
+        { code:"HNR", production:187508, collections:126057, collectionRate:67.2, newPatients:64, recareRate:0, phoneAnswerRate:71, activePatients:298, activeHygienePatients:1589, suppliesPct:8.05, status:"watch" },
+        { code:"HNS", production:209588, collections:108339, collectionRate:51.7, newPatients:89, recareRate:0, phoneAnswerRate:75, activePatients:276, activeHygienePatients:541, suppliesPct:10.41, status:"on_pace" },
+        { code:"HNK", production:67154, collections:53978, collectionRate:80.4, newPatients:29, recareRate:0, phoneAnswerRate:49, activePatients:0, activeHygienePatients:427, suppliesPct:6.15, status:"watch" },
+        { code:"PB", production:600253, collections:275206, collectionRate:45.8, newPatients:112, recareRate:0, phoneAnswerRate:66, activePatients:389, activeHygienePatients:942, suppliesPct:12.65, status:"on_pace" },
+        { code:"PR", production:328967, collections:154474, collectionRate:47, newPatients:145, recareRate:0, phoneAnswerRate:61, activePatients:321, activeHygienePatients:495, suppliesPct:31.75, status:"on_pace" },
+        { code:"OSB", production:158401, collections:216488, collectionRate:136.7, newPatients:81, recareRate:0, phoneAnswerRate:69, activePatients:292, activeHygienePatients:1744, suppliesPct:5.12, status:"watch", isOSB:true }
       ],
       doctors: [
         { name:"Nichols, Christopher", locationCode:"LKW", grossProd:429248, collections:168907, collRate:39.3, prodPerDay:20440, daysWorked:21, ytdProd:2666248, patientCount:371, prodPerPatient:1157 },

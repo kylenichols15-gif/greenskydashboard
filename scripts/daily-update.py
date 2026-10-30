@@ -28,7 +28,7 @@ A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=22  # October BD thru 10/30 — FINAL biz day of month (Oct 1,2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30)
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Oct 28'   # Mango answer rate — FRESH MTD paste (Kyle, 10/28)
-ASOF_SUPPLIES='Aug 14'  # supply-cost %
+ASOF_SUPPLIES='Oct pending (Sep booked)'  # supply-cost %: Oct blank until books close; Aug/Sep booked from Financials sheet
 ASOF_HYGIENE='Oct 30'   # active hygiene (recare) patients — FRESH location-grouped pull 10/30
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
 # the by-provider version overcounts). 10/30 pull grand total 15,217 (matches report). Refresh when re-pulled:
@@ -199,7 +199,7 @@ def hrow(r):
 def locrow(c):
     p=locprod[c];cl=round(coll.get(c,0));cr=round(cl/p*100,1) if p else 0
     osb=", isOSB:true" if c=='OSB' else ""
-    ap=augloc_field(c,'activePatients');ahp=RECARE.get(c, augloc_field(c,'activeHygienePatients'));sp=augloc_field(c,'suppliesPct')
+    ap=augloc_field(c,'activePatients');ahp=RECARE.get(c, augloc_field(c,'activeHygienePatients'));sp=0  # Oct supply blank until books close (per Kyle 10/30)
     ph=PH[c][3]
     st='watch' if (c in('HNK',) or cr<40) else 'on_pace'
     return (f"    {{ code:'{c}', production:{p}, collections:{cl}, collectionRate:{cr}, newPatients:{npd.get(c,0)}, newPatientsGoal:{NPGOAL.get(c,0)}, "
@@ -293,7 +293,7 @@ out.append("export const PERIOD_INFO = {\n")
 out.append("  label:          'October 2026',\n  dataAsOf:       'Oct 30',\n  totalBizDays:   22,\n  daysComplete:   %d,\n  daysRemaining:  %d,\n}\n\n"%(BD,22-BD))
 out.append("export const DEMO_DATA = {\n  period: 'October 2026',\n  org: {\n")
 out.append(f"    production:      {ORG_PROD},\n    productionGoal:  3237500,\n    collections:     {ORG_COLL},\n    collectionsGoal: 1505000,\n")
-out.append(f"    newPatients:     {ORG_NP},\n    activePatients:  2531,\n    phoneAnswerRate: {ORG_PHONE},\n    hygieneRecare:   95.3,\n    suppliesPct:     5.7,\n  }},\n\n")
+out.append(f"    newPatients:     {ORG_NP},\n    activePatients:  2531,\n    phoneAnswerRate: {ORG_PHONE},\n    hygieneRecare:   95.3,\n    suppliesPct:     0,\n  }},\n\n")
 out.append(f"  asOf: {{ phones: '{ASOF_PHONES}', supplies: '{ASOF_SUPPLIES}', activeHygiene: '{ASOF_HYGIENE}' }},\n\n")
 out.append("  locations: [\n"+"\n".join(locrow(c) for c in LORDER)+"\n  ],\n\n")
 out.append("  doctors: [\n"+"\n".join(drow(r) for r in docs)+"\n  ],\n\n")

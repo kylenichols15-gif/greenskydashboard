@@ -184,6 +184,7 @@ export default function OverviewClient({
   const collStatus   = collectionsVsPaceStatus(org.collections, org.collectionsGoal, daysComplete, totalBizDays) as StatusColor
   const phoneStatus  = getStatusHigh(org.phoneAnswerRate, BENCHMARKS.phone_answer_rate.target, BENCHMARKS.phone_answer_rate.flagBelow) as StatusColor
   const suppliesPct  = (org as { suppliesPct?: number }).suppliesPct ?? (locations.reduce((s, l) => s + l.suppliesPct, 0) / locations.length)
+  const suppliesHasData = suppliesPct > 0   // 0 = not yet booked (e.g. current month pre-close) → show as no data
   const suppliesStatus = getStatusLow(suppliesPct, BENCHMARKS.supplies_pct.target, BENCHMARKS.supplies_pct.flagAbove) as StatusColor
 
   // Sorted locations
@@ -261,19 +262,30 @@ export default function OverviewClient({
         <div className="bg-white border border-[#d1dce9] rounded-xl p-5">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[#64748b] text-xs font-semibold uppercase tracking-wider">Supplies %</span>
-            <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${STATUS_PILL[suppliesStatus]}`}>
-              {suppliesStatus === 'green' ? 'On Track' : suppliesStatus === 'amber' ? 'Watch' : 'Critical'}
-            </span>
+            {suppliesHasData && (
+              <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${STATUS_PILL[suppliesStatus]}`}>
+                {suppliesStatus === 'green' ? 'On Track' : suppliesStatus === 'amber' ? 'Watch' : 'Critical'}
+              </span>
+            )}
           </div>
-          <div className={`text-3xl font-black mb-0.5 ${STATUS_VALUE[suppliesStatus]}`}>{suppliesPct.toFixed(1)}%</div>
-          <div className="text-[#94a3b8] text-xs mb-1">Target: ≤5.5% of collections</div>
-          <StatBar
-            pct={parseFloat(suppliesPct.toFixed(1))}
-            status={suppliesStatus}
-            targetPct={5.5}
-            scaleMax={10}
-            invert
-          />
+          {suppliesHasData ? (
+            <>
+              <div className={`text-3xl font-black mb-0.5 ${STATUS_VALUE[suppliesStatus]}`}>{suppliesPct.toFixed(1)}%</div>
+              <div className="text-[#94a3b8] text-xs mb-1">Target: ≤5.5% of collections</div>
+              <StatBar
+                pct={parseFloat(suppliesPct.toFixed(1))}
+                status={suppliesStatus}
+                targetPct={5.5}
+                scaleMax={10}
+                invert
+              />
+            </>
+          ) : (
+            <>
+              <div className="text-3xl font-black mb-0.5 text-[#94a3b8]">—</div>
+              <div className="text-[#94a3b8] text-xs mb-1">Not yet booked this month · target ≤5.5%</div>
+            </>
+          )}
         </div>
       </div>
 

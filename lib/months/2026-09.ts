@@ -22,7 +22,7 @@ const sep2026: MonthSnapshot = {
         activePatients: 2531,
         phoneAnswerRate: 67.6,
         hygieneRecare: 95.3,
-        suppliesPct: 5.7
+        suppliesPct: 7.09
       },
       asOf: {
         phones: "Sep 30",
@@ -30,14 +30,14 @@ const sep2026: MonthSnapshot = {
         activeHygiene: "Sep 30"
       },
       locations: [
-        { code:"LKW", production:775503, collections:393910, collectionRate:50.8, newPatients:149, newPatientsGoal:120, recareRate:0, phoneAnswerRate:75, activePatients:534, activeHygienePatients:5040, suppliesPct:5.52, status:"on_pace" },
-        { code:"LT", production:281706, collections:194004, collectionRate:68.9, newPatients:64, newPatientsGoal:80, recareRate:0, phoneAnswerRate:73, activePatients:421, activeHygienePatients:2916, suppliesPct:4.39, status:"on_pace" },
-        { code:"HNR", production:200923, collections:94036, collectionRate:46.8, newPatients:70, newPatientsGoal:80, recareRate:0, phoneAnswerRate:76, activePatients:298, activeHygienePatients:1476, suppliesPct:7.37, status:"on_pace" },
-        { code:"HNS", production:266959, collections:105798, collectionRate:39.6, newPatients:65, newPatientsGoal:40, recareRate:0, phoneAnswerRate:75, activePatients:276, activeHygienePatients:568, suppliesPct:6.9, status:"watch" },
-        { code:"HNK", production:147540, collections:40301, collectionRate:27.3, newPatients:45, newPatientsGoal:40, recareRate:0, phoneAnswerRate:64, activePatients:0, activeHygienePatients:513, suppliesPct:7.46, status:"watch" },
-        { code:"PB", production:603560, collections:256491, collectionRate:42.5, newPatients:89, newPatientsGoal:120, recareRate:0, phoneAnswerRate:63, activePatients:389, activeHygienePatients:921, suppliesPct:4.08, status:"on_pace" },
-        { code:"PR", production:516416, collections:220662, collectionRate:42.7, newPatients:121, newPatientsGoal:80, recareRate:0, phoneAnswerRate:49, activePatients:321, activeHygienePatients:566, suppliesPct:8.84, status:"on_pace" },
-        { code:"OSB", production:295544, collections:164734, collectionRate:55.7, newPatients:57, newPatientsGoal:80, recareRate:0, phoneAnswerRate:74, activePatients:292, activeHygienePatients:2197, suppliesPct:6.11, status:"on_pace", isOSB:true }
+        { code:"LKW", production:775503, collections:393910, collectionRate:50.8, newPatients:149, newPatientsGoal:120, recareRate:0, phoneAnswerRate:75, activePatients:534, activeHygienePatients:5040, suppliesPct:4.36, status:"on_pace" },
+        { code:"LT", production:281706, collections:194004, collectionRate:68.9, newPatients:64, newPatientsGoal:80, recareRate:0, phoneAnswerRate:73, activePatients:421, activeHygienePatients:2916, suppliesPct:6.08, status:"on_pace" },
+        { code:"HNR", production:200923, collections:94036, collectionRate:46.8, newPatients:70, newPatientsGoal:80, recareRate:0, phoneAnswerRate:76, activePatients:298, activeHygienePatients:1476, suppliesPct:3.79, status:"on_pace" },
+        { code:"HNS", production:266959, collections:105798, collectionRate:39.6, newPatients:65, newPatientsGoal:40, recareRate:0, phoneAnswerRate:75, activePatients:276, activeHygienePatients:568, suppliesPct:5.33, status:"watch" },
+        { code:"HNK", production:147540, collections:40301, collectionRate:27.3, newPatients:45, newPatientsGoal:40, recareRate:0, phoneAnswerRate:64, activePatients:0, activeHygienePatients:513, suppliesPct:14.21, status:"watch" },
+        { code:"PB", production:603560, collections:256491, collectionRate:42.5, newPatients:89, newPatientsGoal:120, recareRate:0, phoneAnswerRate:63, activePatients:389, activeHygienePatients:921, suppliesPct:7.93, status:"on_pace" },
+        { code:"PR", production:516416, collections:220662, collectionRate:42.7, newPatients:121, newPatientsGoal:80, recareRate:0, phoneAnswerRate:49, activePatients:321, activeHygienePatients:566, suppliesPct:15.6, status:"on_pace" },
+        { code:"OSB", production:295544, collections:164734, collectionRate:55.7, newPatients:57, newPatientsGoal:80, recareRate:0, phoneAnswerRate:74, activePatients:292, activeHygienePatients:2197, suppliesPct:5.97, status:"on_pace", isOSB:true }
       ],
       doctors: [
         { name:"Nichols, Christopher", locationCode:"LKW", grossProd:375552, collections:188472, collRate:50.2, prodPerDay:17883, daysWorked:21, ytdProd:3041800, patientCount:364, prodPerPatient:1032 },
