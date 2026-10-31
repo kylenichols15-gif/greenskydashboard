@@ -27,7 +27,7 @@ LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','
 A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=22  # October BD thru 10/30 — FINAL biz day of month (Oct 1,2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30)
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Oct 28'   # Mango answer rate — MTD paste (Kyle, 10/28) — CARRIED
+ASOF_PHONES='Oct 31'   # Mango answer rate — FRESH full-month paste (Kyle, 10/31)
 ASOF_SUPPLIES='Oct pending (Sep booked)'  # supply-cost %: Oct blank until books close; Aug/Sep booked from Financials sheet
 ASOF_HYGIENE='Oct 30'   # active hygiene (recare) patients — location-grouped pull 10/30 — CARRIED
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
@@ -103,8 +103,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (16).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(717,519,198,72),'HNR':(879,694,185,79),'PR':(1639,504,1135,31),'LKW':(1684,1315,369,78),
-    'LT':(904,714,190,79),'PB':(1362,1004,358,74),'OSB':(1112,780,332,70),'HNS':(686,501,185,73)}
+PH={'HNK':(771,566,205,73),'HNR':(940,741,199,79),'PR':(1732,547,1185,32),'LKW':(1824,1413,411,77),
+    'LT':(958,764,194,80),'PB':(1467,1088,379,74),'OSB':(1188,818,370,69),'HNS':(736,537,199,73)}
 
 # ---------- location GROSS split: PT gross allocated across ALL 8 locations by P/C loc weights ----------
 # ProviderTotals now includes King + Osbourne providers (Providers: All included), so all 8 unify on GROSS
@@ -283,7 +283,7 @@ header=f"""// October 2026 — FINAL CLOSE (10/31 settled pull; range 10/01–10
 // COLLECTIONS = DepositSlip (34) 10/01–10/31 by location (source of truth). Org ${ORG_COLL:,}.
 // NP (16) Oct final = {ORG_NP} (fresh). PPP (17) patient counts (fresh). Hours = Time Clock 10/01–10/31 (full month).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-09.ts.
-// AR = AgedReceivables (18) as of 10/31 (org = sum of 8 locs). DH schedule CARRIED (month closed, 0 remaining). Phones = Mango (thru 10/28, CARRIED). Recare 10/30 (location-grouped, deduped, CARRIED). Goals carried.
+// AR = AgedReceivables (18) as of 10/31 (org = sum of 8 locs). DH schedule CARRIED (month closed, 0 remaining). Phones = Mango FRESH full-month (10/31). Recare 10/30 (location-grouped, deduped, CARRIED). Goals carried.
 """
 
 out=[]
