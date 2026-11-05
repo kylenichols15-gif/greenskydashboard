@@ -38,6 +38,44 @@ function getNextTier(pct: number) {
   return TIERS.find(t => pct < t.pct) ?? null
 }
 
+// ── Per-location tier model ──────────────────────────────────────────────────
+// Most locations (and the org total) use the %-of-goal ladder above. The two Proctor
+// locations use absolute-dollar COLLECTION tiers ($25k steps, 4 levels) set by Sarah +
+// Tiffany — shown as tier LEVEL only (no payout $). T2 = each location's standing goal
+// (PB $275k, PR $180k), so the 100%/goal bar line still lands on T2.
+const PROCTOR_TIER_DOLLARS: Record<string, number[]> = {
+  PB: [250000, 275000, 300000, 325000],
+  PR: [155000, 180000, 205000, 230000],
+}
+type NTier = { tag: string; label: string; color: string; bg: string; barColor: string; dollar: number; pos: number; isTarget: boolean }
+// Normalized tiers for a location. `dollar` = absolute collection threshold; `pos` = bar position
+// as % of goal (T2 == 100). dollarMode locations display the tier name instead of a $ figure.
+function tiersForLocation(code: string, goal: number): { tiers: NTier[]; dollarMode: boolean } {
+  const dollars = PROCTOR_TIER_DOLLARS[code]
+  if (dollars) {
+    const tiers = dollars.map((d, i) => ({
+      tag: TIERS[i].tag, label: TIERS[i].label, color: TIERS[i].color, bg: TIERS[i].bg,
+      barColor: TIERS[i].barColor, dollar: d, pos: (d / goal) * 100, isTarget: d === goal,
+    }))
+    return { tiers, dollarMode: true }
+  }
+  const tiers = TIERS.map(t => ({
+    tag: t.tag, label: t.label, color: t.color, bg: t.bg, barColor: t.barColor,
+    dollar: (t.pct / 100) * goal, pos: t.pct, isTarget: 'isTarget' in t && !!t.isTarget,
+  }))
+  return { tiers, dollarMode: false }
+}
+function currentTierD(tiers: NTier[], collected: number) {
+  for (let i = tiers.length - 1; i >= 0; i--) if (collected >= tiers[i].dollar) return tiers[i]
+  return null
+}
+function nextTierD(tiers: NTier[], collected: number) {
+  return tiers.find(t => collected < t.dollar) ?? null
+}
+function barMaxForTiers(tiers: NTier[], dollarMode: boolean) {
+  return dollarMode ? Math.max(BAR_MAX, Math.max(...tiers.map(t => t.pos)) * 1.08) : BAR_MAX
+}
+
 function barFillColor(pct: number, pacePct: number) {
   if (pct >= 118) return '#8B5CF6'
   if (pct >= 112) return '#06B6D4'
@@ -134,6 +172,9 @@ export default function BonusClient({
           </div>
         ))}
       </div>
+      <p className="text-[#94a3b8] text-xs -mt-6 mb-8">
+        Proctor Bardstown &amp; Radcliff use their own fixed-dollar collection tiers ($25k steps, T1–T4) set by Sarah &amp; Tiffany — shown by tier level on each location card below.
+      </p>
 
       {/* Org Total */}
       <div className="bg-white border border-[#d1dce9] rounded-xl p-5 mb-6">
@@ -221,16 +262,20 @@ export default function BonusClient({
         }).map((loc, i) => {
           const meta  = LOCATIONS.find(l => l.code === loc.code)
           const goal  = MONTHLY_GOALS[loc.code] ?? 100000
+          const { tiers: nts, dollarMode } = tiersForLocation(loc.code, goal)
+          const barMax = barMaxForTiers(nts, dollarMode)
           const pct   = (loc.collections / goal) * 100
-          const tier  = getCurrentTier(pct)
-          const next  = getNextTier(pct)
-          const dollarToNext = next ? Math.max(0, (next.pct / 100) * goal - loc.collections) : 0
+          const tier  = currentTierD(nts, loc.collections)
+          const next  = nextTierD(nts, loc.collections)
+          const dollarToNext = next ? Math.max(0, next.dollar - loc.collections) : 0
           const perDay = daysRemaining > 0 ? dollarToNext / daysRemaining : 0
-          const barWidth = Math.min((pct / BAR_MAX) * 100, 100)
-          const fill = barFillColor(pct, pacePct)
+          const barWidth = Math.min((pct / barMax) * 100, 100)
+          const fill = tier ? tier.barColor : barFillColor(pct, pacePct)
+          const locPaceLeft = Math.min((pacePct / barMax) * 100, 99)
 
-          const projectedPct  = daysComplete > 0 ? (loc.collections / daysComplete) * totalBizDays / goal * 100 : pct
-          const projectedTier = getCurrentTier(projectedPct)
+          const projectedColl = daysComplete > 0 ? (loc.collections / daysComplete) * totalBizDays : loc.collections
+          const projectedPct  = (projectedColl / goal) * 100
+          const projectedTier = currentTierD(nts, projectedColl)
 
           const ratio       = pct / pacePct
           const aheadOfPace = pct >= pacePct
@@ -290,24 +335,23 @@ export default function BonusClient({
                   <span className="font-semibold" style={{ color: fill }}>{formatPct(pct, 1)} of {formatCurrency(goal, true)} goal</span>
                 </div>
                 <div className="relative" style={{ paddingTop: 14 }}>
-                  <div className="absolute top-0 flex flex-col items-center" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)' }}>
+                  <div className="absolute top-0 flex flex-col items-center" style={{ left: `${locPaceLeft}%`, transform: 'translateX(-50%)' }}>
                     <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400 leading-none whitespace-nowrap">pace</span>
                     <div style={{ width:0, height:0, borderLeft:'3.5px solid transparent', borderRight:'3.5px solid transparent', borderTop:'4px solid #94a3b8', marginTop:1 }} />
                   </div>
                   <div className="relative h-4 bg-[#f1f5fb] rounded-full overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${barWidth}%`, backgroundColor: fill }} />
-                    {TIERS.map(t => (
-                      <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pct / BAR_MAX) * 100}%` }} />
+                    {nts.map(t => (
+                      <div key={t.tag} className="absolute top-0 h-full w-px bg-[#cbd5e1]" style={{ left: `${(t.pos / barMax) * 100}%` }} />
                     ))}
-                    <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
+                    <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${locPaceLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 gap-1 mb-3">
-                {TIERS.map(t => {
-                  const dollarAtTier = (t.pct / 100) * goal
-                  const reached    = pct >= t.pct
+              <div className={`grid ${dollarMode ? 'grid-cols-4' : 'grid-cols-5'} gap-1 mb-3`}>
+                {nts.map(t => {
+                  const reached    = loc.collections >= t.dollar
                   const isNext     = !reached && t === next
                   const isProjected = !reached && projectedTier?.tag === t.tag
                   return (
@@ -324,7 +368,7 @@ export default function BonusClient({
                       }`}
                     >
                       <div className="font-bold">{t.tag}</div>
-                      <div className="text-[10px] leading-tight">{formatCurrency(dollarAtTier, true)}</div>
+                      <div className="text-[10px] leading-tight">{dollarMode ? t.label : formatCurrency(t.dollar, true)}</div>
                       {reached && <div className="text-[10px] mt-0.5">✓</div>}
                       {!reached && isProjected && aheadOfPace && <div className="text-[10px] mt-0.5">→ pace</div>}
                       {isNext && !isProjected && <div className="text-[10px] mt-0.5">← next</div>}
@@ -346,8 +390,10 @@ export default function BonusClient({
                   </div>
                 </div>
               )}
-              {!next && tier?.tag === 'T5' && (
-                <div className="mt-2 text-violet-600 text-sm font-semibold text-center">💎 Diamond tier achieved — maximum bonus unlocked!</div>
+              {!next && tier && (
+                <div className="mt-2 text-sm font-semibold text-center" style={{ color: tier.barColor }}>
+                  {tier.tag === 'T5' ? '💎' : '🏆'} {tier.label} tier achieved — top tier reached!
+                </div>
               )}
             </div>
           )
