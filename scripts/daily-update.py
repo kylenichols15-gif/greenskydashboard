@@ -63,7 +63,7 @@ for r in sep:
             plocc.setdefault(k,{});plocc[k][code]=plocc[k].get(code,0)+c
 
 # ---------- PPP 38 (patient counts) ----------
-ppp=list(csv.reader(open(f"{D}/Production per Patient (18).csv",encoding="utf-8-sig")))
+ppp=list(csv.reader(open(f"{D}/Production per Patient (19).csv",encoding="utf-8-sig")))
 ph=ppp[0];pccols=[(i,ph[i]) for i in range(len(ph)) if ph[i].endswith('~Patient Count')]
 sepp=[r for r in ppp[1:] if len(r)>2 and r[0].strip()=='2026' and r[1].strip()=='Nov']
 patients={}
@@ -289,7 +289,7 @@ header=f"""// November 2026 — BD{BD} of {TOTAL_BD} (as of Nov 5; Nov 2026 = 19
 //   ${PT_GRAND:,.0f}, split to location by CARRIED Oct P/C-Summary(8) per-provider weights (ties to PT grand).
 //   King + Osbourne unified on GROSS. New: Dr. Harrison Vong (PB dentist, mapped manually). ORG production ${ORG_PROD:,}.
 // COLLECTIONS = DepositSlip (38) 11/01–11/05 by location (source of truth). Org ${ORG_COLL:,}.
-// NP (17) + PPP (18) CARRIED from 11/4 (not re-pulled). Hours = Time Clock 11/01–11/05 (fresh).
+// PPP (19) patient counts FRESH (11/5). NP (17) CARRIED from 11/4. Hours = Time Clock 11/01–11/05 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.
 // AR = AgedReceivables (20) as of 11/05 (org = sum of 8 locs). DH schedule = (10, CARRIED). Phones = Mango Nov MTD (11/4, CARRIED). Recare 10/30 (CARRIED). Goals carried.
 """
