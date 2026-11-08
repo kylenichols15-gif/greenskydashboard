@@ -312,7 +312,7 @@ export default function ScheduleClient() {
             {/* HNS note + provider breakdown pointer */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-3 border-t border-[#d1dce9] text-xs">
               <div className="text-amber-700 font-medium">
-                ⚠ HNS: Connolly $31.8K + Logsdon $13.2K only — schedule needs attention
+                ⚠ HNS hygiene: structural staffing gap — Logsdon the only rostered hygienist; next-month fill needs attention
               </div>
               <div className="sm:ml-auto text-[#94a3b8]">
                 Dentist/hygiene breakdown by provider available in Section 4 ↓
