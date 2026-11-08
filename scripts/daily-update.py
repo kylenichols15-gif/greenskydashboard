@@ -263,23 +263,14 @@ def remrow(c):
     osb='true ' if c=='OSB' else 'false'
     return f"      {{ code:'{c}', name:'{LNAME_DISP[c]}', dentist:0, hygiene:0, total:0, mtdGross:{locprod[c]}, isOSB:{osb} }},"
 
-# providerSchedule: append current month (Nov) scheduled-remaining from DH per provider
+# DH scheduled-remaining per provider — feeds remainingThisMonth.scheduledTotal + REMAINING_SCHEDULE_BY_PROVIDER.
 dh=list(csv.reader(open(f"{D}/DH Scheduled Production - Remaining Month (11).csv")))
 sched={}
 for r in dh[1:]:
     if len(r)<4 or 'Total' in r[0]:continue
     sched[key(r[2])]=sched.get(key(r[2]),0)+round(num(r[3]))
-def ps_with_sep(block):
-    out=[]
-    for line in block.splitlines():
-        if 'months:{' in line and 'name:' in line:
-            line=re.sub(r",\s*Nov:-?\d+","",line)  # drop any prior Nov (idempotent daily re-run); keep Oct
-            mm=re.search(r"name:('[^']*'|\"[^\"]*\")",line)
-            if mm:
-                k=key(mm.group(1)[1:-1]);sp=sched.get(k,0)
-                line=re.sub(r"(Oct:-?\d+)\s*\}", r"\1, Nov:%d }"%sp, line)  # append Nov after Oct
-        out.append(line)
-    return "\n".join(out)
+# providerSchedule is a FORWARD 3-month view (Dec/Jan/Feb) carried VERBATIM from data.ts; refreshed only when
+# Kyle drops a new "#2 Next Month Scheduled Production.csv" (rebuild via scripts rebuild_ps.py). No daily rewrite.
 
 REMAIN=sum(sched.values())
 
@@ -317,7 +308,7 @@ out.append("export const SCHEDULE_DATA = {\n  asOf: 'November 6, 2026',\n\n  rem
 out.append(f"    daysRemaining:  {TOTAL_BD-BD},\n    scheduledTotal: {REMAIN},\n    mtdGross:       {ORG_PROD},\n    monthlyGoal:    3237500,\n    locations: [\n")
 out.append("\n".join(remrow(c) for c in ['LKW','PB','PR','LT','HNS','HNR','OSB','HNK'])+"\n    ],\n  },\n\n")
 out.append(fm.rstrip()+"\n\n")
-out.append("  "+ps_with_sep(ps_block).strip()+"\n  ],\n}\n\n")
+out.append("  "+ps_block.strip()+"\n  ],\n}\n\n")
 # leaderboard = MTD
 out.append("// ─── DAILY LEADERBOARD — November MTD gross (no single-day baseline yet at BD%d) ──\n"%BD)
 out.append("export const DAILY_LEADERBOARD = {\n  date:      'November (thru 11/6)',\n  dateShort: 'Nov MTD',\n  doctors: [\n")

@@ -440,7 +440,7 @@ type ProvEntry = {
   specialty: string
   locationCode: string
   isOSB: boolean
-  months: { Jun: number; Jul: number; Aug: number }
+  months: { Dec: number; Jan: number; Feb: number }
 }
 
 function ProviderScheduleSection({
@@ -460,9 +460,9 @@ function ProviderScheduleSection({
 
   const locColor   = LOC_COLORS[selected.locationCode] ?? '#2563eb'
   const months     = [
-    { label: 'June',   key: 'Jun' as const, amount: selected.months.Jun },
-    { label: 'July',   key: 'Jul' as const, amount: selected.months.Jul },
-    { label: 'August', key: 'Aug' as const, amount: selected.months.Aug },
+    { label: 'December', key: 'Dec' as const, amount: selected.months.Dec },
+    { label: 'January',  key: 'Jan' as const, amount: selected.months.Jan },
+    { label: 'February', key: 'Feb' as const, amount: selected.months.Feb },
   ]
   const maxAmt = Math.max(...months.map(m => m.amount), 1)
 
@@ -471,7 +471,7 @@ function ProviderScheduleSection({
       <div className="flex items-center gap-2 mb-4">
         <span className="w-1 h-5 bg-[#8b5cf6] rounded-full inline-block" />
         <h2 className="text-[#0f172a] text-base font-semibold">Provider Forward Schedule</h2>
-        <span className="text-xs text-[#64748b] font-normal">— Jun · Jul · Aug scheduled gross</span>
+        <span className="text-xs text-[#64748b] font-normal">— Dec · Jan · Feb scheduled gross</span>
       </div>
 
       <div className="bg-white border border-[#d1dce9] rounded-xl overflow-hidden">
@@ -547,7 +547,7 @@ function ProviderScheduleSection({
               </>
             )}
             <span className="ml-auto text-xs text-[#94a3b8]">
-              Total {formatCurrency(months.reduce((s, m) => s + m.amount, 0), true)} Jun–Aug
+              Total {formatCurrency(months.reduce((s, m) => s + m.amount, 0), true)} Dec–Feb
             </span>
           </div>
 
@@ -585,7 +585,7 @@ function ProviderScheduleSection({
 
           {/* Note */}
           <p className="mt-5 text-[11px] text-[#94a3b8]">
-            Amounts reflect gross scheduled production from Dentrix Ascend. Jul and Aug are early-stage — expect these to grow as patients book appointments.
+            Amounts reflect whole-month gross scheduled production from Dentrix Ascend (Nov 8 pull). Jan and Feb are early-stage — expect these to grow as patients book appointments.
           </p>
         </div>
       </div>
