@@ -28,7 +28,7 @@ A6={'LKW','LT','HNR','HNS','PB','PR'}
 BD=6  # November BD thru 11/09 (Nov 2,3,4,5,6,9). Nov 2026 TOTAL biz days = 19 (21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27 closed; open Veterans Day 11/11).
 TOTAL_BD=19
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
-ASOF_PHONES='Nov 4'   # Mango answer rate — November MTD paste (Kyle, 11/4) — CARRIED (no new phones this drop)
+ASOF_PHONES='Nov 9'   # Mango answer rate — FRESH November MTD paste (Kyle, 11/9)
 ASOF_SUPPLIES='Nov pending (Sep booked)'  # supply-cost %: Nov blank until books close; Aug/Sep booked from Financials sheet
 ASOF_HYGIENE='Oct 30'   # active hygiene (recare) patients — location-grouped pull 10/30 — CARRIED into Nov
 # Active hygiene patients = 'Active w/ Recare' from the Active Patients in Recare report — LOCATION-GROUPED (deduped;
@@ -104,8 +104,8 @@ for r in list(csv.reader(open(f"{D}/New Patients all offices (18).csv")))[1:]:
     if c:npd[c]=int(r[2])
 
 # ---------- phones (Kyle, Sept MTD ~9/5) ----------
-PH={'HNK':(140,113,27,81),'HNR':(169,144,25,85),'PR':(260,109,151,42),'LKW':(280,207,73,74),
-    'LT':(123,101,22,82),'PB':(212,153,59,72),'OSB':(199,143,56,72),'HNS':(137,110,27,80)}
+PH={'HNK':(238,188,50,79),'HNR':(345,279,66,81),'PR':(545,188,357,34),'LKW':(595,452,143,76),
+    'LT':(264,215,49,81),'PB':(459,324,135,71),'OSB':(382,267,115,70),'HNS':(253,185,68,73)}
 
 # ---------- location GROSS split: PT gross allocated across ALL 8 locations by P/C loc weights ----------
 # ProviderTotals now includes King + Osbourne providers (Providers: All included), so all 8 unify on GROSS
@@ -282,7 +282,7 @@ header=f"""// November 2026 — BD{BD} of {TOTAL_BD} (as of Nov 9; Nov 2026 = 19
 // COLLECTIONS = DepositSlip (42) 11/01–11/09 MTD by location (source of truth). Org ${ORG_COLL:,}.
 // PPP (20) patient counts FRESH (11/9). NP (18) FRESH (11/9). Hours = Time Clock 11/01–11/09 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.
-// AR = AgedReceivables (22) as of 11/09 (org = sum of 8 locs). DH schedule = (12, FRESH 11/09). Phones = Mango Nov MTD (11/4, CARRIED). Recare 10/30 (CARRIED). Goals carried.
+// AR = AgedReceivables (22) as of 11/09 (org = sum of 8 locs). DH schedule = (12, FRESH 11/09). Phones = Mango Nov MTD (11/9, FRESH). Recare 10/30 (CARRIED). Goals carried.
 """
 
 out=[]
