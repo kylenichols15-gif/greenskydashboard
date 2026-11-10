@@ -46,21 +46,25 @@ for r in pt[12:]:
 PT_GRAND=sum(ptg.values())
 
 # ---------- P/C Summary (3) — used ONLY for per-provider→location split weights (all 8) ----------
-pc=list(csv.reader(open(f"{D}/Production , Collection Summary (8).csv",encoding="utf-8-sig")))
+pc=list(csv.reader(open(f"{D}/Production , Collection Summary (9).csv",encoding="utf-8-sig")))
 hdr=pc[0];pcols=[(i,h) for i,h in enumerate(hdr) if h.endswith('~Production')]
-sep=[r for r in pc[1:] if len(r)>2 and r[0].strip()=='2026' and r[1].strip()=='Oct']  # CARRIED Oct weights (no Nov P/C sent); splits provider→loc, ties to Nov PT grand
-ploc={};plocc={};gtP=[i for i,h in enumerate(hdr) if h=='Grand Total~Production'][0];gtC=gtP+1
-pcloc_prod={}  # location -> grand production (for HNK/OSB + split weights)
-for r in sep:
-    code=LNAME.get(r[2].strip())
-    if not code:continue
-    pcloc_prod[code]=num(r[gtP])
-    for i,h in pcols:
-        if h=='Grand Total~Production':continue
-        v=num(r[i]);c=abs(num(r[i+1]));k=key(h)
-        if abs(v)>0.005 or c>0.005:
-            ploc.setdefault(k,{});ploc[k][code]=ploc[k].get(code,0)+v
-            plocc.setdefault(k,{});plocc[k][code]=plocc[k].get(code,0)+c
+gtP=[i for i,h in enumerate(hdr) if h=='Grand Total~Production'][0];gtC=gtP+1
+# Build per-provider→location production weights for a given month. FRESH Nov weights are primary; Oct is the
+# fallback for providers who have no Nov P/C row yet (MTD timing) so they don't dump to the LKW catch-all.
+def build_ploc(month):
+    d={}
+    for r in pc[1:]:
+        if not(len(r)>2 and r[0].strip()=='2026' and r[1].strip()==month):continue
+        code=LNAME.get(r[2].strip())
+        if not code:continue
+        for i,h in pcols:
+            if h=='Grand Total~Production':continue
+            v=num(r[i]);k=key(h)
+            if abs(v)>0.005:
+                d.setdefault(k,{});d[k][code]=d[k].get(code,0)+v
+    return d
+ploc=build_ploc('Nov')       # primary (P/C 9, 11/10) — Vong→PB, Wofford→HNK
+ploc_oct=build_ploc('Oct')   # fallback for providers absent from partial Nov
 
 # ---------- PPP 38 (patient counts) ----------
 ppp=list(csv.reader(open(f"{D}/Production per Patient (20).csv",encoding="utf-8-sig")))
@@ -114,22 +118,23 @@ import collections as C
 A8=set(LORDER)
 # New providers absent from the carried Oct P/C split weights -> assign full gross to their known location.
 # (Without this a new provider's gross would dump to the LKW fallback.) Add new hires here each month.
-NEWPROV_LOC={('vong','harrison'):'PB'}  # Dr. Harrison Vong, new PB dentist (started wk of 11/3; not in Oct P/C)
+NEWPROV_LOC={}  # (Vong retired 11/10 — now in fresh Nov P/C weights, maps to PB automatically. Add new hires here if they appear in PT before P/C.)
 locgross=C.defaultdict(float)
 _unmapped=[]
 for k,g in ptg.items():
-    w={a:b for a,b in ploc.get(k,{}).items() if a in A8 and b>0}
+    w={a:b for a,b in ploc.get(k,{}).items() if a in A8 and b>0}           # 1) fresh Nov weight
+    if not w: w={a:b for a,b in ploc_oct.get(k,{}).items() if a in A8 and b>0}  # 2) Oct weight (MTD timing gap)
     t=sum(w.values())
     if t>0:
         for a,b in w.items():locgross[a]+=g*b/t
     else:
-        loc=NEWPROV_LOC.get(k,'LKW')  # unmapped (no P/C weight) -> known new-hire loc, else LKW
+        loc=NEWPROV_LOC.get(k,'LKW')  # 3) known new-hire loc, else LKW catch-all
         locgross[loc]+=g
         if abs(g)>500: _unmapped.append((k,round(g),loc))
 locprod={c:round(locgross[c]) for c in LORDER}
 ORG_PROD=sum(locprod.values())
 if _unmapped:
-    print("!! UNMAPPED providers (no Oct P/C weight) >$500 — assigned to fallback loc; add to NEWPROV_LOC if wrong:")
+    print("!! UNMAPPED providers (no Nov/Oct P/C weight) >$500 — assigned to fallback loc; add to NEWPROV_LOC if wrong:")
     for k,g,loc in sorted(_unmapped,key=lambda x:-abs(x[1])): print(f"   {k} ${g:,} -> {loc}")
 
 # ---------- carry: constants/futureMonths/providerSchedule from current data.ts;
@@ -280,8 +285,8 @@ REMAIN=sum(sched.values())
 header=f"""// November 2026 — BD{BD} of {TOTAL_BD} (as of Nov 10; Nov 2026 = 19 biz days: 21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27).
 // October 2026 FINAL frozen at lib/months/2026-10.ts (prod $2,964,078 · coll $1,409,485 · 663 NP).
 // Production: ALL 8 locations = ProviderTotals (22) (11/01–11/10, Providers: All included) GROSS Procedure Charges
-//   ${PT_GRAND:,.0f}, split to location by CARRIED Oct P/C-Summary(8) per-provider weights (ties to PT grand).
-//   King + Osbourne unified on GROSS. New: Dr. Harrison Vong (PB dentist, mapped manually). ORG production ${ORG_PROD:,}.
+//   ${PT_GRAND:,.0f}, split to location by FRESH Nov P/C-Summary(9) per-provider weights (ties to PT grand).
+//   King + Osbourne unified on GROSS. Vong (PB) + Wofford (HNK) now in Nov P/C — no manual mapping. ORG production ${ORG_PROD:,}.
 // COLLECTIONS = DepositSlip (44) 11/01–11/10 MTD by location (source of truth). Org ${ORG_COLL:,}.
 // PPP (20) patient counts CARRIED (11/9). NP (18) CARRIED (11/9). Hours = Time Clock 11/01–11/10 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.

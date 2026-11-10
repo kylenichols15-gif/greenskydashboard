@@ -71,8 +71,8 @@ export const BENCHMARKS = {
 // November 2026 — BD7 of 19 (as of Nov 10; Nov 2026 = 19 biz days: 21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27).
 // October 2026 FINAL frozen at lib/months/2026-10.ts (prod $2,964,078 · coll $1,409,485 · 663 NP).
 // Production: ALL 8 locations = ProviderTotals (22) (11/01–11/10, Providers: All included) GROSS Procedure Charges
-//   $1,052,123, split to location by CARRIED Oct P/C-Summary(8) per-provider weights (ties to PT grand).
-//   King + Osbourne unified on GROSS. New: Dr. Harrison Vong (PB dentist, mapped manually). ORG production $1,052,123.
+//   $1,052,123, split to location by FRESH Nov P/C-Summary(9) per-provider weights (ties to PT grand).
+//   King + Osbourne unified on GROSS. Vong (PB) + Wofford (HNK) now in Nov P/C — no manual mapping. ORG production $1,052,122.
 // COLLECTIONS = DepositSlip (44) 11/01–11/10 MTD by location (source of truth). Org $451,372.
 // PPP (20) patient counts CARRIED (11/9). NP (18) CARRIED (11/9). Hours = Time Clock 11/01–11/10 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.
@@ -88,7 +88,7 @@ export const PERIOD_INFO = {
 export const DEMO_DATA = {
   period: 'November 2026',
   org: {
-    production:      1052123,
+    production:      1052122,
     productionGoal:  3237500,
     collections:     451372,
     collectionsGoal: 1505000,
@@ -102,14 +102,14 @@ export const DEMO_DATA = {
   asOf: { phones: 'Nov 9', supplies: 'Nov pending (Sep booked)', activeHygiene: 'Oct 30' },
 
   locations: [
-    { code:'LKW', production:253525, collections:105624, collectionRate:41.7, newPatients:50, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 76, activePatients:534, activeHygienePatients:5198, suppliesPct:0, status:'on_pace' },
-    { code:'LT', production:85225, collections:52861, collectionRate:62.0, newPatients:11, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 81, activePatients:421, activeHygienePatients:2983, suppliesPct:0, status:'on_pace' },
-    { code:'HNR', production:84614, collections:39714, collectionRate:46.9, newPatients:25, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 81, activePatients:298, activeHygienePatients:1540, suppliesPct:0, status:'on_pace' },
-    { code:'HNS', production:67019, collections:33075, collectionRate:49.4, newPatients:31, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 73, activePatients:276, activeHygienePatients:605, suppliesPct:0, status:'on_pace' },
-    { code:'HNK', production:61008, collections:23833, collectionRate:39.1, newPatients:11, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 79, activePatients:0, activeHygienePatients:636, suppliesPct:0, status:'watch' },
-    { code:'PB', production:255051, collections:81337, collectionRate:31.9, newPatients:41, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 71, activePatients:389, activeHygienePatients:996, suppliesPct:0, status:'watch' },
+    { code:'LKW', production:252717, collections:105624, collectionRate:41.8, newPatients:50, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 76, activePatients:534, activeHygienePatients:5198, suppliesPct:0, status:'on_pace' },
+    { code:'LT', production:101045, collections:52861, collectionRate:52.3, newPatients:11, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 81, activePatients:421, activeHygienePatients:2983, suppliesPct:0, status:'on_pace' },
+    { code:'HNR', production:83847, collections:39714, collectionRate:47.4, newPatients:25, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 81, activePatients:298, activeHygienePatients:1540, suppliesPct:0, status:'on_pace' },
+    { code:'HNS', production:84125, collections:33075, collectionRate:39.3, newPatients:31, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 73, activePatients:276, activeHygienePatients:605, suppliesPct:0, status:'watch' },
+    { code:'HNK', production:49093, collections:23833, collectionRate:48.5, newPatients:11, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 79, activePatients:0, activeHygienePatients:636, suppliesPct:0, status:'watch' },
+    { code:'PB', production:236976, collections:81337, collectionRate:34.3, newPatients:41, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 71, activePatients:389, activeHygienePatients:996, suppliesPct:0, status:'watch' },
     { code:'PR', production:126443, collections:59869, collectionRate:47.3, newPatients:32, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 34, activePatients:321, activeHygienePatients:633, suppliesPct:0, status:'on_pace' },
-    { code:'OSB', production:119238, collections:55060, collectionRate:46.2, newPatients:17, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 70, activePatients:292, activeHygienePatients:2672, suppliesPct:0, status:'on_pace', isOSB:true },
+    { code:'OSB', production:117876, collections:55060, collectionRate:46.7, newPatients:17, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 70, activePatients:292, activeHygienePatients:2672, suppliesPct:0, status:'on_pace', isOSB:true },
   ],
 
   doctors: [
@@ -204,17 +204,17 @@ export const SCHEDULE_DATA = {
   remainingThisMonth: {
     daysRemaining:  12,
     scheduledTotal: 1371975,
-    mtdGross:       1052123,
+    mtdGross:       1052122,
     monthlyGoal:    3237500,
     locations: [
-      { code:'LKW', name:'H&N Lakewood', dentist:0, hygiene:0, total:0, mtdGross:253525, isOSB:false },
-      { code:'PB', name:'Proctor Bardstown', dentist:0, hygiene:0, total:0, mtdGross:255051, isOSB:false },
+      { code:'LKW', name:'H&N Lakewood', dentist:0, hygiene:0, total:0, mtdGross:252717, isOSB:false },
+      { code:'PB', name:'Proctor Bardstown', dentist:0, hygiene:0, total:0, mtdGross:236976, isOSB:false },
       { code:'PR', name:'Proctor Radcliff', dentist:0, hygiene:0, total:0, mtdGross:126443, isOSB:false },
-      { code:'LT', name:'H&N Lincoln Trail', dentist:0, hygiene:0, total:0, mtdGross:85225, isOSB:false },
-      { code:'HNS', name:'H&N Shepherdsville', dentist:0, hygiene:0, total:0, mtdGross:67019, isOSB:false },
-      { code:'HNR', name:'H&N Radcliff', dentist:0, hygiene:0, total:0, mtdGross:84614, isOSB:false },
-      { code:'OSB', name:'Osbourne Family', dentist:0, hygiene:0, total:0, mtdGross:119238, isOSB:true  },
-      { code:'HNK', name:'H&N King', dentist:0, hygiene:0, total:0, mtdGross:61008, isOSB:false },
+      { code:'LT', name:'H&N Lincoln Trail', dentist:0, hygiene:0, total:0, mtdGross:101045, isOSB:false },
+      { code:'HNS', name:'H&N Shepherdsville', dentist:0, hygiene:0, total:0, mtdGross:84125, isOSB:false },
+      { code:'HNR', name:'H&N Radcliff', dentist:0, hygiene:0, total:0, mtdGross:83847, isOSB:false },
+      { code:'OSB', name:'Osbourne Family', dentist:0, hygiene:0, total:0, mtdGross:117876, isOSB:true  },
+      { code:'HNK', name:'H&N King', dentist:0, hygiene:0, total:0, mtdGross:49093, isOSB:false },
     ],
   },
 
