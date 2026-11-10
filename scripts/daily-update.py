@@ -25,7 +25,7 @@ LNAME={'Harvey and Nichols Family Dentistry':'LKW','Harvey and Nichols King':'HN
 LORDER=['LKW','LT','HNR','HNS','HNK','PB','PR','OSB']
 LNAME_DISP={'LKW':'H&N Lakewood','LT':'H&N Lincoln Trail','HNR':'H&N Radcliff','HNS':'H&N Shepherdsville','HNK':'H&N King','PB':'Proctor Bardstown','PR':'Proctor Radcliff','OSB':'Osbourne Family'}
 A6={'LKW','LT','HNR','HNS','PB','PR'}
-BD=6  # November BD thru 11/09 (Nov 2,3,4,5,6,9). Nov 2026 TOTAL biz days = 19 (21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27 closed; open Veterans Day 11/11).
+BD=7  # November BD thru 11/10 (Nov 2,3,4,5,6,9,10). Nov 2026 TOTAL biz days = 19 (21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27 closed; open Veterans Day 11/11).
 TOTAL_BD=19
 # 'as of' dates for metrics NOT refreshed daily (bump when you re-pull each):
 ASOF_PHONES='Nov 9'   # Mango answer rate — FRESH November MTD paste (Kyle, 11/9)
@@ -38,7 +38,7 @@ RECARE={'LKW':5198,'HNK':636,'LT':2983,'HNR':1540,'HNS':605,'OSB':2672,'PB':996,
 NPGOAL={'LKW':120,'PB':120,'PR':80,'HNR':80,'HNS':40,'HNK':40,'LT':80,'OSB':80}
 
 # ---------- ProviderTotals 9/8 ----------
-pt=list(csv.reader(open(f"{D}/ProviderTotals (21).csv",encoding="utf-8-sig")))  # 11/01-11/09, All providers incl King+OSB
+pt=list(csv.reader(open(f"{D}/ProviderTotals (22).csv",encoding="utf-8-sig")))  # 11/01-11/10, All providers incl King+OSB
 ptg={};ptc={}
 for r in pt[12:]:
     if not r or not r[0].strip() or r[0].strip()=='Provider Totals':continue
@@ -76,7 +76,7 @@ for r in sepp:
             except:pass
 
 # ---------- Timeclock 9/8 ----------
-tc=list(csv.reader(open(f"{D}/Time clock summary 11-01-2026 - 11-09-2026.csv")))
+tc=list(csv.reader(open(f"{D}/Time clock summary 11-01-2026 - 11-10-2026.csv")))
 hours={}
 for r in tc[1:]:
     if len(r)<5:continue
@@ -86,7 +86,7 @@ for r in tc[1:]:
 
 # ---------- DepositSlip 26 (MTD collections by location) ----------
 coll={}
-dr=csv.reader(open(f"{D}/DepositSlip (42).csv",encoding="utf-8-sig"));seen=False  # 11/01-11/30 MTD (actual cash thru 11/09); (43)=single-day companion
+dr=csv.reader(open(f"{D}/DepositSlip (44).csv",encoding="utf-8-sig"));seen=False  # 11/01-11/30 MTD (actual cash thru 11/10); (45)=single-day companion
 for row in dr:
     if not row or len(row)<12:continue
     if row[0].strip().startswith("Transaction Date"):seen=True;continue
@@ -128,6 +128,9 @@ for k,g in ptg.items():
         if abs(g)>500: _unmapped.append((k,round(g),loc))
 locprod={c:round(locgross[c]) for c in LORDER}
 ORG_PROD=sum(locprod.values())
+if _unmapped:
+    print("!! UNMAPPED providers (no Oct P/C weight) >$500 — assigned to fallback loc; add to NEWPROV_LOC if wrong:")
+    for k,g,loc in sorted(_unmapped,key=lambda x:-abs(x[1])): print(f"   {k} ${g:,} -> {loc}")
 
 # ---------- carry: constants/futureMonths/providerSchedule from current data.ts;
 #            ytd base + roster + location stock from FROZEN August (so daily re-run never double-counts) ----------
@@ -215,7 +218,7 @@ def locrow(c):
 
 # ---------- AR from AgedReceivables 87 ----------
 arloc={};cur=None
-for l in open(f"{D}/AgedReceivables (22).csv",encoding='utf-8'):
+for l in open(f"{D}/AgedReceivables (23).csv",encoding='utf-8'):
     m=re.match(r'^(.*?) - Location Aged Totals',l)
     if m:cur=LNAME.get(m.group(1).strip());arloc[cur]={} if cur else None;continue
     if l.startswith('HNDShep - Summary'):cur='ORG';arloc['ORG']={};continue
@@ -274,22 +277,22 @@ for r in dh[1:]:
 
 REMAIN=sum(sched.values())
 
-header=f"""// November 2026 — BD{BD} of {TOTAL_BD} (as of Nov 9; Nov 2026 = 19 biz days: 21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27).
+header=f"""// November 2026 — BD{BD} of {TOTAL_BD} (as of Nov 10; Nov 2026 = 19 biz days: 21 weekdays − Thanksgiving Thu 11/26 + Fri 11/27).
 // October 2026 FINAL frozen at lib/months/2026-10.ts (prod $2,964,078 · coll $1,409,485 · 663 NP).
-// Production: ALL 8 locations = ProviderTotals (21) (11/01–11/09, Providers: All included) GROSS Procedure Charges
+// Production: ALL 8 locations = ProviderTotals (22) (11/01–11/10, Providers: All included) GROSS Procedure Charges
 //   ${PT_GRAND:,.0f}, split to location by CARRIED Oct P/C-Summary(8) per-provider weights (ties to PT grand).
 //   King + Osbourne unified on GROSS. New: Dr. Harrison Vong (PB dentist, mapped manually). ORG production ${ORG_PROD:,}.
-// COLLECTIONS = DepositSlip (42) 11/01–11/09 MTD by location (source of truth). Org ${ORG_COLL:,}.
-// PPP (20) patient counts FRESH (11/9). NP (18) FRESH (11/9). Hours = Time Clock 11/01–11/09 (fresh).
+// COLLECTIONS = DepositSlip (44) 11/01–11/10 MTD by location (source of truth). Org ${ORG_COLL:,}.
+// PPP (20) patient counts CARRIED (11/9). NP (18) CARRIED (11/9). Hours = Time Clock 11/01–11/10 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.
-// AR = AgedReceivables (22) as of 11/09 (org = sum of 8 locs). DH schedule = (12, FRESH 11/09). Phones = Mango Nov MTD (11/9, FRESH). Recare 10/30 (CARRIED). Goals carried.
+// AR = AgedReceivables (23) as of 11/10 (org = sum of 8 locs). DH schedule = (12, CARRIED 11/09). Phones = Mango Nov MTD (11/9, CARRIED). Recare 10/30 (CARRIED). Goals carried.
 """
 
 out=[]
 out.append(carry_head.rstrip()+"\n\n")
 out.append(header)
 out.append("export const PERIOD_INFO = {\n")
-out.append("  label:          'November 2026',\n  dataAsOf:       'Nov 9',\n  totalBizDays:   %d,\n  daysComplete:   %d,\n  daysRemaining:  %d,\n}\n\n"%(TOTAL_BD,BD,TOTAL_BD-BD))
+out.append("  label:          'November 2026',\n  dataAsOf:       'Nov 10',\n  totalBizDays:   %d,\n  daysComplete:   %d,\n  daysRemaining:  %d,\n}\n\n"%(TOTAL_BD,BD,TOTAL_BD-BD))
 out.append("export const DEMO_DATA = {\n  period: 'November 2026',\n  org: {\n")
 out.append(f"    production:      {ORG_PROD},\n    productionGoal:  3237500,\n    collections:     {ORG_COLL},\n    collectionsGoal: 1505000,\n")
 out.append(f"    newPatients:     {ORG_NP},\n    activePatients:  2531,\n    phoneAnswerRate: {ORG_PHONE},\n    hygieneRecare:   95.3,\n    suppliesPct:     0,\n  }},\n\n")
@@ -304,14 +307,14 @@ out.append(f"    buckets: {{ d0_30: {org_b['d0_30']}, d31_60: {org_b['d31_60']},
 out.append(f"    pcts:    {{ d0_30: {opct(org.get('g0',0))}, d31_60: {opct(org.get('g31',0))}, d61_90: {opct(org.get('g61',0))}, d90plus: {opct(org.get('g90',0))} }},\n")
 out.append(f"    arToProdRatio: {round(org_net/2964078,2)},\n    locations: [\n"+"\n".join(arrow(c) for c in LORDER if c in arloc)+"\n    ],\n  },\n}\n\n")
 # SCHEDULE_DATA
-out.append("export const SCHEDULE_DATA = {\n  asOf: 'November 9, 2026',\n\n  remainingThisMonth: {\n")
+out.append("export const SCHEDULE_DATA = {\n  asOf: 'November 10, 2026',\n\n  remainingThisMonth: {\n")
 out.append(f"    daysRemaining:  {TOTAL_BD-BD},\n    scheduledTotal: {REMAIN},\n    mtdGross:       {ORG_PROD},\n    monthlyGoal:    3237500,\n    locations: [\n")
 out.append("\n".join(remrow(c) for c in ['LKW','PB','PR','LT','HNS','HNR','OSB','HNK'])+"\n    ],\n  },\n\n")
 out.append(fm.rstrip()+"\n\n")
 out.append("  "+ps_block.strip()+"\n  ],\n}\n\n")
 # leaderboard = MTD
 out.append("// ─── DAILY LEADERBOARD — November MTD gross (no single-day baseline yet at BD%d) ──\n"%BD)
-out.append("export const DAILY_LEADERBOARD = {\n  date:      'November (thru 11/9)',\n  dateShort: 'Nov MTD',\n  doctors: [\n")
+out.append("export const DAILY_LEADERBOARD = {\n  date:      'November (thru 11/10)',\n  dateShort: 'Nov MTD',\n  doctors: [\n")
 out.append("\n".join(f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', dailyProd:{r['g']} }}," for r in docs if r['g']>0)+"\n  ],\n")
 out.append("  hygienists: [\n"+"\n".join(f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', dailyProd:{r['g']} }}," for r in hygs if r['g']>0)+"\n  ],\n}\n\n")
 out.append("export const REMAINING_SCHEDULE_BY_PROVIDER: Record<string, number> = {\n")
