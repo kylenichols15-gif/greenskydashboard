@@ -209,17 +209,40 @@ export default function BonusClient({
             <div className="absolute top-0 h-full w-0.5 bg-white/80" style={{ left: `${paceBarLeft}%`, transform: 'translateX(-50%)', zIndex:10, boxShadow:'0 0 2px rgba(0,0,0,0.3)' }} />
           </div>
         </div>
-        <div className="flex text-[10px] text-[#94a3b8] mb-4 relative h-4">
-          {TIERS.map(t => (
-            <span key={t.tag} className="absolute" style={{ left: `${(t.pct / BAR_MAX) * 100}%`, transform: 'translateX(-50%)' }}>{t.pct}%</span>
-          ))}
+        {/* Milestone ladder — exactly what each tier is worth, left→right */}
+        <div className="text-[#64748b] text-[11px] font-semibold uppercase tracking-wider mb-1.5">Tier milestones (collections)</div>
+        <div className="grid grid-cols-5 gap-1.5 mb-4">
+          {TIERS.map(t => {
+            const dollarAt = (t.pct / 100) * orgGoal
+            const reached  = orgTotal >= dollarAt
+            const isNext   = !reached && orgNext?.tag === t.tag
+            const isTarget = 'isTarget' in t && t.isTarget
+            return (
+              <div
+                key={t.tag}
+                className={`relative rounded-lg border px-2 py-2 text-center ${
+                  reached ? `${t.bg} ${t.color} border-current`
+                  : isNext ? 'bg-amber-50 border-amber-300 text-amber-600 ring-1 ring-amber-300'
+                  : 'bg-[#f8fafc] border-[#e2e8f0] text-[#94a3b8]'
+                }`}
+              >
+                {isTarget && (
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-400 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap">GOAL</div>
+                )}
+                <div className="font-bold text-xs leading-tight">{t.tag} · {t.label}</div>
+                <div className="text-[10px] opacity-75 leading-tight">{t.pct}% of goal</div>
+                <div className="font-bold text-sm mt-0.5 leading-tight">{formatCurrency(dollarAt, true)}</div>
+                <div className="text-[10px] mt-0.5 leading-tight">{reached ? '✓ reached' : isNext ? '← next up' : ' '}</div>
+              </div>
+            )
+          })}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <div>
             <div className="text-[#64748b] text-xs">Collected</div>
             <div className="text-[#0f172a] font-bold">{formatCurrency(orgTotal)}</div>
-            <div className="text-[#64748b] text-xs">7 locations</div>
+            <div className="text-[#64748b] text-xs">{locations.length} locations</div>
           </div>
           <div>
             <div className="text-[#64748b] text-xs">Goal (T2 Bonus)</div>
@@ -349,15 +372,19 @@ export default function BonusClient({
                 </div>
               </div>
 
-              <div className={`grid ${dollarMode ? 'grid-cols-4' : 'grid-cols-5'} gap-1 mb-3`}>
+              <div className="text-[#64748b] text-[11px] font-semibold uppercase tracking-wider mb-1.5">
+                Tier milestones{dollarMode ? ' (fixed-dollar)' : ''}
+              </div>
+              <div className={`grid ${dollarMode ? 'grid-cols-4' : 'grid-cols-5'} gap-1.5 mb-3`}>
                 {nts.map(t => {
                   const reached    = loc.collections >= t.dollar
                   const isNext     = !reached && t === next
                   const isProjected = !reached && projectedTier?.tag === t.tag
+                  const isTarget   = t.isTarget
                   return (
                     <div
                       key={t.tag}
-                      className={`rounded-lg border px-2 py-1.5 text-center text-xs transition-all ${
+                      className={`relative rounded-lg border px-2 py-2 text-center transition-all ${
                         reached
                           ? `${t.bg} ${t.color} border-current font-semibold`
                           : isProjected && aheadOfPace
@@ -367,11 +394,15 @@ export default function BonusClient({
                           : 'bg-[#f8fafc] border-[#e2e8f0] text-[#94a3b8]'
                       }`}
                     >
-                      <div className="font-bold">{t.tag}</div>
-                      <div className="text-[10px] leading-tight">{dollarMode ? t.label : formatCurrency(t.dollar, true)}</div>
-                      {reached && <div className="text-[10px] mt-0.5">✓</div>}
-                      {!reached && isProjected && aheadOfPace && <div className="text-[10px] mt-0.5">→ pace</div>}
-                      {isNext && !isProjected && <div className="text-[10px] mt-0.5">← next</div>}
+                      {isTarget && (
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-400 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap">GOAL</div>
+                      )}
+                      <div className="font-bold text-xs leading-tight">{t.tag} · {t.label}</div>
+                      <div className="font-bold text-sm mt-0.5 leading-tight">{formatCurrency(t.dollar, true)}</div>
+                      {!dollarMode && <div className="text-[10px] opacity-75 leading-tight">{Math.round(t.pos)}% of goal</div>}
+                      <div className="text-[10px] mt-0.5 leading-tight">
+                        {reached ? '✓ reached' : isProjected && aheadOfPace ? '→ on pace' : isNext ? '← next up' : ' '}
+                      </div>
                     </div>
                   )
                 })}
