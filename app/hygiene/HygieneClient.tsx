@@ -29,8 +29,8 @@ export default function HygieneClient({
     locationCode: h.locationCode,
     primaryValue: `$${h.prodPerHr}/hr`,
     primaryLabel: 'Prod / Hr',
-    secondaryValue: formatCurrency(h.grossProd, true),
-    secondaryLabel: 'MTD Production',
+    secondaryValue: formatCurrency(h.adjProd ?? h.grossProd, true),
+    secondaryLabel: 'Adj Production',
   }))
 
   return (
@@ -71,7 +71,7 @@ export default function HygieneClient({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#d1dce9]">
-                {['#', 'Name', 'Location', 'MTD Prod', 'Collections', 'Coll %', 'Hrs', '$/Hr', '$/Pt'].map(h => (
+                {['#', 'Name', 'Location', 'Gross Prod', 'Adj Prod', 'Collections', 'Coll %', 'Hrs', '$/Hr', '$/Pt'].map(h => (
                   <th key={h} className="text-left text-[#64748b] text-xs font-semibold uppercase tracking-wider px-3 py-3">{h}</th>
                 ))}
               </tr>
@@ -79,6 +79,9 @@ export default function HygieneClient({
             <tbody>
               {sorted.map((h, i) => {
                 const loc          = LOCATIONS.find(l => l.code === h.locationCode)
+                // Coll % = collections ÷ ADJUSTED production (true collection rate; falls back to stored
+                // gross-based collRate on frozen months that predate adjProd).
+                const adjCollRate  = (h.adjProd && h.adjProd > 0) ? (h.collections / h.adjProd) * 100 : h.collRate
                 const isElite      = h.prodPerHr > avgProdHr * 1.1
                 const isWatch      = h.prodPerHr < avgProdHr * 0.85 && h.prodPerHr > 0
                 return (
@@ -92,9 +95,10 @@ export default function HygieneClient({
                     <td className="px-3 py-3">
                       <span className="bg-[#2563eb]/10 text-[#2563eb] text-xs px-1.5 py-0.5 rounded border border-[#2563eb]/20 font-medium">{h.locationCode}</span>
                     </td>
-                    <td className="px-3 py-3 text-[#0f172a] font-bold">{formatCurrency(h.grossProd, true)}</td>
+                    <td className="px-3 py-3 text-[#64748b]">{formatCurrency(h.grossProd, true)}</td>
+                    <td className="px-3 py-3 text-[#0f172a] font-bold">{h.adjProd !== undefined ? formatCurrency(h.adjProd, true) : '—'}</td>
                     <td className="px-3 py-3 text-[#0f172a]">{formatCurrency(h.collections, true)}</td>
-                    <td className="px-3 py-3 text-[#64748b]">{formatPct(h.collRate)}</td>
+                    <td className="px-3 py-3 text-[#64748b]">{formatPct(adjCollRate)}</td>
                     <td className="px-3 py-3 text-[#64748b]">{h.hoursWorked > 0 ? h.hoursWorked.toFixed(1) : '—'}</td>
                     <td className="px-3 py-3 text-[#0f172a] font-medium">{h.prodPerHr > 0 ? `$${h.prodPerHr}` : '—'}</td>
                     <td className="px-3 py-3 text-[#64748b]">
@@ -110,9 +114,11 @@ export default function HygieneClient({
         </div>
       </div>
       <p className="text-[#94a3b8] text-xs mt-3">
-        Ranked by production per hour worked ($/hr). Providers without time-clock hours rank last.
-        Low-hours providers can show inflated $/hr early in the month. $/Hr available from Apr 2026 onward.
-        $/Pt = gross production ÷ patients seen (June 2026 onward).
+        <strong>Adj Prod</strong> = adjusted production (Production Total — gross less charge/credit adjustments &amp; write-offs),
+        from the Provider A/R Totals report. <strong>$/Hr</strong> = adjusted production ÷ hours worked (what they charge out),
+        and the board is ranked by it. <strong>Coll %</strong> = collections ÷ adjusted production MTD (true collection rate).
+        Gross Prod is shown for reference. Providers without time-clock hours rank last; low-hours providers can show inflated
+        $/hr early in the month ($/Hr available Apr 2026 onward). $/Pt = gross production ÷ patients seen (June 2026 onward).
       </p>
     </div>
   )

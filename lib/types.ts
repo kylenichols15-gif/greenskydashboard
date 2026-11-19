@@ -5,8 +5,10 @@ type RawData = typeof DEMO_DATA
 // patientCount / prodPerPatient are present on the live month (added BD10) but absent on
 // frozen historical snapshots — make them optional so both conform to DashboardData.
 // `T extends unknown` distributes over the doctor/hygienist union (some members carry isOSB).
+// adjProd (adjusted production = Production Total; added BD13 per Tiffany) is on the live month's
+// hygienists but absent on frozen snapshots — optional so both conform.
 type WithOptionalPerPatient<T> = T extends unknown
-  ? Omit<T, 'patientCount' | 'prodPerPatient'> & { patientCount?: number; prodPerPatient?: number }
+  ? Omit<T, 'patientCount' | 'prodPerPatient' | 'adjProd'> & { patientCount?: number; prodPerPatient?: number; adjProd?: number }
   : never
 
 // activeHygienePatients (added BD19, per Chris) is present on the live month but absent on

@@ -39,10 +39,10 @@ NPGOAL={'LKW':120,'PB':120,'PR':80,'HNR':80,'HNS':40,'HNK':40,'LT':80,'OSB':80}
 
 # ---------- ProviderTotals 9/8 ----------
 pt=list(csv.reader(open(f"{D}/ProviderTotals (28).csv",encoding="utf-8-sig")))  # 11/01-11/18, All providers incl King+OSB
-ptg={};ptc={}
+ptg={};ptc={};pta={}  # pta = ADJUSTED production = "Production Total" col 5 (gross − charge/credit adj); per Tiffany 11/18
 for r in pt[12:]:
     if not r or not r[0].strip() or r[0].strip()=='Provider Totals':continue
-    k=key(r[0]);ptg[k]=ptg.get(k,0)+num(r[2]);ptc[k]=ptc.get(k,0)+abs(num(r[6]))
+    k=key(r[0]);ptg[k]=ptg.get(k,0)+num(r[2]);ptc[k]=ptc.get(k,0)+abs(num(r[6]));pta[k]=pta.get(k,0)+num(r[5])
 PT_GRAND=sum(ptg.values())
 
 # ---------- P/C Summary (3) — used ONLY for per-provider→location split weights (all 8) ----------
@@ -181,7 +181,7 @@ for k,ar in augrows.items():
     g=ptg.get(k,0);c=ptc.get(k,0)
     if abs(g)<0.5 and c<0.5:  # no September activity — drop from board
         continue
-    row=dict(name=ar['name'],loc=ar['loc'],g=round(g),c=round(c),ytd=ar['ytd']+round(g),
+    row=dict(name=ar['name'],loc=ar['loc'],g=round(g),c=round(c),adj=round(pta.get(k,0)),ytd=ar['ytd']+round(g),
              pat=patients.get(k,0),hrs=round(hours.get(k,0),2),osb=ar['osb'])
     (docs if ar['spec']=='Dentist' else hygs).append(row);added.add(k)
 for sp in SUPPLEMENTAL:                       # confirmed providers absent from frozen-Aug roster
@@ -189,7 +189,7 @@ for sp in SUPPLEMENTAL:                       # confirmed providers absent from 
     if k in added: continue
     g=ptg.get(k,0);c=ptc.get(k,0)
     if abs(g)<0.5 and c<0.5: continue
-    row=dict(name=sp['name'],loc=sp['loc'],g=round(g),c=round(c),ytd=sp['ytd0']+round(g),
+    row=dict(name=sp['name'],loc=sp['loc'],g=round(g),c=round(c),adj=round(pta.get(k,0)),ytd=sp['ytd0']+round(g),
              pat=patients.get(k,0),hrs=round(hours.get(k,0),2),osb=sp['osb'])
     (docs if sp['spec']=='Dentist' else hygs).append(row)
 docs.sort(key=lambda r:-r['g']);hygs.sort(key=lambda r:-r['g'])
@@ -204,11 +204,11 @@ def drow(r):
     return (f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', grossProd:{r['g']},collections:{r['c']},"
             f"collRate:{cr}, prodPerDay:{ppd}, daysWorked:{BD}, ytdProd:{r['ytd']}, patientCount:{r['pat']}, prodPerPatient:{ppp_}{osb} }},")
 def hrow(r):
-    cr=round(r['c']/r['g']*100,1) if r['g'] else 0
-    pph=round(r['g']/r['hrs']) if r['hrs'] else 0
+    cr=round(r['c']/r['g']*100,1) if r['g'] else 0           # collRate kept GROSS-based (YTD trend consistency)
+    pph=round(r['adj']/r['hrs']) if r['hrs'] else 0          # $/hr now on ADJUSTED production (Tiffany 11/18)
     ppp_=round(r['g']/r['pat']) if r['pat'] else 0
     osb=', isOSB:true' if r['osb'] else ''
-    return (f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', grossProd:{r['g']},collections:{r['c']},"
+    return (f"    {{ name:{esc(r['name'])}, locationCode:'{r['loc']}', grossProd:{r['g']},adjProd:{r['adj']},collections:{r['c']},"
             f"collRate:{cr}, hoursWorked:{r['hrs']},prodPerHr:{pph}, recareRate:0, patientCount:{r['pat']}, prodPerPatient:{ppp_}{osb} }},")
 
 # ---------- locations ----------
