@@ -76,7 +76,7 @@ export const BENCHMARKS = {
 // COLLECTIONS = DepositSlip (62) 11/01–11/23 MTD by location (source of truth). Org $1,141,036.
 // PPP (27) patient counts FRESH (11/23). NP (25) FRESH (11/23). Hours = Time Clock 11/01–11/23 (fresh).
 // Providers: full roster = ProviderTotals gross (incl King/OSB). ytd base/roster/location-stock from FROZEN 2026-10.ts.
-// AR = AgedReceivables (33) as of 11/23 (org = sum of 8 locs). DH schedule = (19, FRESH 11/23). Phones = Mango Nov MTD (11/18, CARRIED). Recare 10/30 (CARRIED). Goals carried.
+// AR = AgedReceivables (33) as of 11/23 (org = sum of 8 locs). DH schedule = (19, FRESH 11/23). Phones = Mango Nov MTD (11/23, FRESH). Recare 10/30 (CARRIED). Goals carried.
 export const PERIOD_INFO = {
   label:          'November 2026',
   dataAsOf:       'Nov 23',
@@ -94,22 +94,22 @@ export const DEMO_DATA = {
     collectionsGoal: 1505000,
     newPatients:     563,
     activePatients:  2531,
-    phoneAnswerRate: 68.4,
+    phoneAnswerRate: 69.2,
     hygieneRecare:   95.3,
     suppliesPct:     0,
   },
 
-  asOf: { phones: 'Nov 18', supplies: 'Nov pending (Sep booked)', activeHygiene: 'Oct 30' },
+  asOf: { phones: 'Nov 23', supplies: 'Nov pending (Sep booked)', activeHygiene: 'Oct 30' },
 
   locations: [
-    { code:'LKW', production:600379, collections:268889, collectionRate:44.8, newPatients:124, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 73, activePatients:534, activeHygienePatients:5198, suppliesPct:0, status:'on_pace' },
-    { code:'LT', production:223504, collections:146379, collectionRate:65.5, newPatients:37, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 79, activePatients:421, activeHygienePatients:2983, suppliesPct:0, status:'on_pace' },
+    { code:'LKW', production:600379, collections:268889, collectionRate:44.8, newPatients:124, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 72, activePatients:534, activeHygienePatients:5198, suppliesPct:0, status:'on_pace' },
+    { code:'LT', production:223504, collections:146379, collectionRate:65.5, newPatients:37, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 78, activePatients:421, activeHygienePatients:2983, suppliesPct:0, status:'on_pace' },
     { code:'HNR', production:170214, collections:103579, collectionRate:60.9, newPatients:69, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 81, activePatients:298, activeHygienePatients:1540, suppliesPct:0, status:'on_pace' },
-    { code:'HNS', production:204333, collections:70537, collectionRate:34.5, newPatients:76, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 71, activePatients:276, activeHygienePatients:605, suppliesPct:0, status:'watch' },
+    { code:'HNS', production:204333, collections:70537, collectionRate:34.5, newPatients:76, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 68, activePatients:276, activeHygienePatients:605, suppliesPct:0, status:'watch' },
     { code:'HNK', production:96784, collections:44294, collectionRate:45.8, newPatients:40, newPatientsGoal:40, recareRate:0, phoneAnswerRate: 71, activePatients:0, activeHygienePatients:636, suppliesPct:0, status:'watch' },
     { code:'PB', production:520059, collections:223264, collectionRate:42.9, newPatients:91, newPatientsGoal:120, recareRate:0, phoneAnswerRate: 72, activePatients:389, activeHygienePatients:996, suppliesPct:0, status:'on_pace' },
-    { code:'PR', production:278072, collections:136968, collectionRate:49.3, newPatients:76, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 40, activePatients:321, activeHygienePatients:633, suppliesPct:0, status:'on_pace' },
-    { code:'OSB', production:260608, collections:147125, collectionRate:56.5, newPatients:50, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 73, activePatients:292, activeHygienePatients:2672, suppliesPct:0, status:'on_pace', isOSB:true },
+    { code:'PR', production:278072, collections:136968, collectionRate:49.3, newPatients:76, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 45, activePatients:321, activeHygienePatients:633, suppliesPct:0, status:'on_pace' },
+    { code:'OSB', production:260608, collections:147125, collectionRate:56.5, newPatients:50, newPatientsGoal:80, recareRate:0, phoneAnswerRate: 75, activePatients:292, activeHygienePatients:2672, suppliesPct:0, status:'on_pace', isOSB:true },
   ],
 
   doctors: [
@@ -168,14 +168,14 @@ export const DEMO_DATA = {
   ],
 
   phones: [
-    { code:'LKW', totalCalls:1144, answered:835, missed:309, answerRate:73, estMissedRevenue:0 },
-    { code:'LT', totalCalls:536, answered:422, missed:114, answerRate:79, estMissedRevenue:0 },
-    { code:'HNR', totalCalls:627, answered:509, missed:118, answerRate:81, estMissedRevenue:0 },
-    { code:'HNS', totalCalls:515, answered:365, missed:150, answerRate:71, estMissedRevenue:0 },
-    { code:'HNK', totalCalls:500, answered:357, missed:143, answerRate:71, estMissedRevenue:0 },
-    { code:'PB', totalCalls:859, answered:618, missed:241, answerRate:72, estMissedRevenue:0 },
-    { code:'PR', totalCalls:980, answered:389, missed:591, answerRate:40, estMissedRevenue:0 },
-    { code:'OSB', totalCalls:746, answered:545, missed:201, answerRate:73, estMissedRevenue:0 },
+    { code:'LKW', totalCalls:1500, answered:1079, missed:421, answerRate:72, estMissedRevenue:0 },
+    { code:'LT', totalCalls:750, answered:582, missed:168, answerRate:78, estMissedRevenue:0 },
+    { code:'HNR', totalCalls:827, answered:666, missed:161, answerRate:81, estMissedRevenue:0 },
+    { code:'HNS', totalCalls:688, answered:469, missed:219, answerRate:68, estMissedRevenue:0 },
+    { code:'HNK', totalCalls:665, answered:472, missed:193, answerRate:71, estMissedRevenue:0 },
+    { code:'PB', totalCalls:1159, answered:832, missed:327, answerRate:72, estMissedRevenue:0 },
+    { code:'PR', totalCalls:1212, answered:551, missed:661, answerRate:45, estMissedRevenue:0 },
+    { code:'OSB', totalCalls:994, answered:743, missed:251, answerRate:75, estMissedRevenue:0 },
   ],
 
   ar: {
